@@ -2,7 +2,7 @@ import { CtaSection } from "./components/CtaSection";
 import { HeroSection } from "./components/HeroSection";
 import { IntroSection } from "./components/IntroSection";
 import { PhilosophySection } from "./components/PhilosophySection";
-import { TestimonialPreview } from "./components/TestimonialPreview";
+
 import { TrainingSection } from "./components/TrainingSection";
 import type { PrivateTrainingData } from "./components/types";
 import { client } from "@/sanity/lib/client";
@@ -34,8 +34,7 @@ export default async function PrivateTrainingSection() {
         {/* PHILOSOPHY */}
         <PhilosophySection philosophy={data?.philosophy} />
 
-        {/* TESTIMONIAL PREVIEW */}
-        <TestimonialPreview />
+       
 
         {/* CTA */}
         <CtaSection ctaText={data?.ctaText} />
