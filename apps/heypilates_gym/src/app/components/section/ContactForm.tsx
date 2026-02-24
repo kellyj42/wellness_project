@@ -133,7 +133,7 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
           <div className="space-y-8">
             <div>
               <h2 className="text-2xl font-bold text-brand-charcoal mb-8">
-                Contact Information
+                Contact Information.
               </h2>
 
               {/* Email */}
