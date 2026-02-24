@@ -58,24 +58,7 @@ export default function ClassGrid({ classes }: ClassGridProps) {
   return (
     <div className="space-y-8 sm:space-y-12 px-2 sm:px-0">
       {/* Category Filter - Scrollable on mobile */}
-      <div className="overflow-x-auto pb-4 -mx-2 px-2">
-        <div className="flex gap-2 min-w-max">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-3 sm:px-5 py-2 sm:py-3 rounded-full flex items-center gap-2 transition-all duration-300 text-sm sm:text-base ${
-                selectedCategory === cat.id
-                  ? "bg-brand-sageDark text-white shadow-lg"
-                  : "bg-white text-brand-charcoal border border-brand-sageLight hover:border-brand-sage"
-              }`}
-            >
-              <span className="text-base sm:text-lg">{cat.icon}</span>
-              <span className="font-medium whitespace-nowrap">{cat.name}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+      
 
       {/* Class Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">

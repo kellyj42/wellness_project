@@ -39,10 +39,7 @@ export function CtaSection({ ctaText }: Props) {
               complimentary fitness assessment.
             </p>
             <div className="flex items-center gap-4 text-white/80">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-brand-sageLight" />
-                <span>Free Initial Assessment</span>
-              </div>
+              
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-brand-sageLight" />
                 <span>Flexible Scheduling</span>
@@ -58,13 +55,7 @@ export function CtaSection({ ctaText }: Props) {
             >
               {ctaText || "Book Your Private Session"}
             </Button>
-            <Button
-              href="/contact"
-              variant="secondary"
-              className="text-white border-white/30 hover:bg-white/10"
-            >
-              Schedule a Free Consultation
-            </Button>
+            
           </div>
         </div>
       </div>

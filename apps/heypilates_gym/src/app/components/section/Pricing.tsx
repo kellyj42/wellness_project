@@ -28,7 +28,7 @@ const pricingPlans = [
       "Valid for 4 weeks",
       "All class types included",
       "Priority booking",
-      "Free mat rental",
+    
     ],
     cta: "Buy Class Package",
     popular: true,

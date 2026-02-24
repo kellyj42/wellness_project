@@ -51,9 +51,7 @@ export default function ClassHero() {
             <button className="px-6 py-3 sm:px-8 sm:py-4 bg-white text-brand-sageDark font-bold rounded-lg sm:rounded-xl hover:bg-brand-cream transition-colors text-sm sm:text-base">
               View Schedule & Book
             </button>
-            <button className="px-6 py-3 sm:px-8 sm:py-4 bg-transparent border border-white sm:border-2 text-white font-bold rounded-lg sm:rounded-xl hover:bg-white/10 transition-colors text-sm sm:text-base">
-              Try First Class Free
-            </button>
+           
           </div>
         </div>
       </div>

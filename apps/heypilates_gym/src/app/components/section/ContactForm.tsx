@@ -287,7 +287,6 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="John Doe"
                     className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:border-brand-pink focus:ring-2 focus:ring-brand-pink/20 transition"
                     required
                   />
@@ -307,7 +306,6 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="john@example.com"
                     className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:border-brand-pink focus:ring-2 focus:ring-brand-pink/20 transition"
                     required
                   />
@@ -327,7 +325,6 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="(555) 123-4567"
                     className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:border-brand-pink focus:ring-2 focus:ring-brand-pink/20 transition"
                   />
                 </div>

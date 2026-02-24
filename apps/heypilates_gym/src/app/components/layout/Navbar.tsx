@@ -80,7 +80,7 @@ export default function Navbar() {
               Book a Class
             </Button>
             <Button
-              href="/account"
+              href="/events"
               variant="secondary"
               className="text-brand-charcoal hover:bg-brand-sageLight"
             >
@@ -124,12 +124,12 @@ export default function Navbar() {
                   Book a Class
                 </Button>
                 <Button
-                  href="/account"
+                  href="/events"
                   variant="outline"
                   className="w-full border-brand-sageDark text-brand-sageDark hover:bg-brand-sageLight"
                   onClick={() => setIsOpen(false)}
                 >
-                  My Account
+                  Events
                 </Button>
               </div>
             </div>

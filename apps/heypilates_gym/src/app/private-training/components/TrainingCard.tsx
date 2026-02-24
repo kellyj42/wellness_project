@@ -168,17 +168,7 @@ export function TrainingCard({
                       <p className="font-bold text-brand-charcoal">
                         {price.label}
                       </p>
-                      {index === 0 && (
-                        <span
-                          className={`px-2 py-1 text-xs font-bold rounded-full ${
-                            color === "sage"
-                              ? "bg-brand-sage text-white"
-                              : "bg-brand-charcoal text-white"
-                          }`}
-                        >
-                          RECOMMENDED
-                        </span>
-                      )}
+                     
                     </div>
                     {price.note && (
                       <p className="text-sm text-brand-muted">{price.note}</p>
@@ -190,9 +180,7 @@ export function TrainingCard({
                     >
                       {price.amount}
                     </p>
-                    {index === 0 && prices.length > 1 && (
-                      <p className="text-sm text-brand-muted mt-1">Save 20%</p>
-                    )}
+                   
                   </div>
                 </div>
               </div>
