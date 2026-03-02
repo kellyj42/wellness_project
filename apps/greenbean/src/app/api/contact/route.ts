@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { client } from "@/sanity/lib/client";
+import { writeClient } from "@/sanity/lib/client";
 
 export async function POST(request: NextRequest) {
   try {
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the contact submission in Sanity
-    const submission = await client.create({
+    const submission = await writeClient.create({
       _type: "contactSubmission",
       name,
       email,
