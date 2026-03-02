@@ -161,7 +161,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Panel */}
       <div
-        className={`md:hidden absolute top-full left-0 w-full bg-[#5B544D] border-t border-[#F5F3EE]/20 transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+        className={`md:hidden absolute top-full left-0 w-full bg-[#5B544D] border-t border-[#F5F3EE]/20 transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"}`}
       >
         <div className="px-6 py-5 flex flex-col space-y-4">
           {navLinks.map((link) => (
@@ -197,6 +197,14 @@ export default function Navbar() {
               )}
             </div>
           ))}
+           <Link
+            href="/reviews"
+            className="flex items-center justify-center gap-2 py-2 text-[#F5F3EE]/80 hover:text-[#FFC244] transition-colors"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <Star className="w-4 h-4 fill-[#FFC244] text-[#FFC244]" />
+            <span className="text-sm">Reviews</span>
+          </Link>
           <Link
             href="/meal-plans"
             className="bg-[#A3AD5F] text-[#2E2A26] px-5 py-2.5 rounded-full text-sm font-medium text-center hover:bg-[#B8C474] transition-colors"
@@ -206,14 +214,7 @@ export default function Navbar() {
           </Link>
 
           {/* Reviews Link - Mobile */}
-          <Link
-            href="/reviews"
-            className="flex items-center justify-center gap-2 py-2 text-[#F5F3EE]/80 hover:text-[#FFC244] transition-colors"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <Star className="w-4 h-4 fill-[#FFC244] text-[#FFC244]" />
-            <span className="text-sm">Reviews</span>
-          </Link>
+         
         </div>
       </div>
     </header>

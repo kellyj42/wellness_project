@@ -4,6 +4,13 @@ import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, FormEvent } from "react";
 
+interface FormErrors {
+  name?: string;
+  email?: string;
+  phone?: string;
+  message?: string;
+}
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
@@ -11,24 +18,95 @@ export default function ContactPage() {
     phone: "",
     message: "",
   });
+  const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     type: "success" | "error" | null;
     message: string;
   }>({ type: null, message: "" });
 
+  const validateField = (name: string, value: string): string | undefined => {
+    switch (name) {
+      case "name":
+        if (!value.trim()) return "Name is required";
+        if (value.trim().length < 2)
+          return "Name must be at least 2 characters";
+        if (value.trim().length > 100)
+          return "Name must be less than 100 characters";
+        if (!/^[a-zA-Z\s'-]+$/.test(value))
+          return "Name can only contain letters, spaces, hyphens and apostrophes";
+        return undefined;
+
+      case "email":
+        if (!value.trim()) return "Email is required";
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value))
+          return "Please enter a valid email address";
+        return undefined;
+
+      case "phone":
+        if (!value.trim()) return "Phone number is required";
+        // Remove spaces, dashes, and parentheses for validation
+        const cleanPhone = value.replace(/[\s\-()]/g, "");
+        // Uganda phone format: +256 followed by 9 digits, or starts with 0 followed by 9 digits
+        if (!/^(\+256|0)[0-9]{9}$/.test(cleanPhone)) {
+          return "Please enter a valid Ugandan phone number (e.g., +256 700 000 000 or 0700 000 000)";
+        }
+        return undefined;
+
+      case "message":
+        if (!value.trim()) return "Message is required";
+        if (value.trim().length < 10)
+          return "Message must be at least 10 characters";
+        if (value.trim().length > 1000)
+          return "Message must be less than 1000 characters";
+        return undefined;
+
+      default:
+        return undefined;
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    Object.keys(formData).forEach((key) => {
+      const error = validateField(key, formData[key as keyof typeof formData]);
+      if (error) {
+        newErrors[key as keyof FormErrors] = error;
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setSubmitStatus({ type: null, message: "" });
 
+    // Validate form before submitting
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
+      // Trim and clean data before sending
+      const cleanData = {
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        phone: formData.phone.trim(),
+        message: formData.message.trim(),
+      };
+
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(cleanData),
       });
 
       const data = await response.json();
@@ -39,6 +117,7 @@ export default function ContactPage() {
           message: data.message || "Thank you! Your message has been received.",
         });
         setFormData({ name: "", email: "", phone: "", message: "" });
+        setErrors({});
       } else {
         setSubmitStatus({
           type: "error",
@@ -58,10 +137,34 @@ export default function ContactPage() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
+    const { name, value } = e.target;
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
+    // Clear error for this field when user starts typing
+    if (errors[name as keyof FormErrors]) {
+      setErrors({
+        ...errors,
+        [name]: undefined,
+      });
+    }
+  };
+
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    const error = validateField(name, value);
+
+    if (error) {
+      setErrors({
+        ...errors,
+        [name]: error,
+      });
+    }
   };
 
   return (
@@ -160,62 +263,93 @@ export default function ContactPage() {
 
             <div>
               <label className="block text-sm text-[#2F3E34] mb-2">
-                Full Name
+                Full Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                required
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#6B7D6D]"
+                onBlur={handleBlur}
+                className={`w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 transition-colors ${
+                  errors.name
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-[#6B7D6D]"
+                }`}
                 placeholder="Your name"
               />
+              {errors.name && (
+                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+              )}
             </div>
 
             <div>
               <label className="block text-sm text-[#2F3E34] mb-2">
-                Email Address
+                Email Address <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                required
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#6B7D6D]"
+                onBlur={handleBlur}
+                className={`w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 transition-colors ${
+                  errors.email
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-[#6B7D6D]"
+                }`}
                 placeholder="you@email.com"
               />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              )}
             </div>
 
             <div>
               <label className="block text-sm text-[#2F3E34] mb-2">
-                Phone Number
+                Phone Number <span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                required
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#6B7D6D]"
+                onBlur={handleBlur}
+                className={`w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 transition-colors ${
+                  errors.phone
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-[#6B7D6D]"
+                }`}
                 placeholder="+256 700 000 000"
               />
+              {errors.phone && (
+                <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+              )}
             </div>
 
             <div>
               <label className="block text-sm text-[#2F3E34] mb-2">
-                Message
+                Message <span className="text-red-500">*</span>
               </label>
               <textarea
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                required
+                onBlur={handleBlur}
                 rows={5}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#6B7D6D]"
+                className={`w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 transition-colors resize-none ${
+                  errors.message
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-[#6B7D6D]"
+                }`}
                 placeholder="Write your message..."
               />
+              {errors.message && (
+                <p className="mt-1 text-sm text-red-600">{errors.message}</p>
+              )}
+              <p className="mt-1 text-xs text-gray-500 text-right">
+                {formData.message.length}/1000 characters
+              </p>
             </div>
 
             <button
