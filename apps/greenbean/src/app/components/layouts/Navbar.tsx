@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { Star } from "lucide-react";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -107,6 +108,15 @@ export default function Navbar() {
               )}
             </div>
           ))}
+
+          {/* Reviews Link */}
+          <Link
+            href="/reviews"
+            className="flex items-center gap-1.5 px-2 py-1 text-[#F5F3EE]/80 hover:text-[#FFC244] transition-colors duration-200 group"
+          >
+            <Star className="w-4 h-4 fill-[#FFC244] text-[#FFC244] group-hover:scale-110 transition-transform" />
+            <span className="text-sm">Reviews</span>
+          </Link>
         </nav>
 
         {/* Desktop CTA */}
@@ -193,6 +203,16 @@ export default function Navbar() {
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Get Started
+          </Link>
+
+          {/* Reviews Link - Mobile */}
+          <Link
+            href="/reviews"
+            className="flex items-center justify-center gap-2 py-2 text-[#F5F3EE]/80 hover:text-[#FFC244] transition-colors"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <Star className="w-4 h-4 fill-[#FFC244] text-[#FFC244]" />
+            <span className="text-sm">Reviews</span>
           </Link>
         </div>
       </div>
