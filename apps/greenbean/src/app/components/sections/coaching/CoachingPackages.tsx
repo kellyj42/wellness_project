@@ -57,7 +57,7 @@ export default function CoachingPackages() {
                 150,000 UGX
               </span>
               <a
-                href="https://wa.me/256777615775"
+                href="https://wa.me/256772774512"
                 className="inline-flex items-center gap-2 bg-[#6E7A3C] text-white px-6 py-3 rounded-full font-medium hover:bg-[#5A6630] transition shadow-md hover:shadow-lg"
               >
                 Book via WhatsApp

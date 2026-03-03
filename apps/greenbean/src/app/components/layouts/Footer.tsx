@@ -6,12 +6,10 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="bg-[#2E2A26] text-[#F5F3EE] relative">
-
       {/* Top Accent Line */}
       <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#A3AD5F] via-[#6E7A3C] to-transparent"></div>
 
       <div className="max-w-7xl mx-auto px-6 pt-20 pb-16 grid md:grid-cols-4 gap-12">
-
         {/* Brand Column */}
         <div className="md:col-span-1">
           <div className="">
@@ -43,17 +41,26 @@ export default function Footer() {
 
           <ul className="space-y-3 text-sm">
             <li>
-              <Link href="/meal-plans" className="hover:text-[#A3AD5F] transition">
+              <Link
+                href="/meal-plans"
+                className="hover:text-[#A3AD5F] transition"
+              >
                 Meal Plans
               </Link>
             </li>
             <li>
-              <Link href="/programs" className="hover:text-[#A3AD5F] transition">
+              <Link
+                href="/programs"
+                className="hover:text-[#A3AD5F] transition"
+              >
                 Programs
               </Link>
             </li>
             <li>
-              <Link href="/coaching" className="hover:text-[#A3AD5F] transition">
+              <Link
+                href="/coaching"
+                className="hover:text-[#A3AD5F] transition"
+              >
                 Nutrition Coaching
               </Link>
             </li>
@@ -97,17 +104,17 @@ export default function Footer() {
           </h4>
 
           <p className="text-sm text-[#CFCBC4] mb-6 leading-relaxed">
-            Ready to feel stronger, more energized, and in control of your health?
+            Ready to feel stronger, more energized, and in control of your
+            health?
           </p>
 
           <a
-            href="https://wa.me/256777615775"
+            href="https://wa.me/256772774512"
             className="inline-block bg-[#A3AD5F] text-[#2E2A26] px-6 py-3 rounded-full text-sm font-medium hover:scale-105 transition-transform duration-300"
           >
             Chat on WhatsApp
           </a>
         </div>
-
       </div>
 
       {/* Bottom Bar */}

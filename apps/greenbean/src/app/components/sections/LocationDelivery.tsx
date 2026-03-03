@@ -162,12 +162,12 @@ export default function LocationDelivery() {
                   <div>
                     <div className="font-semibold text-lg mb-1">Contact Us</div>
                     <Link
-                      href="https://wa.me/256700000000"
+                      href="https://wa.me/256781719687"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[#A3AD5F] hover:underline"
                     >
-                      WhatsApp: +256 700 000 000
+                      WhatsApp: +256 781 719687
                     </Link>
                   </div>
                 </div>
@@ -183,7 +183,7 @@ export default function LocationDelivery() {
                   Get Directions
                 </Link>
                 <Link
-                  href="https://wa.me/256700000000"
+                  href="https://wa.me/256781719687"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="border border-[#A3AD5F] text-[#F5F3EE] px-8 py-4 rounded-full font-semibold hover:bg-[#A3AD5F] hover:text-[#2E2A26] transition-all duration-300"
@@ -198,7 +198,7 @@ export default function LocationDelivery() {
               id="map"
               className="relative min-h-[400px] lg:min-h-full bg-[#5B544D]/20"
             >
-                <iframe
+              <iframe
                 title="Green Bean Location"
                 src="https://www.google.com/maps?q=CrossFit+Kampala&output=embed"
                 className="h-full w-full"
