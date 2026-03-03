@@ -24,18 +24,9 @@ export default function Navbar() {
   // Navigation links configuration
   const navLinks = [
     { href: "/meal-plans", label: "Meal Plans" },
-    {
-      href: "/programs",
-      label: "Programs",
-      hasDropdown: true,
-      dropdownItems: [
-        { href: "/programs/weight-loss", label: "Weight Loss" },
-        { href: "/programs/muscle-gain", label: "Muscle Gain" },
-        { href: "/programs/wellness", label: "Wellness" },
-      ],
-    },
-    { href: "/coaching", label: "Nutrition Coaching" },
+    { href: "/programs", label: "Programs" },
     { href: "/menu", label: "Menu" },
+    { href: "/coaching", label: "Nutrition Coaching" },
     { href: "/contact-page", label: "Contact" },
   ];
 
@@ -87,25 +78,6 @@ export default function Navbar() {
               >
                 {link.label}
               </Link>
-
-              {/* Dropdown Menu */}
-              {link.hasDropdown && (
-                <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-1 group-hover:translate-y-0 z-50">
-                  <div className="py-2">
-                    {link.dropdownItems?.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-[#F5F3EE] hover:text-[#2E2A26] transition-colors duration-150"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                  {/* Tiny caret */}
-                  <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-white rotate-45"></div>
-                </div>
-              )}
             </div>
           ))}
 
@@ -180,24 +152,9 @@ export default function Navbar() {
               >
                 {link.label}
               </Link>
-              {/* Mobile dropdown items (shown inline) */}
-              {link.hasDropdown && isMobileMenuOpen && (
-                <div className="pl-4 mt-2 space-y-2 border-l-2 border-[#A3AD5F]/30">
-                  {link.dropdownItems?.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="block py-1.5 text-sm text-[#F5F3EE]/70 hover:text-[#F5F3EE]"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
             </div>
           ))}
-           <Link
+          <Link
             href="/reviews"
             className="flex items-center justify-center gap-2 py-2 text-[#F5F3EE]/80 hover:text-[#FFC244] transition-colors"
             onClick={() => setIsMobileMenuOpen(false)}
@@ -214,7 +171,6 @@ export default function Navbar() {
           </Link>
 
           {/* Reviews Link - Mobile */}
-         
         </div>
       </div>
     </header>

@@ -79,12 +79,12 @@ export default function FinalCTA() {
           </Link>
 
           <Link
-            href="https://glovoapp.com/en/ug/kampala/stores/green-bean-cafe-kpa"
+            href="https://wa.me/256781719687"
             target="_blank"
             rel="noopener noreferrer"
             className="border-2 border-[#2E2A26] text-[#2E2A26] px-10 py-5 rounded-full text-lg font-semibold hover:bg-[#2E2A26] hover:text-[#F5F3EE] transition-all duration-300 hover:shadow-lg"
           >
-            Order on Glovo
+            Order via WhatsApp
           </Link>
         </motion.div>
 

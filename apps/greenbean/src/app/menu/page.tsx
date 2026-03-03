@@ -237,10 +237,15 @@ export default function MenuPage() {
                       <span className="text-xs uppercase tracking-wider text-[#8B7F74] bg-[#F0EDE7] px-3 py-1 rounded-full">
                         {item.category}
                       </span>
-                      <button className="flex items-center gap-1 text-sm font-medium text-[#6E7A3C] hover:text-[#4A5522] transition-colors group/btn">
-                        Order now
+                      <a
+                        href="https://wa.me/256781719687"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-sm font-medium text-[#6E7A3C] hover:text-[#4A5522] transition-colors group/btn"
+                      >
+                        Order via WhatsApp
                         <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                      </button>
+                      </a>
                     </div>
                   </div>
                 </motion.div>
@@ -249,21 +254,7 @@ export default function MenuPage() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="text-center mt-20"
-        >
-          <p className="text-[#5B544D] mb-4">
-            Looking for a custom meal plan? We’ve got you covered.
-          </p>
-          <button className="bg-[#6E7A3C] text-white px-8 py-4 rounded-full font-medium hover:bg-[#5A6630] transition-colors shadow-lg hover:shadow-xl inline-flex items-center gap-2">
-            Build Your Plan
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </motion.div>
+        
       </div>
     </section>
   );

@@ -47,10 +47,10 @@ export default function ProgramsPage() {
       icon: UtensilsCrossed,
       title: "Daily Takeaways & Delivery",
       description:
-        "No commitment needed. Order fresh, healthy meals daily via pickup or Glovo delivery.",
+        "No commitment needed. Order fresh, healthy meals daily via pickup or WhatsApp.",
       features: [
         "Daily fresh menu",
-        "Glovo delivery available",
+        "WhatsApp ordering available",
         "Vegetarian & non-vegetarian",
         "Real food, real portions",
       ],
@@ -204,7 +204,7 @@ export default function ProgramsPage() {
               {
                 title: "Convenient Delivery",
                 description:
-                  "Pickup at our kitchen or Glovo delivery to your door",
+                  "Order via WhatsApp for delivery",
               },
             ].map((item, index) => (
               <motion.div
@@ -253,12 +253,10 @@ export default function ProgramsPage() {
               structure and support to help you succeed.
             </p>
             <Link
-              href="https://www.instagram.com/greenbean.ug"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/reviews"
               className="inline-block bg-[#2E2A26] text-[#F5F3EE] px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#1A1714] hover:shadow-2xl transition-all duration-300"
             >
-              View Transformations on Instagram
+              Read Client Reviews
             </Link>
           </motion.div>
         </div>
@@ -283,12 +281,12 @@ export default function ProgramsPage() {
               Explore Meal Plans
             </Link>
             <Link
-              href="https://glovoapp.com/en/ug/kampala/stores/green-bean-cafe-kpa"
+              href="https://wa.me/256781719687"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block border-2 border-[#A3AD5F] text-[#A3AD5F] px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#A3AD5F] hover:text-[#2E2A26] transition-all duration-300"
             >
-              Order on Glovo
+              Order via WhatsApp
             </Link>
           </div>
         </div>

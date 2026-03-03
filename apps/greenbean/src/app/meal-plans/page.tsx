@@ -172,14 +172,16 @@ export default function MealPlanPage() {
                   )}
 
                   <Link
-                    href="/contact-page"
+                    href="https://wa.me/256781719687"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={`block w-full text-center py-3 rounded-full font-semibold transition-all duration-300 ${
                       plan.textColor === "text-[#F5F3EE]"
                         ? "bg-[#F5F3EE] text-[#2E2A26] hover:bg-white"
                         : "bg-[#2E2A26] text-[#F5F3EE] hover:bg-[#1A1714]"
                     }`}
                   >
-                    Get Started
+                    Order via WhatsApp
                   </Link>
                 </motion.div>
               );
@@ -216,10 +218,12 @@ export default function MealPlanPage() {
                 </h3>
                 <p className="text-[#5B544D] mb-4">{plan.description}</p>
                 <Link
-                  href="/contact-page"
+                  href="https://wa.me/256781719687"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center text-[#A3AD5F] font-semibold hover:text-[#8A9450] transition-colors"
                 >
-                  Learn More →
+                  Order via WhatsApp →
                 </Link>
               </motion.div>
             ))}
@@ -255,10 +259,12 @@ export default function MealPlanPage() {
                 </h3>
                 <p className="text-[#5B544D] mb-4">{plan.description}</p>
                 <Link
-                  href="/contact-page"
+                  href="https://wa.me/256781719687"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center text-[#A3AD5F] font-semibold hover:text-[#8A9450] transition-colors"
                 >
-                  Learn More →
+                  Order via WhatsApp →
                 </Link>
               </motion.div>
             ))}
@@ -282,10 +288,12 @@ export default function MealPlanPage() {
                 <li>• Reset Programs</li>
               </ul>
               <Link
-                href="/contact-page"
+                href="https://wa.me/256781719687"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-block bg-[#2E2A26] text-[#F5F3EE] px-8 py-3 rounded-full font-semibold hover:bg-[#1A1714] transition-all duration-300"
               >
-                Explore Detox
+                Order via WhatsApp
               </Link>
             </div>
 
@@ -295,9 +303,9 @@ export default function MealPlanPage() {
                 Daily Takeaways
               </h2>
               <p className="text-lg mb-6">
-                Healthy daily menu available for pickup or delivery via Glovo.
-                No commitment needed — just fresh, nutritious meals when you
-                need them.
+                Healthy daily menu available for pickup or delivery via
+                WhatsApp. No commitment needed — just fresh, nutritious meals
+                when you need them.
               </p>
               <div className="flex gap-4">
                 <Link
@@ -307,12 +315,12 @@ export default function MealPlanPage() {
                   View Menu
                 </Link>
                 <Link
-                  href="https://glovoapp.com/en/ug/kampala/stores/green-bean-cafe-kpa"
+                  href="https://wa.me/256781719687"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block border-2 border-[#2E2A26] text-[#2E2A26] px-8 py-3 rounded-full font-semibold hover:bg-[#2E2A26] hover:text-[#F5F3EE] transition-all duration-300"
                 >
-                  Order on Glovo
+                  Order via WhatsApp
                 </Link>
               </div>
             </div>
@@ -331,10 +339,12 @@ export default function MealPlanPage() {
             start process. Contact us to get started today.
           </p>
           <Link
-            href="/contact-page"
+            href="https://wa.me/256781719687"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block bg-[#A3AD5F] text-[#2E2A26] px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#B8C474] hover:shadow-2xl hover:scale-105 transition-all duration-300"
           >
-            Get Started Today
+            Order via WhatsApp
           </Link>
         </div>
       </section>
