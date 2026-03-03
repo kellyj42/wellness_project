@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { writeClient } from "@/sanity/lib/client";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -71,6 +74,43 @@ export async function POST(request: NextRequest) {
       submittedAt: new Date().toISOString(),
       status: "new",
     });
+
+    // Send email notification to business
+    try {
+      await resend.emails.send({
+        from: "Green Bean Contact Form <onboarding@resend.dev>",
+        to: "greenbean.cafeug@gmail.com",
+        subject: `New Contact Form Submission from ${name}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #A3AD5F;">New Contact Form Submission</h2>
+            <p>You have received a new message from your website contact form.</p>
+            
+            <div style="background-color: #F5F3EE; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <p><strong>Name:</strong> ${name}</p>
+              <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+              <p><strong>Phone:</strong> <a href="tel:${phone}">${phone}</a></p>
+              <p><strong>Message:</strong></p>
+              <p style="white-space: pre-wrap;">${message}</p>
+            </div>
+            
+            <p style="color: #666; font-size: 12px;">
+              Submitted at: ${new Date().toLocaleString('en-UG', { timeZone: 'Africa/Kampala' })}
+            </p>
+            
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;" />
+            <p style="color: #999; font-size: 11px;">
+              This email was sent from your Green Bean website contact form.
+              View all submissions in your <a href="https://sdlg0ugb.sanity.studio/structure/contactSubmissions">Sanity Studio</a>.
+            </p>
+          </div>
+        `,
+      });
+    } catch (emailError) {
+      // Log email error but don't fail the request
+      console.error("Failed to send email notification:", emailError);
+      // Still return success since the submission was saved to Sanity
+    }
 
     return NextResponse.json(
       {
