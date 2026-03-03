@@ -213,7 +213,7 @@ export default function ContactPage() {
               <Phone className="w-6 h-6 text-[#6B7D6D]" />
               <div>
                 <h3 className="text-xl font-semibold text-[#2F3E34]">Phone</h3>
-                <p className="text-gray-600">+256 700 000 000</p>
+                <p className="text-gray-600">+256 781 719687</p>
               </div>
             </div>
 
@@ -221,7 +221,7 @@ export default function ContactPage() {
               <Mail className="w-6 h-6 text-[#6B7D6D]" />
               <div>
                 <h3 className="text-xl font-semibold text-[#2F3E34]">Email</h3>
-                <p className="text-gray-600">info@greenbean.ug</p>
+                <p className="text-gray-600">greenbean.cafeug@gmail.com</p>
               </div>
             </div>
 
@@ -320,7 +320,7 @@ export default function ContactPage() {
                     ? "border-red-500 focus:ring-red-500"
                     : "border-gray-300 focus:ring-[#6B7D6D]"
                 }`}
-                placeholder="+256 700 000 000"
+                placeholder="+256 781 719687"
               />
               {errors.phone && (
                 <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
