@@ -77,9 +77,9 @@ export async function POST(request: NextRequest) {
 
     // Send email notification to business
     try {
-      await resend.emails.send({
+      const emailResponse = await resend.emails.send({
         from: "Green Bean Contact Form <onboarding@resend.dev>",
-        to: "greenbean.cafeug@gmail.com",
+        to: "kellyjnambale@gmail.com",
         subject: `New Contact Form Submission from ${name}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -106,9 +106,13 @@ export async function POST(request: NextRequest) {
           </div>
         `,
       });
+      console.log("Email sent successfully:", emailResponse);
     } catch (emailError) {
-      // Log email error but don't fail the request
-      console.error("Failed to send email notification:", emailError);
+      // Log email error details for debugging
+      console.error("Failed to send email notification:", {
+        error: emailError,
+        apiKey: process.env.RESEND_API_KEY ? "Present" : "MISSING",
+      });
       // Still return success since the submission was saved to Sanity
     }
 
