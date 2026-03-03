@@ -165,23 +165,7 @@ export default function Hero() {
               Start a Weight Loss Plan
             </Link>
 
-            <Link
-              href="https://glovoapp.com/en/ug/kampala/stores/green-bean-cafe-kpa"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative bg-[#FFC244] text-[#2E2A26] px-8 py-4 rounded-full text-sm font-semibold overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105"
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                <Bike className="w-5 h-5" />
-                Order on Glovo
-              </span>
-              <motion.span
-                className="absolute inset-0 bg-[#FFD666]"
-                initial={{ scale: 0, x: "100%" }}
-                whileHover={{ scale: 2, x: 0 }}
-                transition={{ duration: 0.5, ease: [0.2, 1, 0.3, 1] }}
-              />
-            </Link>
+           
 
             <Link
               href="/menu"
@@ -237,38 +221,7 @@ export default function Hero() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#5B544D]/60 via-transparent to-transparent" />
           </motion.div>
 
-          {/* Floating Stats Card – now visible */}
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 1.2, duration: 0.6 }}
-            className="absolute -bottom-10 -left-10 bg-[#2E2A26] p-6 rounded-2xl shadow-2xl border border-[#A3AD5F]/30 backdrop-blur-sm w-64"
-          >
-            <div className="space-y-4">
-              <div>
-                <div className="text-3xl font-bold text-[#A3AD5F]">
-                  {mealsCount.toLocaleString()}+
-                </div>
-                <div className="text-sm text-[#CFCBC4]">
-                  Healthy meals delivered
-                </div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-[#A3AD5F]">
-                  {membersCount.toLocaleString()}+
-                </div>
-                <div className="text-sm text-[#CFCBC4]">Active members</div>
-              </div>
-              <div className="pt-2 border-t border-[#A3AD5F]/20">
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-[#A3AD5F]">★</span>
-                  <span className="text-[#F5F3EE]">
-                    4.9 rating (2.3k+ reviews)
-                  </span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+          
 
           {/* Decorative rotating element */}
           <motion.div
@@ -282,21 +235,7 @@ export default function Hero() {
       </div>
 
       {/* ===== SCROLL INDICATOR ===== */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.6 }}
-        transition={{ delay: 2.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[#CFCBC4]"
-      >
-        <span className="text-xs uppercase tracking-widest">Scroll</span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          className="w-5 h-8 border-2 border-[#CFCBC4]/60 rounded-full flex justify-center"
-        >
-          <div className="w-1 h-2 bg-[#CFCBC4]/80 rounded-full mt-2" />
-        </motion.div>
-      </motion.div>
+      
     </section>
   );
 }

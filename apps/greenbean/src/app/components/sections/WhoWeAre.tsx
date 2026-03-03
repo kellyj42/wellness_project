@@ -62,8 +62,9 @@ export default function WhoWeAre() {
               className="absolute -bottom-6 -right-6 bg-[#A3AD5F] text-[#2E2A26] px-8 py-6 rounded-2xl shadow-2xl"
             >
               <div className="text-center">
+                <div className="text-sm font-medium mt-1">Serving Kampala Since</div>
                 <div className="text-3xl font-bold">2022</div>
-                <div className="text-sm font-medium mt-1">Serving Kampala</div>
+                
               </div>
             </motion.div>
           </motion.div>

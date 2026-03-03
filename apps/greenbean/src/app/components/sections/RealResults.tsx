@@ -4,16 +4,16 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
-import { Camera } from "lucide-react";
+import { Star } from "lucide-react";
 
 export default function RealResults() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   const stats = [
-    { number: "500+", label: "Transformations" },
-    { number: "15kg", label: "Average Weight Loss" },
-    { number: "92%", label: "Goal Achievement Rate" },
+    { number: "Real", label: "Client Stories" },
+    { number: "Trusted", label: "Google Feedback" },
+    { number: "Consistent", label: "Coach Support" },
   ];
 
   return (
@@ -51,7 +51,7 @@ export default function RealResults() {
             <p className="mt-6">
               Whether your goal is fat loss, muscle tone, or building healthier
               habits, Green Bean provides the structure and support to help you
-              succeed.
+              stay consistent over time.
             </p>
           </div>
         </motion.div>
@@ -79,7 +79,12 @@ export default function RealResults() {
           ))}
         </motion.div>
 
-        {/* Transformation Placeholder Section */}
+        <p className="text-center text-sm text-[#6B7D6D] mb-16">
+          Results vary from person to person based on goals, consistency, and
+          lifestyle.
+        </p>
+
+        {/* Reviews CTA Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -87,25 +92,22 @@ export default function RealResults() {
           className="bg-gradient-to-br from-[#A3AD5F]/10 to-[#5B544D]/10 rounded-3xl p-12 text-center border border-[#A3AD5F]/20"
         >
           <div className="max-w-2xl mx-auto">
-            <Camera
+            <Star
               className="w-20 h-20 text-[#A3AD5F] mx-auto mb-6"
               strokeWidth={1.5}
             />
             <h3 className="text-3xl font-light text-[#2E2A26] mb-4">
-              See Real Transformations
+              Read What Clients Say
             </h3>
             <p className="text-[#5B544D] mb-8 leading-relaxed">
-              We celebrate our clients&apos; success stories on Instagram. See
-              their before & after journeys and the dedication that made it
-              possible.
+              See verified feedback from clients who have used our meals and
+              coaching services.
             </p>
             <Link
-              href="https://instagram.com/greenbeankla"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/reviews"
               className="inline-block bg-[#A3AD5F] text-[#2E2A26] px-10 py-4 rounded-full text-lg font-semibold hover:shadow-2xl hover:scale-105 transition-all duration-300"
             >
-              View Transformations on Instagram
+              View Google Reviews
             </Link>
           </div>
         </motion.div>
@@ -117,22 +119,7 @@ export default function RealResults() {
           transition={{ delay: 0.8, duration: 0.8 }}
           className="mt-16 max-w-4xl mx-auto"
         >
-          <div className="bg-[#2E2A26] text-[#F5F3EE] p-10 rounded-3xl relative">
-            <div className="text-[#A3AD5F] text-6xl mb-4 opacity-50">"</div>
-            <p className="text-xl md:text-2xl font-light leading-relaxed mb-6 italic">
-              Green Bean gave me the structure I needed. I lost 12kg in 3
-              months, and for the first time, I feel in control of my eating.
-            </p>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-[#A3AD5F]/20 flex items-center justify-center text-2xl">
-                👤
-              </div>
-              <div>
-                <div className="font-semibold text-[#F5F3EE]">Sarah M.</div>
-                <div className="text-sm text-[#CFCBC4]">Lean Plan Client</div>
-              </div>
-            </div>
-          </div>
+         
         </motion.div>
       </div>
     </section>

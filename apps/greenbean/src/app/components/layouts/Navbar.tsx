@@ -63,11 +63,11 @@ export default function Navbar() {
           className=" font-light tracking-wide hover:opacity-80 transition-opacity"
         >
           <Image
-            src="/gb.png"
+            src="/gblogo.png"
             alt="Green Bean"
             width={140}
-            height={36}
-            className="h-20 w-52 object-cover"
+            height={30}
+            className=""
           />
         </Link>
 

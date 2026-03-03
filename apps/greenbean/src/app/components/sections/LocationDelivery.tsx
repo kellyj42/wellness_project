@@ -12,6 +12,7 @@ import {
   Clock,
   MessageCircle,
   Map,
+  
 } from "lucide-react";
 
 export default function LocationDelivery() {
@@ -20,11 +21,11 @@ export default function LocationDelivery() {
 
   const deliveryOptions = [
     {
-      icon: Truck,
-      title: "Glovo Delivery",
-      description: "Order anytime via Glovo app",
-      cta: "Order Now",
-      link: "https://glovoapp.com/en/ug/kampala/stores/green-bean-cafe-kpa",
+      icon: MessageCircle,
+      title: "Whatsapp",
+      description: "Reachout to us on whatsapp",
+      cta: "Whatsapp",
+      link: "https://wa.me/256781719687",
     },
     {
       icon: Package,
