@@ -14,11 +14,11 @@ export default function Footer() {
         <div className="md:col-span-1">
           <div className="">
             <Image
-              src="/gb.png"
+              src="/gblogo.png"
               alt="Green Bean"
               width={160}
               height={60}
-              className="object-cover h-40 "
+              className=" "
             />
           </div>
 
