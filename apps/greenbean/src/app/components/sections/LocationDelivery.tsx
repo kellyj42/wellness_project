@@ -198,18 +198,13 @@ export default function LocationDelivery() {
               id="map"
               className="relative min-h-[400px] lg:min-h-full bg-[#5B544D]/20"
             >
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="text-7xl mb-4">🗺️</div>
-                  <p className="text-[#CFCBC4] text-lg">
-                    Google Map Embed
-                    <br />
-                    <span className="text-sm">
-                      (Add your Google Maps iframe here)
-                    </span>
-                  </p>
-                </div>
-              </div>
+                <iframe
+                title="Green Bean Location"
+                src="https://www.google.com/maps?q=CrossFit+Kampala&output=embed"
+                className="h-full w-full"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
               {/* You can replace this with an actual Google Maps iframe */}
             </div>
           </div>
