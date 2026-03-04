@@ -27,6 +27,7 @@ export default function Navbar() {
     { href: "/programs", label: "Programs" },
     { href: "/menu", label: "Menu" },
     { href: "/coaching", label: "Nutrition Coaching" },
+    { href: "https://wellness-project-rqg2.vercel.app/", label: "HeyPilates" },
     { href: "/contact-page", label: "Contact" },
   ];
 
