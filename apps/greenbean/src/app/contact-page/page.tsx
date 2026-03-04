@@ -202,9 +202,9 @@ export default function ContactPage() {
                   Location
                 </h3>
                 <p className="text-gray-600">
-                  CrossFit Kampala
+                  CrossFit KLA, Old Port Bell Road,
                   <br />
-                  Kampala, Uganda
+                  Plot 7A, Kampala
                 </p>
               </div>
             </div>
@@ -213,7 +213,16 @@ export default function ContactPage() {
               <Phone className="w-6 h-6 text-[#6B7D6D]" />
               <div>
                 <h3 className="text-xl font-semibold text-[#2F3E34]">Phone</h3>
-                <p className="text-gray-600">+256 781 719687</p>
+                <p className="text-gray-600">
+                  Call or whats app <strong>+256 781 719 687 </strong> <br />
+                  Our customer service and food deliveries <br /> are available
+                  in the hour below
+                </p>
+                <ul className="ml-4 text-gray-600">
+                  <li> Monday to Friday 8 am - 5 pm </li>
+                  <li> Saturday 7 am - 2 pm</li>
+                  <li> Sunday - closed</li>
+                </ul>
               </div>
             </div>
 
@@ -221,7 +230,7 @@ export default function ContactPage() {
               <Mail className="w-6 h-6 text-[#6B7D6D]" />
               <div>
                 <h3 className="text-xl font-semibold text-[#2F3E34]">Email</h3>
-                <p className="text-gray-600">greenbean.cafeug@gmail.com</p>
+                <p className="text-gray-600">greenbeanug@gmail.com</p>
               </div>
             </div>
 
@@ -232,9 +241,11 @@ export default function ContactPage() {
                   Opening Hours
                 </h3>
                 <p className="text-gray-600">
-                  Monday – Friday: 7:00 AM – 9:00 PM
+                  Monday – Friday: 7:00 AM – 6:00 PM
                   <br />
-                  Saturday – Sunday: 8:00 AM – 10:00 PM
+                  Saturday: 7:00 AM – 2:00 PM
+                  <br />
+                  Sunday: 8:00 AM – 12:00 PM
                 </p>
               </div>
             </div>

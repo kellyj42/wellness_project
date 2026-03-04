@@ -22,17 +22,31 @@ export default function CoachingHero() {
             Founder of Green Bean | Certified Nutrition Coach | Wellness
             Strategist.
           </p>
-          <div className="mt-10 flex justify-center">
-            <div className="relative w-full max-w-3xl aspect-[16/9] rounded-3xl overflow-hidden shadow-xl">
-              <Image
-                src="/klaudia.jpg"
-                alt="Fresh meal on a table"
-                fill
-                sizes="(min-width: 1024px) 768px, 90vw"
-                className="object-cover"
-                priority
-              />
-            </div>
+          <div className="mt-16 flex justify-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="relative w-full max-w-3xl"
+            >
+              {/* Background accent shape */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#A3AD5F]/10 to-[#5B544D]/10 rounded-3xl blur-2xl" />
+              
+              {/* Image container with border */}
+              <div className="relative rounded-3xl overflow-hidden border-2 border-[#A3AD5F]/20 shadow-2xl hover:shadow-3xl transition-shadow duration-300">
+                <div className="relative aspect-[4/5] md:aspect-[16/9] w-full overflow-hidden h-[550]">
+                  <Image
+                    src="/images/Klaudia.jpg"
+                    alt="Klaudia Kaliisa - Founder & Lead Coach"
+                    fill
+                    className="object-cover object-center"
+                    priority
+                  />
+                  {/* Subtle overlay gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent" />
+                </div>
+              </div>
+            </motion.div>
           </div>
         </motion.div>
       </div>

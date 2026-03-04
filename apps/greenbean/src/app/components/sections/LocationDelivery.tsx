@@ -12,7 +12,6 @@ import {
   Clock,
   MessageCircle,
   Map,
-  
 } from "lucide-react";
 
 export default function LocationDelivery() {
@@ -23,21 +22,24 @@ export default function LocationDelivery() {
     {
       icon: MessageCircle,
       title: "Whatsapp",
-      description: "Reachout to us on whatsapp",
-      cta: "Whatsapp",
+      description: `Order your healthy meal today
+Reach out to us via What’s App to place an order 
+      `,
+      cta: "Contact us",
       link: "https://wa.me/256781719687",
     },
     {
       icon: Package,
       title: "Meal Plan Delivery",
-      description: "Weekly meal plan deliveries across Kampala",
-      cta: "View Plans",
+      description:
+        "Check out the variety of our weekly, monthly and weight-loss meal plans ",
+      cta: "View plans ",
       link: "/meal-plans",
     },
     {
       icon: Store,
-      title: "Pickup at Kitchen",
-      description: "Visit us at CrossFit Kampala",
+      title: "Check out our coffee shop ",
+      description: "Visit us at CrossFit KLA",
       cta: "Get Directions",
       link: "#map",
     },
@@ -98,7 +100,7 @@ export default function LocationDelivery() {
                 <h3 className="text-2xl font-semibold mb-3 text-[#F5F3EE]">
                   {option.title}
                 </h3>
-                <p className="text-[#CFCBC4] mb-6 leading-relaxed">
+                <p className="text-[#CFCBC4] mb-6 leading-relaxed whitespace-pre-wrap">
                   {option.description}
                 </p>
                 <Link
@@ -129,7 +131,7 @@ export default function LocationDelivery() {
             {/* Left - Location Info */}
             <div className="p-12 flex flex-col justify-center">
               <h3 className="text-3xl md:text-4xl font-light mb-6">
-                Our <span className="text-[#A3AD5F]">Kitchen Location</span>
+                GET  <span className="text-[#A3AD5F]"> IN  TOUCH</span>
               </h3>
               <div className="space-y-6 mb-8">
                 <div className="flex items-start gap-4">
@@ -139,9 +141,9 @@ export default function LocationDelivery() {
                       Green Bean at CrossFit
                     </div>
                     <div className="text-[#CFCBC4]">
-                      CrossFit Kampala, Naguru
+                      CrossFit KLA, Old Port Bell Road,
                       <br />
-                      Kampala, Uganda
+                      Plot 7A, Kampala
                     </div>
                   </div>
                 </div>
@@ -149,27 +151,37 @@ export default function LocationDelivery() {
                   <Clock className="w-8 h-8 text-[#A3AD5F] flex-shrink-0" />
                   <div>
                     <div className="font-semibold text-lg mb-1">
-                      Opening Hours
+                      Opening hours of our coffee bar at CrossFit
                     </div>
                     <div className="text-[#CFCBC4]">
-                      Monday – Friday: 7:00 AM – 7:00 PM
+                      Monday to Friday 7 am - 6 pm
                       <br />
-                      Saturday – Sunday: 8:00 AM – 5:00 PM
+                      Saturday 7 am - 2 pm
+                      <br />
+                      Sunday 8 am - 12 pm
                     </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <MessageCircle className="w-8 h-8 text-[#A3AD5F] flex-shrink-0" />
                   <div>
-                    <div className="font-semibold text-lg mb-1">Contact Us</div>
+                    <div className="font-semibold text-lg mb-1">
+                      Contact us for delivery or get guidance on a meal plan
+                    </div>
                     <Link
                       href="https://wa.me/256781719687"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[#A3AD5F] hover:underline"
                     >
-                      WhatsApp: +256 781 719687
+                      Call or whats app <strong>+256 781 719 687 </strong>Our customer service
+                      and food deliveries are available in the hour below
                     </Link>
+                    <ul className="ml-4">
+                      <li>~ Monday to Friday 8 am - 5 pm </li>
+                      <li>~ Saturday 7 am - 2 pm</li>
+                      <li>~ Sunday - closed</li>
+                    </ul>
                   </div>
                 </div>
               </div>

@@ -13,6 +13,7 @@ const navigation = [
   { name: "Classes", href: "/classes" },
   { name: "Private Training", href: "/private-training" },
   { name: "Teachers", href: "/teachers" },
+  { name: "Green Bean", href: "https://wellness-project-ibgi.vercel.app/" },
   { name: "Contact", href: "/contact" },
 ];
 

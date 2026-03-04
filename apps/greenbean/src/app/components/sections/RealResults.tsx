@@ -2,18 +2,82 @@
 
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { Star, ChevronDown } from "lucide-react";
+import Image from "next/image";
+
+interface ClientTestimonial {
+  id: string;
+  name: string;
+  image: string;
+  feedback: string;
+  result: string;
+  rating: number;
+}
 
 export default function RealResults() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [expandedClients, setExpandedClients] = useState<
+    Record<string, boolean>
+  >({});
 
-  const stats = [
-    { number: "Real", label: "Client Stories" },
-    { number: "Trusted", label: "Google Feedback" },
-    { number: "Consistent", label: "Coach Support" },
+  const clients: ClientTestimonial[] = [
+    {
+      id: "1",
+      name: "Sarah",
+      image: "/clientresults/sarah.jpeg",
+      feedback: `Meet Sarah, who has achieved an amazing milestone on her journey with Green Bean! 
+
+Over the past four weeks, Sarah has successfully lost 2 kg while following her personalized meal plan. But what’s truly inspiring is her focus on muscle toning rather than extreme weight loss. As someone who exercises regularly, Sarah  was looking for a way to complement her fitness routine and enhance her results. With our guidance and meals delivery, she prioritized higher protein intake, which has been key to her success!
+
+Here’s what Sarah had to say about her experience:
+
+"I wanted to see results that reflected my hard work at the gym, and the meal plan from Green Bean Plus has been a game changer. Focusing on protein helped me feel fuller and more energized for my workouts. The guidance I received made it easy to stay on track, and I’m so excited to see the muscle toning I’ve achieved in just a month!"
+
+Sarah’s dedication to her health and fitness is truly admirable. By incorporating a balanced diet with a focus on protein, she has not only shed weight but also enhanced her overall strength and physique.
+
+We couldn’t be prouder of Sarah and her accomplishments!`,
+      result: "Lost 2kg & Achieved Muscle Tone",
+      rating: 5,
+    },
+    {
+      id: "2",
+      name: " Klaudia",
+      image: "/clientresults/klaudia.jpeg",
+      feedback: `Meet Klaudia, who has successfully lost 7 kg with Green Bean in 3 months!
+
+With our delicious meal plans and her dedication to exercising 3-4 times a week, Klaudia has achieved her weight loss goals without feeling deprived. Our healthy meals are designed to nourish your body and support sustainable weight loss—no more starving or sacrificing the foods you love!
+
+Join Klaudia on her journey and discover how Green Bean can help you reach your goals too! Let's make healthy eating enjoyable together!`,
+      result: "Lost 7kg in 3 Months",
+      rating: 5,
+    },
+    {
+      id: "3",
+      name: "Laura",
+      image: "/clientresults/laura.jpeg",
+      feedback: `Customer Spotlight: Laura's Transformation! In just 5 months, Laura has lost an incredible 15 kg with consistent workouts, dedication, and the support of Green Bean meals!
+
+Her journey is a true testament to the power of healthy, sustainable eating. With Green Bean meal plans, she never experienced cravings and has built lasting, healthy habits that will keep her on track for years to come!
+
+Are you ready to start your own transformation? Our meal plans are designed to fuel your body, support your goals, and help you develop healthy routines that last.`,
+      result: "Lost 15kg in 5 Months",
+      rating: 5,
+    },
+    {
+      id: "4",
+      name: "Ritika",
+      image: "/clientresults/ritika.jpeg",
+      feedback: `From 72kg to 55kg — 17 kilos down, and a whole new chapter gained.
+
+Ritika's journey is proof that with consistency, commitment, and self-belief, anything is possible. This isn't just a transformation of body—it's a transformation of confidence, strength, and mindset.
+
+Ritika has been working on her fitness journey and has done Detox juice plans, dinner plans and nutrition coaching with us. We are so proud of how far you've come, Ritika!`,
+      result: "Lost 17kg (72kg → 55kg)",
+      rating: 5,
+    },
   ];
 
   return (
@@ -56,25 +120,81 @@ export default function RealResults() {
           </div>
         </motion.div>
 
-        {/* Stats Grid */}
+        {/* Client Testimonials Grid */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.3, duration: 0.8 }}
           className="grid md:grid-cols-3 gap-8 mb-16"
         >
-          {stats.map((stat, index) => (
+          {clients.map((client, index) => (
             <motion.div
-              key={index}
+              key={client.id}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 0.5 + index * 0.1, duration: 0.6 }}
-              className="bg-white p-8 rounded-2xl shadow-lg border border-[#A3AD5F]/10 text-center hover:shadow-xl transition-shadow duration-300"
+              className="bg-white rounded-2xl shadow-lg border border-[#A3AD5F]/10 overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
-              <div className="text-5xl font-bold text-[#A3AD5F] mb-2">
-                {stat.number}
+              {/* Client Image */}
+              <div className="relative h-96 w-full bg-gradient-to-br from-[#A3AD5F]/20 to-[#5B544D]/20">
+                <Image
+                  src={client.image}
+                  alt={client.name}
+                  fill
+                  className="object-cover"
+                />
               </div>
-              <div className="text-[#5B544D] font-medium">{stat.label}</div>
+
+              {/* Client Info */}
+              <div className="p-6">
+                {/* Rating */}
+                <div className="flex gap-1 mb-4">
+                  {Array.from({ length: client.rating }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className="w-5 h-5 fill-[#A3AD5F] text-[#A3AD5F]"
+                      strokeWidth={0}
+                    />
+                  ))}
+                </div>
+
+                {/* Feedback */}
+                <p className="text-[#5B544D] text-sm leading-relaxed mb-4 italic whitespace-pre-wrap">
+                  {expandedClients[client.id]
+                    ? client.feedback
+                    : `${client.feedback.substring(0, 150)}...`}
+                </p>
+
+                {/* Read More/Less Button */}
+                <button
+                  onClick={() =>
+                    setExpandedClients((prev) => ({
+                      ...prev,
+                      [client.id]: !prev[client.id],
+                    }))
+                  }
+                  className="inline-flex items-center gap-2 text-[#A3AD5F] text-sm font-semibold hover:text-[#8B9650] transition-colors duration-200 mb-4"
+                >
+                  {expandedClients[client.id] ? "Read Less" : "Read More"}
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-300 ${
+                      expandedClients[client.id] ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Result */}
+                <div className="mb-4 pt-4 border-t border-[#A3AD5F]/20">
+                  <p className="text-[#A3AD5F] font-semibold text-sm">
+                    {client.result}
+                  </p>
+                </div>
+
+                {/* Client Name */}
+                <h4 className="text-[#2E2A26] font-semibold text-lg">
+                  {client.name}
+                </h4>
+              </div>
             </motion.div>
           ))}
         </motion.div>
@@ -85,32 +205,6 @@ export default function RealResults() {
         </p>
 
         {/* Reviews CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.6, duration: 0.8 }}
-          className="bg-gradient-to-br from-[#A3AD5F]/10 to-[#5B544D]/10 rounded-3xl p-12 text-center border border-[#A3AD5F]/20"
-        >
-          <div className="max-w-2xl mx-auto">
-            <Star
-              className="w-20 h-20 text-[#A3AD5F] mx-auto mb-6"
-              strokeWidth={1.5}
-            />
-            <h3 className="text-3xl font-light text-[#2E2A26] mb-4">
-              Read What Clients Say
-            </h3>
-            <p className="text-[#5B544D] mb-8 leading-relaxed">
-              See verified feedback from clients who have used our meals and
-              coaching services.
-            </p>
-            <Link
-              href="/reviews"
-              className="inline-block bg-[#A3AD5F] text-[#2E2A26] px-10 py-4 rounded-full text-lg font-semibold hover:shadow-2xl hover:scale-105 transition-all duration-300"
-            >
-              View Google Reviews
-            </Link>
-          </div>
-        </motion.div>
 
         {/* Testimonial Quote */}
         <motion.div
@@ -118,9 +212,7 @@ export default function RealResults() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.8, duration: 0.8 }}
           className="mt-16 max-w-4xl mx-auto"
-        >
-         
-        </motion.div>
+        ></motion.div>
       </div>
     </section>
   );

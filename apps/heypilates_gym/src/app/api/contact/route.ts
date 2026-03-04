@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "next-sanity";
 import { apiVersion, dataset, projectId } from "@/sanity/env";
+import { Resend } from "resend";
 
 const contactSchema = z.object({
   name: z.string().min(1),
@@ -13,6 +14,9 @@ const contactSchema = z.object({
 
 export async function POST(req: Request) {
   const token = process.env.SANITY_API_WRITE_TOKEN;
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const businessEmail = process.env.BUSINESS_EMAIL || "hello@heypilates.com";
+  const fromEmail = process.env.FROM_EMAIL || "onboarding@resend.dev";
 
   if (!token) {
     return NextResponse.json(
@@ -41,6 +45,7 @@ export async function POST(req: Request) {
     useCdn: false,
   });
 
+  // Save to Sanity
   const created = await sanityClient.create({
     _type: "contactMessage",
     name,
@@ -52,5 +57,47 @@ export async function POST(req: Request) {
     status: "new",
   });
 
-  return NextResponse.json({ ok: true, id: created?._id });
+  // Send email notification
+  let emailSent = false;
+  let emailError = null;
+  if (resendApiKey) {
+    try {
+      const resend = new Resend(resendApiKey);
+      
+      console.log("Sending email from:", fromEmail, "to:", businessEmail);
+      
+      const response = await resend.emails.send({
+        from: fromEmail,
+        to: businessEmail,
+        subject: `New Contact Form Submission from ${name}`,
+        html: `
+          <h2>New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ""}
+          <p><strong>Source:</strong> ${source || "contact-page"}</p>
+          <p><strong>Message:</strong></p>
+          <p>${message.replace(/\n/g, "<br>")}</p>
+          <hr>
+          <p><small>Submitted at: ${new Date().toLocaleString()}</small></p>
+        `,
+      });
+      
+      console.log("Email response:", response);
+      emailSent = !response.error;
+      if (response.error) {
+        emailError = response.error;
+      }
+    } catch (err) {
+      console.error("Failed to send email:", err);
+      emailError = err instanceof Error ? err.message : String(err);
+    }
+  }
+
+  return NextResponse.json({ 
+    ok: true, 
+    id: created?._id,
+    emailSent,
+    emailError: emailError || undefined
+  });
 }
