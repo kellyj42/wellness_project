@@ -364,7 +364,7 @@ export default function ProgramsPage() {
               rel="noopener noreferrer"
               className="inline-block bg-[#A3AD5F] text-[#2E2A26] px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#B8C474] hover:shadow-2xl hover:scale-105 transition-all duration-300"
             >
-              Order Breakfast Plan via WhatsApp
+              Order Breakfast Plan Now
             </Link>
           </div>
         </div>
@@ -502,7 +502,7 @@ export default function ProgramsPage() {
               rel="noopener noreferrer"
               className="inline-block bg-[#A3AD5F] text-[#2E2A26] px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#B8C474] hover:shadow-2xl hover:scale-105 transition-all duration-300"
             >
-              Order Lunch Plan via WhatsApp
+              Order Lunch Plan Now
             </Link>
           </div>
         </div>
@@ -717,7 +717,7 @@ export default function ProgramsPage() {
               rel="noopener noreferrer"
               className="inline-block border-2 border-[#A3AD5F] text-[#A3AD5F] px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#A3AD5F] hover:text-[#2E2A26] transition-all duration-300"
             >
-              Order via WhatsApp
+              Order Now
             </Link>
           </div>
         </div>
