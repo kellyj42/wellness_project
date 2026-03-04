@@ -127,7 +127,7 @@ export default function WhoWeAre() {
 
             <motion.div variants={itemVariants} className="pt-6 space-y-2">
               <p className="text-lg font-semibold text-[#2E2A26]">
-                We are not just a café.
+                We are not just a brand.
               </p>
               <p className="text-xl font-bold text-[#A3AD5F]">
                 We are your partner in healthy living.
