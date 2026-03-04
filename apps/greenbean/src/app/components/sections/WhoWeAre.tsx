@@ -46,7 +46,7 @@ export default function WhoWeAre() {
           <motion.div variants={itemVariants} className="relative">
             <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl">
               <Image
-                src="/unnamed.jpg"
+                src="/images/unnamed.jpg"
                 alt="Green Bean healthy kitchen"
                 fill
                 className="object-cover"
