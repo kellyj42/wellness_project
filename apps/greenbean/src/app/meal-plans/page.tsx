@@ -172,7 +172,9 @@ export default function MealPlanPage() {
                   )}
 
                   <Link
-                    href="https://wa.me/256781719687"
+                    href={`https://wa.me/256781719687?text=${encodeURIComponent(
+                      `Hi Green Bean! I clicked 'Order via WhatsApp' for the ${plan.name} on the Meal Plans page. Please share full plan details, pricing options, and how to subscribe.`,
+                    )}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`block w-full text-center py-3 rounded-full font-semibold transition-all duration-300 ${
@@ -218,7 +220,9 @@ export default function MealPlanPage() {
                 </h3>
                 <p className="text-[#5B544D] mb-4">{plan.description}</p>
                 <Link
-                  href="https://wa.me/256781719687"
+                  href={`https://wa.me/256781719687?text=${encodeURIComponent(
+                    `Hi Green Bean! I clicked 'Order via WhatsApp' for the ${plan.name} in the Lunch Plans section on the Meal Plans page. I'd like to order this lunch plan and confirm pricing and start date.`,
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center text-[#A3AD5F] font-semibold hover:text-[#8A9450] transition-colors"
@@ -259,7 +263,9 @@ export default function MealPlanPage() {
                 </h3>
                 <p className="text-[#5B544D] mb-4">{plan.description}</p>
                 <Link
-                  href="https://wa.me/256781719687"
+                  href={`https://wa.me/256781719687?text=${encodeURIComponent(
+                    `Hi Green Bean! I clicked 'Order via WhatsApp' for the ${plan.name} in the Breakfast Plans section on the Meal Plans page. I'd like to order this breakfast plan and confirm pricing and start date.`,
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center text-[#A3AD5F] font-semibold hover:text-[#8A9450] transition-colors"
@@ -288,7 +294,9 @@ export default function MealPlanPage() {
                 <li>• Reset Programs</li>
               </ul>
               <Link
-                href="https://wa.me/256781719687"
+                href={`https://wa.me/256781719687?text=${encodeURIComponent(
+                  "Hi Green Bean! I clicked 'Order via WhatsApp' in the Detox Plans section on the Meal Plans page. I'm interested in your detox options and would like package details, pricing, and start dates.",
+                )}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-[#2E2A26] text-[#F5F3EE] px-8 py-3 rounded-full font-semibold hover:bg-[#1A1714] transition-all duration-300"
@@ -315,7 +323,9 @@ export default function MealPlanPage() {
                   View Menu
                 </Link>
                 <Link
-                  href="https://wa.me/256781719687"
+                  href={`https://wa.me/256781719687?text=${encodeURIComponent(
+                    "Hi Green Bean! I clicked 'Order via WhatsApp' in the Daily Takeaways section on the Meal Plans page. I'd like to order from your daily healthy takeaways and need today's options plus delivery/pickup details.",
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block border-2 border-[#2E2A26] text-[#2E2A26] px-8 py-3 rounded-full font-semibold hover:bg-[#2E2A26] hover:text-[#F5F3EE] transition-all duration-300"
@@ -339,7 +349,9 @@ export default function MealPlanPage() {
             start process. Contact us to get started today.
           </p>
           <Link
-            href="https://wa.me/256781719687"
+            href={`https://wa.me/256781719687?text=${encodeURIComponent(
+              "Hi Green Bean! I clicked the final 'Order via WhatsApp' CTA on the Meal Plans page. I'd like help choosing the best plan for my goals and understanding pricing and onboarding steps.",
+            )}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-[#A3AD5F] text-[#2E2A26] px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#B8C474] hover:shadow-2xl hover:scale-105 transition-all duration-300"

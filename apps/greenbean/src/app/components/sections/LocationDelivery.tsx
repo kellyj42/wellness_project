@@ -26,7 +26,9 @@ export default function LocationDelivery() {
 Reach out to us via What’s App to place an order 
       `,
       cta: "Contact us",
-      link: "https://wa.me/256781719687",
+      link: `https://wa.me/256781719687?text=${encodeURIComponent(
+        "Hi Green Bean! I clicked 'Contact us' in the Location & Delivery section. I want to order healthy meals for delivery. Please share today's menu options, delivery areas, pricing, and how to place my order.",
+      )}`,
     },
     {
       icon: Package,
@@ -131,7 +133,7 @@ Reach out to us via What’s App to place an order
             {/* Left - Location Info */}
             <div className="p-12 flex flex-col justify-center">
               <h3 className="text-3xl md:text-4xl font-light mb-6">
-                GET  <span className="text-[#A3AD5F]"> IN  TOUCH</span>
+                GET <span className="text-[#A3AD5F]"> IN TOUCH</span>
               </h3>
               <div className="space-y-6 mb-8">
                 <div className="flex items-start gap-4">
@@ -169,13 +171,16 @@ Reach out to us via What’s App to place an order
                       Contact us for delivery or get guidance on a meal plan
                     </div>
                     <Link
-                      href="https://wa.me/256781719687"
+                      href={`https://wa.me/256781719687?text=${encodeURIComponent(
+                        "Hi Green Bean! I clicked the delivery and meal plan guidance WhatsApp link in the Location section. I need help choosing the right meal plan and understanding delivery options.",
+                      )}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[#A3AD5F] hover:underline"
                     >
-                      Call or whats app <strong>+256 781 719 687 </strong>Our customer service
-                      and food deliveries are available in the hour below
+                      Call or whats app <strong>+256 781 719 687 </strong>Our
+                      customer service and food deliveries are available in the
+                      hour below
                     </Link>
                     <ul className="ml-4">
                       <li>~ Monday to Friday 8 am - 5 pm </li>
@@ -196,7 +201,9 @@ Reach out to us via What’s App to place an order
                   Get Directions
                 </Link>
                 <Link
-                  href="https://wa.me/256781719687"
+                  href={`https://wa.me/256781719687?text=${encodeURIComponent(
+                    "Hi Green Bean! I clicked 'WhatsApp Order' in the Location section. I'd like to place an order and confirm pickup/delivery timing.",
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="border border-[#A3AD5F] text-[#F5F3EE] px-8 py-4 rounded-full font-semibold hover:bg-[#A3AD5F] hover:text-[#2E2A26] transition-all duration-300"

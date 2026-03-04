@@ -79,7 +79,9 @@ export default function FinalCTA() {
           </Link>
 
           <Link
-            href="https://wa.me/256781719687"
+            href={`https://wa.me/256781719687?text=${encodeURIComponent(
+              "Hi Green Bean! I clicked 'Order via WhatsApp' in the  homepage. I'm ready to get started and would like help choosing the best meal plan for my goal, plus pricing and next steps.",
+            )}`}
             target="_blank"
             rel="noopener noreferrer"
             className="border-2 border-[#2E2A26] text-[#2E2A26] px-10 py-5 rounded-full text-lg font-semibold hover:bg-[#2E2A26] hover:text-[#F5F3EE] transition-all duration-300 hover:shadow-lg"

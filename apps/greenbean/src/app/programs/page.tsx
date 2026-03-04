@@ -357,7 +357,9 @@ export default function ProgramsPage() {
           {/* Breakfast CTA */}
           <div className="text-center mt-10">
             <Link
-              href="https://wa.me/256781719687?text=I'm%20interested%20in%20a%20breakfast%20plan"
+              href={`https://wa.me/256781719687?text=${encodeURIComponent(
+                "Hi Green Bean! I clicked 'Order Breakfast Plan via WhatsApp' on the Programs page. I'm interested in a breakfast plan and want help choosing between High Protein, High Protein Vegetarian, and Low Carb options. Please share weekly menu details, pricing, and subscription options.",
+              )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-[#A3AD5F] text-[#2E2A26] px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#B8C474] hover:shadow-2xl hover:scale-105 transition-all duration-300"
@@ -493,7 +495,9 @@ export default function ProgramsPage() {
           {/* Lunch CTA */}
           <div className="text-center mt-10">
             <Link
-              href="https://wa.me/256781719687?text=I'm%20interested%20in%20a%20lunch%20plan"
+              href={`https://wa.me/256781719687?text=${encodeURIComponent(
+                "Hi Green Bean! I clicked 'Order Lunch Plan via WhatsApp' on the Programs page. I'm interested in a lunch plan and want help choosing between High Protein, High Protein Vegetarian, and Low Carb options. Please share weekly menu details, pricing, and subscription options.",
+              )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-[#A3AD5F] text-[#2E2A26] px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#B8C474] hover:shadow-2xl hover:scale-105 transition-all duration-300"
@@ -706,7 +710,9 @@ export default function ProgramsPage() {
               Explore Lunch Plans
             </Link>
             <Link
-              href="https://wa.me/256781719687"
+              href={`https://wa.me/256781719687?text=${encodeURIComponent(
+                "Hi Green Bean! I clicked 'Order via WhatsApp' in the final CTA on the Programs page. I'm ready to start but need help selecting the best program for my goals and understanding pricing and next steps.",
+              )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block border-2 border-[#A3AD5F] text-[#A3AD5F] px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#A3AD5F] hover:text-[#2E2A26] transition-all duration-300"

@@ -57,7 +57,9 @@ export default function CoachingPackages() {
                 150,000 UGX
               </span>
               <a
-                href="https://wa.me/256772774512"
+                href={`https://wa.me/256772774512?text=${encodeURIComponent(
+                  "Hi Green Bean! I clicked 'Book via WhatsApp' for the Single Strategy Session (150,000 UGX) on the Coaching Packages section. I'd like to book this session and know the next available slots.",
+                )}`}
                 className="inline-flex items-center gap-2 bg-[#6E7A3C] text-white px-6 py-3 rounded-full font-medium hover:bg-[#5A6630] transition shadow-md hover:shadow-lg"
               >
                 Book via WhatsApp
@@ -108,7 +110,9 @@ export default function CoachingPackages() {
                 600,000 UGX
               </span>
               <a
-                href="https://wa.me/256777615775"
+                href={`https://wa.me/256777615775?text=${encodeURIComponent(
+                  "Hi Green Bean! I clicked 'Start Transformation' for the 4-Session Transformation Package (600,000 UGX) on the Coaching Packages section. I'd like to start this package and need details on scheduling and onboarding.",
+                )}`}
                 className="inline-flex items-center gap-2 bg-[#6E7A3C] text-white px-6 py-3 rounded-full font-medium hover:bg-[#5A6630] transition shadow-md hover:shadow-lg"
               >
                 Start Transformation

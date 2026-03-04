@@ -143,7 +143,9 @@ export default function CorporateWellness() {
           className="text-center mt-16"
         >
           <a
-            href="https://wa.me/256777615775"
+            href={`https://wa.me/256777615775?text=${encodeURIComponent(
+              "Hi Klaudia! I clicked 'Inquire About Corporate Consulting' on the Corporate Wellness section. I'm interested in a corporate/hospitality wellness consultation and would like to discuss scope, pricing, and availability.",
+            )}`}
             className="inline-flex items-center gap-2 bg-[#A3AD5F] text-[#2E2A26] px-8 py-4 rounded-full font-medium hover:bg-[#B8C47A] transition shadow-lg hover:shadow-xl"
           >
             Inquire About Corporate Consulting

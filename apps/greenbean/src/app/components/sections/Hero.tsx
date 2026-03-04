@@ -172,7 +172,9 @@ export default function Hero() {
               Explore Menu
             </Link>
             <Link
-              href="https://wa.me/256781719687"
+              href={`https://wa.me/256781719687?text=${encodeURIComponent(
+                "Hi Green Bean! I clicked 'Order For Delivery' on the homepage. I want to place an order for delivery today. Please share today's available meals, delivery areas in Kampala, delivery fee, and estimated delivery time.",
+              )}`}
               target="_blank"
               className="group relative bg-[#A3AD5F] text-[#2E2A26] px-8 py-4 rounded-full text-sm font-semibold overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105"
             >
