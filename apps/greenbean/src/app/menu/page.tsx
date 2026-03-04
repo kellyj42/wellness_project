@@ -44,6 +44,10 @@ export default function MenuPage() {
   const [categories, setCategories] = useState<string[]>(["All"]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [menuPreview, setMenuPreview] = useState<{
+    src: string;
+    alt: string;
+  } | null>(null);
 
   useEffect(() => {
     async function fetchMenuItems() {
@@ -81,6 +85,24 @@ export default function MenuPage() {
 
     fetchMenuItems();
   }, []);
+
+  // Handle ESC key to close preview
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMenuPreview(null);
+        document.body.style.overflow = "unset";
+      }
+    };
+    if (menuPreview) {
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [menuPreview]);
 
   const filteredItems = useMemo(() => {
     if (activeCategory === "All") {
@@ -180,12 +202,20 @@ export default function MenuPage() {
                   {/* Card Header with Image or Icon */}
                   <div className="relative h-40 bg-gradient-to-br from-[#E8ECCf] to-[#D9D4CB] flex items-center justify-center overflow-hidden">
                     {imageUrl ? (
-                      <Image
-                        src={imageUrl}
-                        alt={item.name}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
+                      <button
+                        onClick={() =>
+                          setMenuPreview({ src: imageUrl, alt: item.name })
+                        }
+                        className="relative w-full h-full cursor-pointer hover:opacity-90 transition-opacity"
+                        aria-label={`Expand image for ${item.name}`}
+                      >
+                        <Image
+                          src={imageUrl}
+                          alt={item.name}
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                      </button>
                     ) : (
                       <>
                         <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-300" />
@@ -256,6 +286,54 @@ export default function MenuPage() {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* Image Preview Modal */}
+      {menuPreview && (
+        <div
+          onClick={() => {
+            setMenuPreview(null);
+            document.body.style.overflow = "unset";
+          }}
+          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
+        >
+          <div className="relative max-w-4xl max-h-[90vh] w-full">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setMenuPreview(null);
+                document.body.style.overflow = "unset";
+              }}
+              className="absolute -top-12 right-0 text-white hover:text-[#A3AD5F] transition-colors z-50"
+              aria-label="Close preview"
+            >
+              <svg
+                className="w-8 h-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+            <div
+              className="relative w-full h-full min-h-[400px]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={menuPreview.src}
+                alt={menuPreview.alt}
+                fill
+                className="object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
