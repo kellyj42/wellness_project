@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { Leaf, Bike } from "lucide-react";
+import { Leaf, Bike, MessageCircle } from "lucide-react";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -165,13 +165,27 @@ export default function Hero() {
               Start a Weight Loss Plan
             </Link>
 
-           
-
             <Link
               href="/menu"
               className="border border-[#A3AD5F] px-8 py-4 rounded-full text-sm font-semibold transition-all duration-300 hover:bg-[#A3AD5F] hover:text-[#2E2A26] hover:shadow-lg"
             >
               Explore Menu
+            </Link>
+            <Link
+              href="https://wa.me/256781719687"
+              target="_blank"
+              className="group relative bg-[#A3AD5F] text-[#2E2A26] px-8 py-4 rounded-full text-sm font-semibold overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105"
+            >
+              <span className="relative z-10 flex gap-1 items-center">
+                <MessageCircle />
+                Order For Delivery
+              </span>
+              <motion.span
+                className="absolute inset-0 bg-white/30"
+                initial={{ scale: 0, x: "100%" }}
+                whileHover={{ scale: 2, x: 0 }}
+                transition={{ duration: 0.5, ease: [0.2, 1, 0.3, 1] }}
+              />
             </Link>
           </motion.div>
 
@@ -221,8 +235,6 @@ export default function Hero() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#5B544D]/60 via-transparent to-transparent" />
           </motion.div>
 
-          
-
           {/* Decorative rotating element */}
           <motion.div
             animate={{ rotate: 360 }}
@@ -235,7 +247,6 @@ export default function Hero() {
       </div>
 
       {/* ===== SCROLL INDICATOR ===== */}
-      
     </section>
   );
 }
