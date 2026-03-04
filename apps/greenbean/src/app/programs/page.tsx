@@ -58,7 +58,7 @@ Low Carb Breakfast Plan weekly menu
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Coffee,
   UtensilsCrossed,
@@ -66,10 +66,34 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
+  X,
 } from "lucide-react";
 
 export default function ProgramsPage() {
   const [activePlan, setActivePlan] = useState<string | null>(null);
+  const [menuPreview, setMenuPreview] = useState<{
+    src: string;
+    alt: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!menuPreview) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuPreview(null);
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [menuPreview]);
 
   // Breakfast Plans Data
   const breakfastPlans = [
@@ -305,13 +329,25 @@ export default function ProgramsPage() {
                     transition={{ duration: 0.3 }}
                     className="border-t border-[#A3AD5F]/20"
                   >
-                    <div className="relative aspect-square">
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setMenuPreview({
+                          src: plan.image,
+                          alt: `${plan.title} Weekly Menu`,
+                        });
+                      }}
+                      className="relative block w-full aspect-square cursor-zoom-in"
+                      aria-label={`Preview ${plan.title} weekly menu`}
+                    >
                       <Image
                         src={plan.image}
                         alt={`${plan.title} Weekly Menu`}
                         fill
+                        className="object-cover"
                       />
-                    </div>
+                    </button>
                   </motion.div>
                 )}
               </motion.div>
@@ -429,14 +465,25 @@ export default function ProgramsPage() {
                     transition={{ duration: 0.3 }}
                     className="border-t border-[#A3AD5F]/20"
                   >
-                    <div className="relative aspect-square">
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setMenuPreview({
+                          src: plan.image,
+                          alt: `${plan.title} Weekly Menu`,
+                        });
+                      }}
+                      className="relative block w-full aspect-square cursor-zoom-in"
+                      aria-label={`Preview ${plan.title} weekly menu`}
+                    >
                       <Image
                         src={plan.image}
                         alt={`${plan.title} Weekly Menu`}
                         fill
-                        className=""
+                        className="object-cover"
                       />
-                    </div>
+                    </button>
                   </motion.div>
                 )}
               </motion.div>
@@ -669,6 +716,40 @@ export default function ProgramsPage() {
           </div>
         </div>
       </section>
+
+      {menuPreview && (
+        <div
+          className="fixed inset-0 z-[120] bg-black/85 backdrop-blur-sm p-4 md:p-8"
+          onClick={() => setMenuPreview(null)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2 }}
+            className="relative max-w-5xl w-full h-full mx-auto flex items-center justify-center"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setMenuPreview(null)}
+              className="absolute top-2 right-2 z-10 p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
+              aria-label="Close image preview"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="relative w-full h-[85vh]">
+              <Image
+                src={menuPreview.src}
+                alt={menuPreview.alt}
+                fill
+                className="object-contain rounded-2xl"
+                priority
+              />
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }
