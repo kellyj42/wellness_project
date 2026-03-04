@@ -269,13 +269,13 @@ export default function MenuPage() {
                       </span>
                       <a
                         href={`https://wa.me/256781719687?text=${encodeURIComponent(
-                          `Hi Green Bean! I clicked 'Order via WhatsApp' for ${item.name} on the Menu page. Category: ${item.category}. Price shown: UGX ${item.price.toLocaleString()}. I'd like to order this item. Please confirm availability and delivery/pickup options.`,
+                          `Hi Green Bean! I clicked 'Order via WhatsApp' for ${item.name} on the Menu page. Category: ${item.category}. Price shown: UGX ${item.price.toLocaleString()}. I'd like to order this item. Please confirm availability and delivery.`,
                         )}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-1 text-sm font-medium text-[#6E7A3C] hover:text-[#4A5522] transition-colors group/btn"
                       >
-                        Order via WhatsApp
+                        Order Now
                         <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                       </a>
                     </div>

@@ -711,7 +711,7 @@ export default function ProgramsPage() {
             </Link>
             <Link
               href={`https://wa.me/256781719687?text=${encodeURIComponent(
-                "Hi Green Bean! I clicked 'Order via WhatsApp' in the final CTA on the Programs page. I'm ready to start but need help selecting the best program for my goals and understanding pricing and next steps.",
+                "Hi Green Bean! I clicked 'Order via WhatsApp'  on the Programs page. I'm ready to start but need help selecting the best program for my meal plan goals and understanding pricing and next steps.",
               )}`}
               target="_blank"
               rel="noopener noreferrer"

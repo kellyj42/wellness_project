@@ -27,7 +27,7 @@ Reach out to us via What’s App to place an order
       `,
       cta: "Contact us",
       link: `https://wa.me/256781719687?text=${encodeURIComponent(
-        "Hi Green Bean! I clicked 'Contact us' in the Location & Delivery section. I want to order healthy meals for delivery. Please share today's menu options, delivery areas, pricing, and how to place my order.",
+        "Hi Green Bean! I clicked 'Contact us' in the Location & Delivery section. I want to order healthy meals for delivery. Please share today's menu .",
       )}`,
     },
     {
@@ -202,7 +202,7 @@ Reach out to us via What’s App to place an order
                 </Link>
                 <Link
                   href={`https://wa.me/256781719687?text=${encodeURIComponent(
-                    "Hi Green Bean! I clicked 'WhatsApp Order' in the Location section. I'd like to place an order and confirm pickup/delivery timing.",
+                    "Hi Green Bean! I clicked 'WhatsApp Order' in the Location section. I'd like to place an order and confirm delivery timing.",
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"

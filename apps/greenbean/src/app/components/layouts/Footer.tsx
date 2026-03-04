@@ -110,7 +110,7 @@ export default function Footer() {
 
           <a
             href={`https://wa.me/256772774512?text=${encodeURIComponent(
-              "Hi Green Bean! I clicked 'Chat on WhatsApp' from the footer. I'd like guidance on the best meal plan/coaching option for my goals and how to get started.",
+              "Hi Green Bean! I clicked 'Chat on WhatsApp' from the website. I'd like guidance on the best meal plan/coaching option for my goals and how to get started.",
             )}`}
             className="inline-block bg-[#A3AD5F] text-[#2E2A26] px-6 py-3 rounded-full text-sm font-medium hover:scale-105 transition-transform duration-300"
           >

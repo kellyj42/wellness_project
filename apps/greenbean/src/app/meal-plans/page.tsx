@@ -324,7 +324,7 @@ export default function MealPlanPage() {
                 </Link>
                 <Link
                   href={`https://wa.me/256781719687?text=${encodeURIComponent(
-                    "Hi Green Bean! I clicked 'Order via WhatsApp' in the Daily Takeaways section on the Meal Plans page. I'd like to order from your daily healthy takeaways and need today's options plus delivery/pickup details.",
+                    "Hi Green Bean! I clicked 'Order via WhatsApp' in the Daily Takeaways section on the Meal Plans page. I'd like to order from your daily healthy takeaways and need today's options plus delivery.",
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -350,7 +350,7 @@ export default function MealPlanPage() {
           </p>
           <Link
             href={`https://wa.me/256781719687?text=${encodeURIComponent(
-              "Hi Green Bean! I clicked the final 'Order via WhatsApp' CTA on the Meal Plans page. I'd like help choosing the best plan for my goals and understanding pricing and onboarding steps.",
+              "Hi Green Bean! I clicked the  'Order via WhatsApp' on the Meal Plans page. I'd like help choosing the best plan for my goals and understanding pricing and onboarding steps.",
             )}`}
             target="_blank"
             rel="noopener noreferrer"
