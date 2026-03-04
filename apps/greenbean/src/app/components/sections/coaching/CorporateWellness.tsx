@@ -63,7 +63,7 @@ export default function CorporateWellness() {
             <div className="bg-[#26221F] p-6 rounded-3xl border border-[#4A433C] shadow-[0_20px_50px_-30px_rgba(0,0,0,0.8)] space-y-6">
               <div className="flex flex-col md:flex-row items-start gap-5">
                 <img
-                  src="/french.jpg"
+                  src="/projects/french.jpg"
                   alt="The French School of Kampala"
                   className="w-full md:w-52 h-48 rounded-2xl object-cover flex-shrink-0 ring-1 ring-[#4A433C]"
                 />
@@ -97,7 +97,7 @@ export default function CorporateWellness() {
               <div className="h-px bg-[#3C3630]" />
               <div className="flex flex-col md:flex-row items-start gap-5">
                 <img
-                  src="/chameleon.jpg"
+                  src="/projects/chameleon.jpg"
                   alt="Chameleon Hill Lodge"
                   className="w-full md:w-52 h-48 rounded-2xl object-cover flex-shrink-0 ring-1 ring-[#4A433C]"
                 />
