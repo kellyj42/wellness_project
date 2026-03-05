@@ -206,7 +206,7 @@ export default function ProgramsPage() {
             transition={{ duration: 0.6 }}
             className="mb-12 max-w-4xl mx-auto"
           >
-            <div className="relative aspect-[3/4] -right-[250] h-[500] rounded-3xl  overflow-hidden shadow-2xl border-2 border-[#A3AD5F]/20">
+            <div className="relative aspect-[3/4] lg:-right-[250] h-[500] rounded-3xl  overflow-hidden shadow-2xl border-2 border-[#A3AD5F]/20">
               <Image
                 src={categoryImages.breakfastOverview}
                 alt="Choose Your Breakfast Plan"
@@ -344,7 +344,7 @@ export default function ProgramsPage() {
             transition={{ duration: 0.6 }}
             className="mb-12 max-w-4xl mx-auto"
           >
-            <div className="relative aspect-[3/4] -right-[250] h-[500] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#A3AD5F]/20">
+            <div className="relative aspect-[3/4] lg:-right-[250] h-[500] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#A3AD5F]/20">
               <Image
                 src={categoryImages.lunchOverview}
                 alt="Choose Your Lunch Plan"
