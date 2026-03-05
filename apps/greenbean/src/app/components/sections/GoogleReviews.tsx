@@ -51,8 +51,8 @@ export default function GoogleReviews() {
     fetchReviews();
   }, []);
 
-  // Show only first 6 reviews on homepage
-  const reviews = reviewsData?.reviews.slice(0, 6) || [];
+  // Show only first 3 reviews on homepage
+  const reviews = reviewsData?.reviews.slice(0, 3) || [];
   const rating = reviewsData?.rating || 4.9;
   const totalReviews = reviewsData?.totalReviews || 0;
 

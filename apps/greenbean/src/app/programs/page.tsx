@@ -1,59 +1,6 @@
 "use client";
 
-/*
-PROGRAMS PAGE STRUCTURE
 
-Goal:
-This page introduces all Green Bean meal programs.
-
-We have TWO main categories of programs:
-
-1️⃣ Breakfast Programs
-   - High Protein Breakfast Plan
-   - High Protein Vegetarian Breakfast Plan
-   - Low Carb Breakfast Plan
-
-2️⃣ Lunch Programs
-   - High Protein Lunch Plan
-   - High Protein Vegetarian Lunch Plan
-   - Low Carb Lunch Plan
-
-Each category has an overview poster and individual plan cards that expand
-to show the weekly menu when clicked.
-*/
-
-/*
-IMAGE STRUCTURE (public/programmes)
-
-LUNCH PLANS
-
-/programmes/1.jpeg
-Lunch overview poster (Choose your lunch plan)
-
-/programmes/4.jpeg
-High Protein Lunch Plan weekly menu
-
-/programmes/2.jpeg
-High Protein Vegetarian Lunch Plan weekly menu
-
-/programmes/3.jpeg
-Low Carb Lunch Plan weekly menu
-
-
-BREAKFAST PLANS
-
-/programmes/8.jpeg
-Breakfast overview poster (Choose your breakfast plan)
-
-/programmes/5.jpeg
-High Protein Breakfast Plan weekly menu
-
-/programmes/6.jpeg
-High Protein Vegetarian Breakfast Plan weekly menu
-
-/programmes/7.jpeg
-Low Carb Breakfast Plan weekly menu
-*/
 
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -261,7 +208,7 @@ export default function ProgramsPage() {
             transition={{ duration: 0.6 }}
             className="mb-12 max-w-4xl mx-auto"
           >
-            <div className="relative aspect-[4/5] rounded-3xl  overflow-hidden shadow-2xl border-2 border-[#A3AD5F]/20">
+            <div className="relative aspect-[3/4] -right-[250] h-[500] rounded-3xl  overflow-hidden shadow-2xl border-2 border-[#A3AD5F]/20">
               <Image
                 src={categoryImages.breakfastOverview}
                 alt="Choose Your Breakfast Plan"
@@ -399,7 +346,7 @@ export default function ProgramsPage() {
             transition={{ duration: 0.6 }}
             className="mb-12 max-w-4xl mx-auto"
           >
-            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#A3AD5F]/20">
+            <div className="relative aspect-[3/4] -right-[250] h-[500] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#A3AD5F]/20">
               <Image
                 src={categoryImages.lunchOverview}
                 alt="Choose Your Lunch Plan"

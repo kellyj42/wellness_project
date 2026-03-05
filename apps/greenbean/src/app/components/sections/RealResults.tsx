@@ -125,7 +125,7 @@ Ritika has been working on her fitness journey and has done Detox juice plans, d
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.3, duration: 0.8 }}
-          className="grid md:grid-cols-3 gap-8 mb-16"
+          className="grid md:grid-cols-4 gap-8 mb-16"
         >
           {clients.map((client, index) => (
             <motion.div
