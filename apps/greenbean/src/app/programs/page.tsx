@@ -1,7 +1,5 @@
 "use client";
 
-
-
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
@@ -620,7 +618,7 @@ export default function ProgramsPage() {
               structure and support to help you succeed.
             </p>
             <Link
-              href="/reviews"
+              href="/reviews#client-reviews"
               className="inline-block bg-[#2E2A26] text-[#F5F3EE] px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#1A1714] hover:shadow-2xl transition-all duration-300"
             >
               Read Client Reviews

@@ -321,7 +321,7 @@ export default function ReviewsPage() {
       </section>
 
       {/* Recent Reviews */}
-      <section ref={ref} className="py-20 bg-[#F5F3EE]">
+      <section id="client-reviews" ref={ref} className="py-20 bg-[#F5F3EE]">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
