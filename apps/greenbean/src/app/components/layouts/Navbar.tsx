@@ -69,6 +69,12 @@ export default function Navbar() {
             <div key={link.href} className="relative group">
               <Link
                 href={link.href}
+                target={link.label === "HeyPilates" ? "_blank" : undefined}
+                rel={
+                  link.label === "HeyPilates"
+                    ? "noopener noreferrer"
+                    : undefined
+                }
                 className={`px-2 py-1 inline-block transition-all duration-200
                   ${
                     isActive(link.href)
@@ -141,6 +147,12 @@ export default function Navbar() {
             <div key={link.href}>
               <Link
                 href={link.href}
+                target={link.label === "HeyPilates" ? "_blank" : undefined}
+                rel={
+                  link.label === "HeyPilates"
+                    ? "noopener noreferrer"
+                    : undefined
+                }
                 className={`
                   block py-2 text-sm transition-colors
                   ${
