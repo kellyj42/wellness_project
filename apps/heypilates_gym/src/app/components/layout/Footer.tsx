@@ -33,26 +33,7 @@ export default function Footer() {
               Transformative movement experiences in the heart of Kampala.
               Building strength, balance, and community.
             </p>
-            <div className="flex gap-4">
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-brand-sageLight flex items-center justify-center hover:bg-brand-sage transition"
-              >
-                <Instagram className="w-5 h-5 text-brand-sageDark" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-brand-sageLight flex items-center justify-center hover:bg-brand-sage transition"
-              >
-                <Facebook className="w-5 h-5 text-brand-sageDark" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-brand-sageLight flex items-center justify-center hover:bg-brand-sage transition"
-              >
-                <Mail className="w-5 h-5 text-brand-sageDark" />
-              </a>
-            </div>
+          
           </div>
 
           {/* Quick Links */}
@@ -142,18 +123,17 @@ export default function Footer() {
                   Kampala, Uganda
                   <br />
                   <span className="text-sm">
-                    (Exact address shared upon booking)
+                   Plot 18 Bandali rise, bugolobi-kampala 
                   </span>
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-brand-sageDark jj-shrink-0" />
-                <a
-                  href="tel:+256XXXXXXXXX"
+                <p
                   className="text-brand-muted hover:text-brand-sageDark transition"
                 >
-                  +256 XXX XXX XXX
-                </a>
+                  +256 749103139
+                </p>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-brand-sageDark flex-shrink-0" />
@@ -161,7 +141,7 @@ export default function Footer() {
                   href="mailto:hello@heypilates.com"
                   className="text-brand-muted hover:text-brand-sageDark transition"
                 >
-                  hello@heypilates.com
+                  heypilatesstudio@gmail.com
                 </a>
               </li>
             </ul>

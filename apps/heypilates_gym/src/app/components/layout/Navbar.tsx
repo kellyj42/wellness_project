@@ -74,12 +74,17 @@ export default function Navbar() {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Button
-              href="https://studiobookingonline.com/heypilates"
-              className="bg-brand-sageDark hover:bg-brand-sage text-white"
+            <Link
+              href={`https://wa.me/2567?text=${encodeURIComponent(
+                "Hi HeyPilates! I clicked 'Order via WhatsApp'  on the Programs page. I'm ready to start but need help selecting the best program for my meal plan goals and understanding pricing and next steps.",
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Book a Class
-            </Button>
+              <Button className="text-brand-charcoal hover:bg-brand-sageLight">
+                Book  Class
+              </Button>
+            </Link>
             <Button
               href="/events"
               variant="secondary"
