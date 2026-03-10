@@ -148,15 +148,9 @@ export default function PricingSection() {
               <h3 className="text-lg sm:text-xl font-bold text-brand-charcoal mb-1 sm:mb-2">
                 Happiness Guarantee
               </h3>
-              <p className="text-brand-muted text-sm sm:text-base">
-                Not satisfied with your first class? We'll give you a full refund or credit 
-                for another class.
-              </p>
+              
             </div>
-            <div className="text-center">
-              <div className="text-xl sm:text-2xl font-bold text-brand-sageDark mb-1">30-Day</div>
-              <div className="text-xs sm:text-sm text-gray-500">Money Back Guarantee</div>
-            </div>
+            
           </div>
         </div>
       </div>

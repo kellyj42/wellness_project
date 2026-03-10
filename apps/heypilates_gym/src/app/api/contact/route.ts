@@ -1,16 +1,8 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { createClient } from "next-sanity";
 import { apiVersion, dataset, projectId } from "@/sanity/env";
 import { Resend } from "resend";
-
-const contactSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  phone: z.string().optional(),
-  message: z.string().min(1),
-  source: z.string().optional(),
-});
+import { contactSchema } from "@/app/contact/contactSchema";
 
 export async function POST(req: Request) {
   const token = process.env.SANITY_API_WRITE_TOKEN;
@@ -21,7 +13,7 @@ export async function POST(req: Request) {
   if (!token) {
     return NextResponse.json(
       { error: "Missing SANITY_API_WRITE_TOKEN" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -30,8 +22,11 @@ export async function POST(req: Request) {
 
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid form data", issues: parsed.error.flatten() },
-      { status: 400 }
+      {
+        error: "Please provide valid contact details and a clear message.",
+        issues: parsed.error.flatten(),
+      },
+      { status: 400 },
     );
   }
 
@@ -45,7 +40,6 @@ export async function POST(req: Request) {
     useCdn: false,
   });
 
-  // Save to Sanity
   const created = await sanityClient.create({
     _type: "contactMessage",
     name,
@@ -57,15 +51,12 @@ export async function POST(req: Request) {
     status: "new",
   });
 
-  // Send email notification
   let emailSent = false;
   let emailError = null;
   if (resendApiKey) {
     try {
       const resend = new Resend(resendApiKey);
-      
-      console.log("Sending email from:", fromEmail, "to:", businessEmail);
-      
+
       const response = await resend.emails.send({
         from: fromEmail,
         to: businessEmail,
@@ -82,8 +73,7 @@ export async function POST(req: Request) {
           <p><small>Submitted at: ${new Date().toLocaleString()}</small></p>
         `,
       });
-      
-      console.log("Email response:", response);
+
       emailSent = !response.error;
       if (response.error) {
         emailError = response.error;
@@ -94,10 +84,10 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json({ 
-    ok: true, 
+  return NextResponse.json({
+    ok: true,
     id: created?._id,
     emailSent,
-    emailError: emailError || undefined
+    emailError: emailError || undefined,
   });
 }

@@ -13,6 +13,7 @@ import {
   Link,
 } from "lucide-react";
 import { LinkedinIcon } from "@sanity/icons";
+import { contactSchema, type ContactFormValues } from "@/app/contact/contactSchema";
 
 interface ContactFormProps {
   contactInfo?: {
@@ -28,26 +29,79 @@ interface ContactFormProps {
   };
 }
 
-export default function ContactForm({ contactInfo }: ContactFormProps) {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-  });
+type ContactField = keyof Omit<ContactFormValues, "source">;
+type ContactFieldErrors = Partial<Record<ContactField, string>>;
 
+const initialFormData: ContactFormValues = {
+  name: "",
+  email: "",
+  phone: "",
+  message: "",
+};
+
+export default function ContactForm({ contactInfo }: ContactFormProps) {
+  const [formData, setFormData] = useState<ContactFormValues>(initialFormData);
+  const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({});
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [warningMessage, setWarningMessage] = useState<string | null>(null);
 
+  const validateForm = (values: ContactFormValues) => {
+    const result = contactSchema.safeParse(values);
+
+    if (result.success) {
+      return { success: true as const, data: result.data, errors: {} };
+    }
+
+    const flattened = result.error.flatten().fieldErrors;
+    const nextErrors: ContactFieldErrors = {};
+
+    for (const [key, messages] of Object.entries(flattened)) {
+      const firstMessage = messages?.[0];
+      if (firstMessage && key !== "source") {
+        nextErrors[key as ContactField] = firstMessage;
+      }
+    }
+
+    return { success: false as const, errors: nextErrors };
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+
+    if (name !== "source") {
+      setFieldErrors((prev) => {
+        if (!prev[name as ContactField]) {
+          return prev;
+        }
+
+        const nextErrors = { ...prev };
+        delete nextErrors[name as ContactField];
+        return nextErrors;
+      });
+    }
+  };
+
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name } = e.target;
+    if (name === "source") {
+      return;
+    }
+
+    const validation = validateForm(formData);
+    setFieldErrors((prev) => ({
+      ...prev,
+      [name]: validation.errors[name as ContactField],
     }));
   };
 
@@ -58,6 +112,16 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
     setErrorMessage(null);
     setWarningMessage(null);
 
+    const validation = validateForm(formData);
+    if (!validation.success) {
+      setFieldErrors(validation.errors);
+      setErrorMessage("Please fix the highlighted fields and try again.");
+      setLoading(false);
+      return;
+    }
+
+    setFieldErrors({});
+
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -65,7 +129,7 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...formData,
+          ...validation.data,
           source: "contact-page",
         }),
       });
@@ -73,6 +137,19 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
       const responseData = await response.json().catch(() => null);
 
       if (!response.ok) {
+        if (responseData?.issues?.fieldErrors) {
+          const serverErrors: ContactFieldErrors = {};
+          for (const [key, messages] of Object.entries(
+            responseData.issues.fieldErrors,
+          )) {
+            const firstMessage = Array.isArray(messages) ? messages[0] : undefined;
+            if (firstMessage && key !== "source") {
+              serverErrors[key as ContactField] = firstMessage;
+            }
+          }
+          setFieldErrors(serverErrors);
+        }
+
         const message =
           responseData?.error || "Unable to send your message right now.";
         throw new Error(message);
@@ -85,9 +162,8 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
       }
 
       setSubmitted(true);
-      setFormData({ name: "", email: "", phone: "", message: "" });
+      setFormData(initialFormData);
 
-      // Reset success message after 5 seconds
       setTimeout(() => setSubmitted(false), 5000);
     } catch (error) {
       const message =
@@ -115,10 +191,16 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
     }
   };
 
+  const getInputClasses = (field: ContactField) =>
+    `w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${
+      fieldErrors[field]
+        ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
+        : "border-slate-300 focus:border-brand-pink focus:ring-brand-pink/20"
+    }`;
+
   return (
     <div className="min-h-screen bg-gradient-to-br  from-slate-50 to-slate-100 py-12 px-4">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl sm:text-5xl font-bold text-brand-charcoal mb-4">
             Get In Touch
@@ -129,14 +211,12 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-          {/* Contact Information */}
           <div className="space-y-8">
             <div>
               <h2 className="text-2xl font-bold text-brand-charcoal mb-8">
                 Contact Information.
               </h2>
 
-              {/* Email */}
               <div className="flex gap-4 mb-6">
                 <div className="flex-shrink-0">
                   <Mail className="w-6 h-6 text-brand-pink" />
@@ -152,7 +232,6 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
                 </div>
               </div>
 
-              {/* Phone */}
               <div className="flex gap-4 mb-6">
                 <div className="flex-shrink-0">
                   <Phone className="w-6 h-6 text-brand-pink" />
@@ -168,7 +247,6 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
                 </div>
               </div>
 
-              {/* Address */}
               <div className="flex gap-4 mb-6">
                 <div className="flex-shrink-0">
                   <MapPin className="w-6 h-6 text-brand-pink" />
@@ -182,7 +260,6 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
                 </div>
               </div>
 
-              {/* Hours */}
               <div className="flex gap-4">
                 <div className="flex-shrink-0">
                   <Clock className="w-6 h-6 text-brand-pink" />
@@ -197,7 +274,6 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
               </div>
             </div>
 
-            {/* Social Links */}
             {contactInfo?.socialLinks && contactInfo.socialLinks.length > 0 && (
               <div>
                 <h3 className="text-lg font-bold text-brand-charcoal mb-4">
@@ -221,7 +297,6 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
               </div>
             )}
 
-            {/* Map */}
             {contactInfo?.mapEmbed && (
               <div className="mt-8">
                 <h3 className="text-lg font-bold text-brand-charcoal mb-4">
@@ -242,7 +317,6 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
             )}
           </div>
 
-          {/* Contact Form */}
           <div>
             <div className="bg-white rounded-lg shadow-xl p-8">
               <h2 className="text-2xl font-bold text-brand-charcoal mb-6">
@@ -272,8 +346,7 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Name */}
+              <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                 <div>
                   <label
                     htmlFor="name"
@@ -287,12 +360,19 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:border-brand-pink focus:ring-2 focus:ring-brand-pink/20 transition"
+                    onBlur={handleBlur}
+                    className={getInputClasses("name")}
+                    aria-invalid={Boolean(fieldErrors.name)}
+                    aria-describedby={fieldErrors.name ? "name-error" : undefined}
                     required
                   />
+                  {fieldErrors.name && (
+                    <p id="name-error" className="mt-2 text-sm text-red-600">
+                      {fieldErrors.name}
+                    </p>
+                  )}
                 </div>
 
-                {/* Email */}
                 <div>
                   <label
                     htmlFor="email"
@@ -306,12 +386,20 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:border-brand-pink focus:ring-2 focus:ring-brand-pink/20 transition"
+                    onBlur={handleBlur}
+                    className={getInputClasses("email")}
+                    aria-invalid={Boolean(fieldErrors.email)}
+                    aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                    autoComplete="email"
                     required
                   />
+                  {fieldErrors.email && (
+                    <p id="email-error" className="mt-2 text-sm text-red-600">
+                      {fieldErrors.email}
+                    </p>
+                  )}
                 </div>
 
-                {/* Phone */}
                 <div>
                   <label
                     htmlFor="phone"
@@ -325,11 +413,19 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:border-brand-pink focus:ring-2 focus:ring-brand-pink/20 transition"
+                    onBlur={handleBlur}
+                    className={getInputClasses("phone")}
+                    aria-invalid={Boolean(fieldErrors.phone)}
+                    aria-describedby={fieldErrors.phone ? "phone-error" : undefined}
+                    autoComplete="tel"
                   />
+                  {fieldErrors.phone && (
+                    <p id="phone-error" className="mt-2 text-sm text-red-600">
+                      {fieldErrors.phone}
+                    </p>
+                  )}
                 </div>
 
-                {/* Message */}
                 <div>
                   <label
                     htmlFor="message"
@@ -342,14 +438,21 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     placeholder="Tell us what's on your mind..."
                     rows={5}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:border-brand-pink focus:ring-2 focus:ring-brand-pink/20 transition resize-none"
+                    className={`${getInputClasses("message")} resize-none`}
+                    aria-invalid={Boolean(fieldErrors.message)}
+                    aria-describedby={fieldErrors.message ? "message-error" : undefined}
                     required
                   ></textarea>
+                  {fieldErrors.message && (
+                    <p id="message-error" className="mt-2 text-sm text-red-600">
+                      {fieldErrors.message}
+                    </p>
+                  )}
                 </div>
 
-                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={loading}
