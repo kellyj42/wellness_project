@@ -92,14 +92,7 @@ export default function Footer() {
                   Events & Workshops
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/gift-cards"
-                  className="text-brand-muted hover:text-brand-sageDark transition"
-                >
-                  Events
-                </Link>
-              </li>
+             
               <li>
                 <Link
                   href="/corporate"

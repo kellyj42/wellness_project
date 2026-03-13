@@ -32,6 +32,17 @@ interface ContactFormProps {
 type ContactField = keyof Omit<ContactFormValues, "source">;
 type ContactFieldErrors = Partial<Record<ContactField, string>>;
 
+type ValidationResult =
+  | {
+      success: true;
+      data: ReturnType<typeof contactSchema.parse>;
+      errors: ContactFieldErrors;
+    }
+  | {
+      success: false;
+      errors: ContactFieldErrors;
+    };
+
 const initialFormData: ContactFormValues = {
   name: "",
   email: "",
@@ -47,61 +58,61 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [warningMessage, setWarningMessage] = useState<string | null>(null);
 
-  const validateForm = (values: ContactFormValues) => {
+  const validateForm = (values: ContactFormValues): ValidationResult => {
     const result = contactSchema.safeParse(values);
 
     if (result.success) {
-      return { success: true as const, data: result.data, errors: {} };
+      return {
+        success: true,
+        data: result.data,
+        errors: {},
+      };
     }
 
     const flattened = result.error.flatten().fieldErrors;
     const nextErrors: ContactFieldErrors = {};
 
-    for (const [key, messages] of Object.entries(flattened)) {
-      const firstMessage = messages?.[0];
-      if (firstMessage && key !== "source") {
-        nextErrors[key as ContactField] = firstMessage;
+    for (const field of ["name", "email", "phone", "message"] as const) {
+      const firstMessage = flattened[field]?.[0];
+      if (firstMessage) {
+        nextErrors[field] = firstMessage;
       }
     }
 
-    return { success: false as const, errors: nextErrors };
+    return { success: false, errors: nextErrors };
   };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name, value } = e.target;
+    const field = e.target.name as ContactField;
+    const { value } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [field]: value,
     }));
 
-    if (name !== "source") {
-      setFieldErrors((prev) => {
-        if (!prev[name as ContactField]) {
-          return prev;
-        }
+    setFieldErrors((prev) => {
+      if (!prev[field]) {
+        return prev;
+      }
 
-        const nextErrors = { ...prev };
-        delete nextErrors[name as ContactField];
-        return nextErrors;
-      });
-    }
+      const nextErrors = { ...prev };
+      delete nextErrors[field];
+      return nextErrors;
+    });
   };
 
   const handleBlur = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name } = e.target;
-    if (name === "source") {
-      return;
-    }
-
+    const field = e.target.name as ContactField;
     const validation = validateForm(formData);
+
     setFieldErrors((prev) => ({
       ...prev,
-      [name]: validation.errors[name as ContactField],
+      [field]: validation.errors[field],
     }));
   };
 
@@ -139,14 +150,17 @@ export default function ContactForm({ contactInfo }: ContactFormProps) {
       if (!response.ok) {
         if (responseData?.issues?.fieldErrors) {
           const serverErrors: ContactFieldErrors = {};
-          for (const [key, messages] of Object.entries(
-            responseData.issues.fieldErrors,
-          )) {
-            const firstMessage = Array.isArray(messages) ? messages[0] : undefined;
-            if (firstMessage && key !== "source") {
-              serverErrors[key as ContactField] = firstMessage;
+
+          for (const field of ["name", "email", "phone", "message"] as const) {
+            const rawMessages = responseData.issues.fieldErrors[field];
+            const firstMessage = Array.isArray(rawMessages)
+              ? rawMessages[0]
+              : undefined;
+            if (firstMessage) {
+              serverErrors[field] = firstMessage;
             }
           }
+
           setFieldErrors(serverErrors);
         }
 
