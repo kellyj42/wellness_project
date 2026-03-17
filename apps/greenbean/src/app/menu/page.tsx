@@ -26,6 +26,7 @@ const WRAP_CATEGORY = "Wraps";
 const WRAP_COMBO_PRICE = 28000;
 const WRAP_COMBO_SIDES = ["Sweet potato fries", "Air-fried plantain & avocado dip"];
 const JUICE_CATEGORY = "Juices";
+const EXTRA_CATEGORY = "Extras";
 const CUSTOM_JUICE_NAME = "Plain or Cocktail Juice";
 const JUICE_FLAVOR_OPTIONS = [
   "Pineapple",
@@ -37,7 +38,7 @@ const JUICE_FLAVOR_OPTIONS = [
   "Ginger",
   "Passion fruit",
 ];
-const MAX_COCKTAIL_JUICE_FLAVORS = 3;
+const INCLUDED_COCKTAIL_JUICE_FLAVORS = 3;
 
 const CUSTOM_BOWL_OPTIONS = {
   carbs: ["Brown rice", "Quinoa", "Cous-cous"],
@@ -135,6 +136,10 @@ function isCustomJuiceItem(item: MenuItem) {
   );
 }
 
+function isExtraItem(item: MenuItem) {
+  return item.category === EXTRA_CATEGORY;
+}
+
 function isEggAvoToastName(name?: string) {
   return name === EGG_AVO_TOAST_NAME;
 }
@@ -161,25 +166,60 @@ function getExtraToppingsCount(selection?: OrderSelection) {
   return Math.max((selection?.customBowl?.toppings.length ?? 0) - INCLUDED_TOPPINGS, 0);
 }
 
-function getItemUnitTotal(item: MenuItem, selection?: OrderSelection) {
+function getExtraJuiceFlavorsCount(selection?: OrderSelection) {
+  if (selection?.juiceType !== "Cocktail") {
+    return 0;
+  }
+
+  return Math.max((selection.juiceFlavors?.length ?? 0) - INCLUDED_COCKTAIL_JUICE_FLAVORS, 0);
+}
+
+function getLinkedExtrasTotal(
+  selection: OrderSelection | undefined,
+  extraItemsById: Record<string, MenuItem>,
+) {
+  return (selection?.linkedExtraIds ?? []).reduce((total, extraId) => {
+    const extraItem = extraItemsById[extraId];
+    return total + (extraItem?.price ?? EXTRA_INGREDIENT_PRICE);
+  }, 0);
+}
+
+function getItemUnitTotal(
+  item: MenuItem,
+  selection?: OrderSelection,
+  extraItemsById: Record<string, MenuItem> = {},
+) {
   const basePrice =
     selection?.wrapCombo && isWrapItem(item) ? WRAP_COMBO_PRICE : item.price;
   const extraChickenPrice = selection?.extraChicken ? EXTRA_GRILLED_CHICKEN_PRICE : 0;
   const extraIngredientsPrice = isCustomBowlItem(item)
     ? getExtraToppingsCount(selection) * EXTRA_INGREDIENT_PRICE
     : 0;
+  const extraJuiceFlavorsPrice = isCustomJuiceItem(item)
+    ? getExtraJuiceFlavorsCount(selection) * EXTRA_INGREDIENT_PRICE
+    : 0;
 
-  return basePrice + extraChickenPrice + extraIngredientsPrice;
+  const linkedExtrasPrice = getLinkedExtrasTotal(selection, extraItemsById);
+
+  return basePrice + extraChickenPrice + extraIngredientsPrice + extraJuiceFlavorsPrice + linkedExtrasPrice;
 }
 
 function buildWhatsAppMessage(
   selectedItems: MenuItem[],
   selections: Record<string, OrderSelection>,
+  extraItemsById: Record<string, MenuItem>,
 ) {
   const lines = selectedItems.flatMap((item, index) => {
     const selection = selections[item._id];
     const quantity = selection?.quantity ?? 1;
-    const unitTotal = getItemUnitTotal(item, selection);
+    const unitTotal = getItemUnitTotal(item, selection, extraItemsById);
+    const linkedExtras = (selection?.linkedExtraIds ?? [])
+      .map((extraId) => extraItemsById[extraId])
+      .filter((extraItem): extraItem is MenuItem => Boolean(extraItem));
+    const linkedExtrasLabel =
+      linkedExtras.length > 0
+        ? `   Extras: ${linkedExtras.map((extraItem) => extraItem.name).join(", ")} (${formatUGX(getLinkedExtrasTotal(selection, extraItemsById))})`
+        : "   Extras: None";
 
     if (isCustomBowlItem(item) && selection?.customBowl) {
       const bowl = selection.customBowl;
@@ -222,6 +262,7 @@ function buildWhatsAppMessage(
         ...(item.allowExtraGrilledChicken
           ? [`   Extra grilled chicken: ${selection?.extraChicken ? formatUGX(EXTRA_GRILLED_CHICKEN_PRICE) + " each" : "No"}`]
           : []),
+        linkedExtrasLabel,
         `   Line total: ${formatUGX(unitTotal * quantity)}`,
         "",
       ];
@@ -240,12 +281,15 @@ function buildWhatsAppMessage(
         ...(item.allowExtraGrilledChicken
           ? [`   Extra grilled chicken: ${selection?.extraChicken ? formatUGX(EXTRA_GRILLED_CHICKEN_PRICE) + " each" : "No"}`]
           : []),
+        linkedExtrasLabel,
         `   Line total: ${formatUGX(unitTotal * quantity)}`,
         "",
       ];
     }
 
     if (isCustomJuiceItem(item)) {
+      const extraJuiceFlavorsCount = getExtraJuiceFlavorsCount(selection);
+
       return [
         `${index + 1}. ${item.name}`,
         `   Category: ${item.category}`,
@@ -253,6 +297,8 @@ function buildWhatsAppMessage(
         `   Juice type: ${selection?.juiceType ?? "Plain"}`,
         `   Flavour choice: ${(selection?.juiceFlavors?.length ? selection.juiceFlavors.join(", ") : JUICE_FLAVOR_OPTIONS[0])}`,
         `   Base price: ${formatUGX(item.price)} each`,
+        `   Extra flavours: ${extraJuiceFlavorsCount > 0 ? `${extraJuiceFlavorsCount} x ${formatUGX(EXTRA_INGREDIENT_PRICE)}` : "None"}`,
+        linkedExtrasLabel,
         `   Line total: ${formatUGX(unitTotal * quantity)}`,
         "",
       ];
@@ -272,7 +318,7 @@ function buildWhatsAppMessage(
   const grandTotal = selectedItems.reduce((total, item) => {
     const selection = selections[item._id];
     const quantity = selection?.quantity ?? 1;
-    return total + getItemUnitTotal(item, selection) * quantity;
+    return total + getItemUnitTotal(item, selection, extraItemsById) * quantity;
   }, 0);
 
   return [
@@ -299,6 +345,7 @@ export default function MenuPage() {
   const [orderSelections, setOrderSelections] = useState<
     Record<string, OrderSelection>
   >({});
+  const [expandedExtraPickers, setExpandedExtraPickers] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     async function fetchMenuItems() {
@@ -323,7 +370,11 @@ export default function MenuPage() {
         setMenuItems(data || []);
 
         const uniqueCategories = Array.from(
-          new Set((data || []).map((item: MenuItem) => item.category)),
+          new Set(
+            (data || [])
+              .filter((item: MenuItem) => !isExtraItem(item))
+              .map((item: MenuItem) => item.category),
+          ),
         ).sort() as string[];
         setCategories(["All", ...uniqueCategories]);
       } catch (error) {
@@ -355,16 +406,32 @@ export default function MenuPage() {
     };
   }, [menuPreview]);
 
+  const extraItems = useMemo(
+    () => menuItems.filter((item) => isExtraItem(item)),
+    [menuItems],
+  );
+
+  const extraItemsById = useMemo(
+    () =>
+      Object.fromEntries(extraItems.map((item) => [item._id, item] as const)) as Record<string, MenuItem>,
+    [extraItems],
+  );
+
+  const displayItems = useMemo(
+    () => menuItems.filter((item) => !isExtraItem(item)),
+    [menuItems],
+  );
+
   const filteredItems = useMemo(() => {
     if (activeCategory === "All") {
-      return menuItems;
+      return displayItems;
     }
-    return menuItems.filter((item) => item.category === activeCategory);
-  }, [activeCategory, menuItems]);
+    return displayItems.filter((item) => item.category === activeCategory);
+  }, [activeCategory, displayItems]);
 
   const selectedItems = useMemo(
-    () => menuItems.filter((item) => orderSelections[item._id]?.selected),
-    [menuItems, orderSelections],
+    () => displayItems.filter((item) => orderSelections[item._id]?.selected),
+    [displayItems, orderSelections],
   );
 
   const grandTotal = useMemo(
@@ -372,15 +439,15 @@ export default function MenuPage() {
       selectedItems.reduce((total, item) => {
         const selection = orderSelections[item._id];
         const quantity = selection?.quantity ?? 1;
-        return total + getItemUnitTotal(item, selection) * quantity;
+        return total + getItemUnitTotal(item, selection, extraItemsById) * quantity;
       }, 0),
-    [orderSelections, selectedItems],
+    [extraItemsById, orderSelections, selectedItems],
   );
 
   const whatsappHref = useMemo(() => {
-    const message = buildWhatsAppMessage(selectedItems, orderSelections);
+    const message = buildWhatsAppMessage(selectedItems, orderSelections, extraItemsById);
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-  }, [orderSelections, selectedItems]);
+  }, [extraItemsById, orderSelections, selectedItems]);
 
   function getDefaultSelection(item: MenuItem): OrderSelection {
     return {
@@ -394,6 +461,7 @@ export default function MenuPage() {
       wrapComboSide: isWrapItem(item) ? WRAP_COMBO_SIDES[0] : undefined,
       juiceType: isCustomJuiceItem(item) ? "Plain" : undefined,
       juiceFlavors: isCustomJuiceItem(item) ? [JUICE_FLAVOR_OPTIONS[0]] : undefined,
+      linkedExtraIds: [],
     };
   }
 
@@ -415,6 +483,7 @@ export default function MenuPage() {
               : isCustomBowlItem(item)
                 ? createDefaultCustomBowl()
                 : undefined,
+          linkedExtraIds: nextSelected ? current.linkedExtraIds ?? [] : [],
         },
       };
     });
@@ -592,9 +661,7 @@ export default function MenuPage() {
           ? [flavor]
           : currentFlavors.includes(flavor)
             ? currentFlavors.filter((entry) => entry !== flavor)
-            : currentFlavors.length >= MAX_COCKTAIL_JUICE_FLAVORS
-              ? currentFlavors
-              : [...currentFlavors, flavor];
+            : [...currentFlavors, flavor];
 
       return {
         ...prev,
@@ -607,6 +674,32 @@ export default function MenuPage() {
         },
       };
     });
+  }
+
+  function toggleLinkedExtra(itemId: string, item: MenuItem, extraId: string) {
+    setOrderSelections((prev) => {
+      const current = prev[itemId] ?? getDefaultSelection(item);
+      const linkedExtraIds = (current.linkedExtraIds ?? []).includes(extraId)
+        ? (current.linkedExtraIds ?? []).filter((entry) => entry !== extraId)
+        : [...(current.linkedExtraIds ?? []), extraId];
+
+      return {
+        ...prev,
+        [itemId]: {
+          ...current,
+          selected: true,
+          quantity: Math.max(current.quantity, 1),
+          linkedExtraIds,
+        },
+      };
+    });
+  }
+
+  function toggleExtraPicker(itemId: string) {
+    setExpandedExtraPickers((prev) => ({
+      ...prev,
+      [itemId]: !prev[itemId],
+    }));
   }
 
   function toggleWrapCombo(itemId: string, item: MenuItem) {
@@ -757,6 +850,9 @@ export default function MenuPage() {
                     const selection = orderSelections[item._id];
                     const quantity = selection?.quantity ?? 1;
                     const extraToppingsCount = getExtraToppingsCount(selection);
+                    const linkedExtras = (selection?.linkedExtraIds ?? [])
+                      .map((extraId) => extraItemsById[extraId])
+                      .filter((extraItem): extraItem is MenuItem => Boolean(extraItem));
                     const addOnDetails = [
                       selection?.wrapCombo
                         ? `Wrap Combo ${formatUGX(WRAP_COMBO_PRICE)} | ${selection.wrapComboSide ?? WRAP_COMBO_SIDES[0]}`
@@ -765,8 +861,11 @@ export default function MenuPage() {
                       extraToppingsCount > 0
                         ? `${extraToppingsCount} extra ingredient(s) + ${formatUGX(extraToppingsCount * EXTRA_INGREDIENT_PRICE)}`
                         : null,
+                      linkedExtras.length > 0
+                        ? `Extras + ${formatUGX(getLinkedExtrasTotal(selection, extraItemsById))}`
+                        : null,
                     ].filter(Boolean);
-                    const lineTotal = getItemUnitTotal(item, selection) * quantity;
+                    const lineTotal = getItemUnitTotal(item, selection, extraItemsById) * quantity;
 
                     return (
                       <div
@@ -791,6 +890,11 @@ export default function MenuPage() {
                               {selection.juiceType} | {selection.juiceFlavors?.join(", ") ?? JUICE_FLAVOR_OPTIONS[0]}
                             </p>
                           )}
+                          {linkedExtras.length > 0 && (
+                            <p className="mt-1 text-xs leading-relaxed text-[#6C6257]">
+                              Extras: {linkedExtras.map((extraItem) => extraItem.name).join(", ")}
+                            </p>
+                          )}
                           {isToastItem(item) && (selection?.halfToast || toastNeedsEggStyle(item, selection)) && (
                             <p className="mt-1 text-xs leading-relaxed text-[#6C6257]">
                               {selection?.halfToast ? `Half & Half: ${item.name} + ${selection.halfToast}` : "Full toast"}
@@ -798,6 +902,54 @@ export default function MenuPage() {
                                 ? ` | Eggs: ${selection?.eggStyle ?? EGG_STYLE_OPTIONS[0]}`
                                 : ""}
                             </p>
+                          )}
+                          {extraItems.length > 0 && (
+                            <div className="mt-3 rounded-2xl bg-[#F8F5EE] p-3">
+                              <button
+                                type="button"
+                                onClick={() => toggleExtraPicker(item._id)}
+                                className="flex w-full items-center justify-between gap-3 text-left"
+                              >
+                                <div>
+                                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7F74]">
+                                    Link extras to this meal
+                                  </p>
+                                  <p className="mt-1 text-xs text-[#6C6257]">
+                                    {(selection?.linkedExtraIds?.length ?? 0) > 0
+                                      ? `${selection?.linkedExtraIds?.length ?? 0} extra(s) linked`
+                                      : "Tap to choose extras"}
+                                  </p>
+                                </div>
+                                <ChevronRight
+                                  className={`h-4 w-4 text-[#6E7A3C] transition-transform ${
+                                    expandedExtraPickers[item._id] ? "rotate-90" : ""
+                                  }`}
+                                />
+                              </button>
+                              {expandedExtraPickers[item._id] && (
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                  {extraItems.map((extraItem) => {
+                                    const isSelected = (selection?.linkedExtraIds ?? []).includes(extraItem._id);
+
+                                    return (
+                                      <button
+                                        key={`${item._id}-${extraItem._id}`}
+                                        type="button"
+                                        onClick={() => toggleLinkedExtra(item._id, item, extraItem._id)}
+                                        className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs transition-all ${
+                                          isSelected
+                                            ? "border-[#6E7A3C] bg-[#6E7A3C] text-white shadow-sm"
+                                            : "border-[#DCD4C7] bg-white text-[#5B544D] hover:border-[#A3AD5F] hover:text-[#2E2A26]"
+                                        }`}
+                                      >
+                                        {isSelected && <Check className="h-3.5 w-3.5" />}
+                                        {extraItem.name} + {formatUGX(extraItem.price || EXTRA_INGREDIENT_PRICE)}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
                           )}
                         </div>
                         <p className="text-sm text-[#5B544D]">{formatUGX(selection?.wrapCombo ? WRAP_COMBO_PRICE : item.price)}</p>
@@ -1141,7 +1293,7 @@ export default function MenuPage() {
                           <p className="mt-3 text-xs leading-relaxed text-[#6C6257]">
                             {juiceType === "Plain"
                               ? "Plain juice uses one flavour. Selecting another flavour replaces the current one."
-                              : `Cocktail juice can combine up to ${MAX_COCKTAIL_JUICE_FLAVORS} flavours.`}
+                              : `Cocktail juice includes up to ${INCLUDED_COCKTAIL_JUICE_FLAVORS} flavours. Every extra flavour adds ${formatUGX(EXTRA_INGREDIENT_PRICE)}.`}
                           </p>
                         </div>
                       </div>

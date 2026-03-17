@@ -49,6 +49,7 @@ export const menuItem = defineType({
           { title: "Milk Shakes", value: "Milk Shakes" },
           { title: "Soft Drinks", value: "Soft Drinks" },
           { title: "Specials", value: "Specials" },
+          { title: "Extras", value: "Extras" },
         ],
         layout: "dropdown",
       },
@@ -85,7 +86,22 @@ export const menuItem = defineType({
       title: "Description",
       type: "text",
       rows: 3,
-      validation: (Rule) => Rule.required().max(250),
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          if (context.document?.category === "Extras") {
+            return true;
+          }
+
+          if (!value || value.trim().length === 0) {
+            return "Description is required";
+          }
+
+          if (value.length > 250) {
+            return "Description must be 250 characters or fewer";
+          }
+
+          return true;
+        }),
     }),
 
     defineField({
