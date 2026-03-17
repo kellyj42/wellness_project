@@ -19,6 +19,25 @@ const EXTRA_INGREDIENT_PRICE = 3000;
 const INCLUDED_TOPPINGS = 4;
 const WHATSAPP_NUMBER = "256781719687";
 const CUSTOM_BOWL_SLUG = "make-your-own-bowl";
+const TOAST_CATEGORY = "Toast";
+const EGG_AVO_TOAST_NAME = "Egg Avo Toast";
+const EGG_STYLE_OPTIONS = ["Scrambled", "Poached", "Sunny side", "Omelette", "Fried"];
+const WRAP_CATEGORY = "Wraps";
+const WRAP_COMBO_PRICE = 28000;
+const WRAP_COMBO_SIDES = ["Sweet potato fries", "Air-fried plantain & avocado dip"];
+const JUICE_CATEGORY = "Juices";
+const CUSTOM_JUICE_NAME = "Plain or Cocktail Juice";
+const JUICE_FLAVOR_OPTIONS = [
+  "Pineapple",
+  "Orange",
+  "Watermelon",
+  "Apple",
+  "Mango",
+  "Carrot",
+  "Ginger",
+  "Passion fruit",
+];
+const MAX_COCKTAIL_JUICE_FLAVORS = 3;
 
 const CUSTOM_BOWL_OPTIONS = {
   carbs: ["Brown rice", "Quinoa", "Cous-cous"],
@@ -86,6 +105,12 @@ interface OrderSelection {
   extraChicken: boolean;
   quantity: number;
   customBowl?: CustomBowlSelection;
+  halfToast?: string;
+  eggStyle?: string;
+  wrapCombo?: boolean;
+  wrapComboSide?: string;
+  juiceType?: "Plain" | "Cocktail";
+  juiceFlavors?: string[];
 }
 
 function isCustomBowlItem(item: MenuItem) {
@@ -93,6 +118,29 @@ function isCustomBowlItem(item: MenuItem) {
     item.category === "Salad Bowls" &&
     (item.enableCustomBowlBuilder || item.slug?.current === CUSTOM_BOWL_SLUG)
   );
+}
+
+function isToastItem(item: MenuItem) {
+  return item.category === TOAST_CATEGORY;
+}
+
+function isWrapItem(item: MenuItem) {
+  return item.category === WRAP_CATEGORY;
+}
+
+function isCustomJuiceItem(item: MenuItem) {
+  return (
+    item.category === JUICE_CATEGORY &&
+    (item.name === CUSTOM_JUICE_NAME || item.slug?.current === "plain-or-cocktail-juice")
+  );
+}
+
+function isEggAvoToastName(name?: string) {
+  return name === EGG_AVO_TOAST_NAME;
+}
+
+function toastNeedsEggStyle(item: MenuItem, selection?: OrderSelection) {
+  return isEggAvoToastName(item.name) || isEggAvoToastName(selection?.halfToast);
 }
 
 function formatUGX(amount: number) {
@@ -114,12 +162,14 @@ function getExtraToppingsCount(selection?: OrderSelection) {
 }
 
 function getItemUnitTotal(item: MenuItem, selection?: OrderSelection) {
+  const basePrice =
+    selection?.wrapCombo && isWrapItem(item) ? WRAP_COMBO_PRICE : item.price;
   const extraChickenPrice = selection?.extraChicken ? EXTRA_GRILLED_CHICKEN_PRICE : 0;
   const extraIngredientsPrice = isCustomBowlItem(item)
     ? getExtraToppingsCount(selection) * EXTRA_INGREDIENT_PRICE
     : 0;
 
-  return item.price + extraChickenPrice + extraIngredientsPrice;
+  return basePrice + extraChickenPrice + extraIngredientsPrice;
 }
 
 function buildWhatsAppMessage(
@@ -151,6 +201,58 @@ function buildWhatsAppMessage(
         `   Dressing: ${bowl.dressing}`,
         extraToppingsLabel,
         `   Add grilled chicken breast: ${selection.extraChicken ? formatUGX(EXTRA_GRILLED_CHICKEN_PRICE) + " each" : "No"}`,
+        `   Line total: ${formatUGX(unitTotal * quantity)}`,
+        "",
+      ];
+    }
+
+    if (isToastItem(item)) {
+      return [
+        `${index + 1}. ${item.name}`,
+        `   Category: ${item.category}`,
+        `   Quantity: ${quantity}`,
+        `   Base meal: ${formatUGX(item.price)} each`,
+        `   Toast style: ${selection?.halfToast ? "Half & Half" : "Full toast"}`,
+        ...(selection?.halfToast
+          ? [`   Toast pairing: ${item.name} + ${selection.halfToast}`]
+          : []),
+        ...(toastNeedsEggStyle(item, selection)
+          ? [`   Egg choice: ${selection?.eggStyle ?? EGG_STYLE_OPTIONS[0]}`]
+          : []),
+        ...(item.allowExtraGrilledChicken
+          ? [`   Extra grilled chicken: ${selection?.extraChicken ? formatUGX(EXTRA_GRILLED_CHICKEN_PRICE) + " each" : "No"}`]
+          : []),
+        `   Line total: ${formatUGX(unitTotal * quantity)}`,
+        "",
+      ];
+    }
+
+    if (isWrapItem(item)) {
+      return [
+        `${index + 1}. ${item.name}`,
+        `   Category: ${item.category}`,
+        `   Quantity: ${quantity}`,
+        `   Order type: ${selection?.wrapCombo ? "Wrap Combo" : "Wrap only"}`,
+        `   Base price: ${formatUGX(selection?.wrapCombo ? WRAP_COMBO_PRICE : item.price)} each`,
+        ...(selection?.wrapCombo
+          ? [`   Side choice: ${selection.wrapComboSide ?? WRAP_COMBO_SIDES[0]}`]
+          : []),
+        ...(item.allowExtraGrilledChicken
+          ? [`   Extra grilled chicken: ${selection?.extraChicken ? formatUGX(EXTRA_GRILLED_CHICKEN_PRICE) + " each" : "No"}`]
+          : []),
+        `   Line total: ${formatUGX(unitTotal * quantity)}`,
+        "",
+      ];
+    }
+
+    if (isCustomJuiceItem(item)) {
+      return [
+        `${index + 1}. ${item.name}`,
+        `   Category: ${item.category}`,
+        `   Quantity: ${quantity}`,
+        `   Juice type: ${selection?.juiceType ?? "Plain"}`,
+        `   Flavour choice: ${(selection?.juiceFlavors?.length ? selection.juiceFlavors.join(", ") : JUICE_FLAVOR_OPTIONS[0])}`,
+        `   Base price: ${formatUGX(item.price)} each`,
         `   Line total: ${formatUGX(unitTotal * quantity)}`,
         "",
       ];
@@ -286,6 +388,12 @@ export default function MenuPage() {
       extraChicken: false,
       quantity: 1,
       customBowl: isCustomBowlItem(item) ? createDefaultCustomBowl() : undefined,
+      halfToast: undefined,
+      eggStyle: isEggAvoToastName(item.name) ? EGG_STYLE_OPTIONS[0] : undefined,
+      wrapCombo: false,
+      wrapComboSide: isWrapItem(item) ? WRAP_COMBO_SIDES[0] : undefined,
+      juiceType: isCustomJuiceItem(item) ? "Plain" : undefined,
+      juiceFlavors: isCustomJuiceItem(item) ? [JUICE_FLAVOR_OPTIONS[0]] : undefined,
     };
   }
 
@@ -416,6 +524,128 @@ export default function MenuPage() {
     });
   }
 
+  function updateToastHalfSelection(itemId: string, item: MenuItem, halfToast: string) {
+    setOrderSelections((prev) => {
+      const current = prev[itemId] ?? getDefaultSelection(item);
+      const nextHalfToast = halfToast || undefined;
+      const needsEggStyle =
+        isEggAvoToastName(item.name) || isEggAvoToastName(nextHalfToast);
+
+      return {
+        ...prev,
+        [itemId]: {
+          ...current,
+          selected: true,
+          quantity: Math.max(current.quantity, 1),
+          halfToast: nextHalfToast,
+          eggStyle: needsEggStyle
+            ? current.eggStyle ?? EGG_STYLE_OPTIONS[0]
+            : undefined,
+        },
+      };
+    });
+  }
+
+  function updateEggStyle(itemId: string, item: MenuItem, eggStyle: string) {
+    setOrderSelections((prev) => {
+      const current = prev[itemId] ?? getDefaultSelection(item);
+
+      return {
+        ...prev,
+        [itemId]: {
+          ...current,
+          selected: true,
+          quantity: Math.max(current.quantity, 1),
+          eggStyle,
+        },
+      };
+    });
+  }
+
+  function updateJuiceType(itemId: string, item: MenuItem, juiceType: "Plain" | "Cocktail") {
+    setOrderSelections((prev) => {
+      const current = prev[itemId] ?? getDefaultSelection(item);
+      const currentFlavors = current.juiceFlavors?.length ? current.juiceFlavors : [JUICE_FLAVOR_OPTIONS[0]];
+      const nextFlavors =
+        juiceType === "Plain" ? [currentFlavors[0]] : currentFlavors;
+
+      return {
+        ...prev,
+        [itemId]: {
+          ...current,
+          selected: true,
+          quantity: Math.max(current.quantity, 1),
+          juiceType,
+          juiceFlavors: nextFlavors,
+        },
+      };
+    });
+  }
+
+  function toggleJuiceFlavor(itemId: string, item: MenuItem, flavor: string) {
+    setOrderSelections((prev) => {
+      const current = prev[itemId] ?? getDefaultSelection(item);
+      const juiceType = current.juiceType ?? "Plain";
+      const currentFlavors = current.juiceFlavors?.length ? current.juiceFlavors : [JUICE_FLAVOR_OPTIONS[0]];
+      const nextFlavors =
+        juiceType === "Plain"
+          ? [flavor]
+          : currentFlavors.includes(flavor)
+            ? currentFlavors.filter((entry) => entry !== flavor)
+            : currentFlavors.length >= MAX_COCKTAIL_JUICE_FLAVORS
+              ? currentFlavors
+              : [...currentFlavors, flavor];
+
+      return {
+        ...prev,
+        [itemId]: {
+          ...current,
+          selected: true,
+          quantity: Math.max(current.quantity, 1),
+          juiceType,
+          juiceFlavors: nextFlavors.length > 0 ? nextFlavors : [JUICE_FLAVOR_OPTIONS[0]],
+        },
+      };
+    });
+  }
+
+  function toggleWrapCombo(itemId: string, item: MenuItem) {
+    setOrderSelections((prev) => {
+      const current = prev[itemId] ?? getDefaultSelection(item);
+      const nextWrapCombo = !current.wrapCombo;
+
+      return {
+        ...prev,
+        [itemId]: {
+          ...current,
+          selected: true,
+          quantity: Math.max(current.quantity, 1),
+          wrapCombo: nextWrapCombo,
+          wrapComboSide: nextWrapCombo
+            ? current.wrapComboSide ?? WRAP_COMBO_SIDES[0]
+            : undefined,
+        },
+      };
+    });
+  }
+
+  function updateWrapComboSide(itemId: string, item: MenuItem, side: string) {
+    setOrderSelections((prev) => {
+      const current = prev[itemId] ?? getDefaultSelection(item);
+
+      return {
+        ...prev,
+        [itemId]: {
+          ...current,
+          selected: true,
+          quantity: Math.max(current.quantity, 1),
+          wrapCombo: true,
+          wrapComboSide: side,
+        },
+      };
+    });
+  }
+
   function scrollToReviewSummary() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -528,6 +758,9 @@ export default function MenuPage() {
                     const quantity = selection?.quantity ?? 1;
                     const extraToppingsCount = getExtraToppingsCount(selection);
                     const addOnDetails = [
+                      selection?.wrapCombo
+                        ? `Wrap Combo ${formatUGX(WRAP_COMBO_PRICE)} | ${selection.wrapComboSide ?? WRAP_COMBO_SIDES[0]}`
+                        : null,
                       selection?.extraChicken ? `Chicken + ${formatUGX(EXTRA_GRILLED_CHICKEN_PRICE)}` : null,
                       extraToppingsCount > 0
                         ? `${extraToppingsCount} extra ingredient(s) + ${formatUGX(extraToppingsCount * EXTRA_INGREDIENT_PRICE)}`
@@ -548,8 +781,26 @@ export default function MenuPage() {
                               {selection.customBowl.carb}, {selection.customBowl.protein}, {selection.customBowl.greens}, {selection.customBowl.dressing}
                             </p>
                           )}
+                          {isWrapItem(item) && selection?.wrapCombo && (
+                            <p className="mt-1 text-xs leading-relaxed text-[#6C6257]">
+                              Wrap Combo | Side: {selection.wrapComboSide ?? WRAP_COMBO_SIDES[0]}
+                            </p>
+                          )}
+                          {isCustomJuiceItem(item) && selection?.juiceType && (
+                            <p className="mt-1 text-xs leading-relaxed text-[#6C6257]">
+                              {selection.juiceType} | {selection.juiceFlavors?.join(", ") ?? JUICE_FLAVOR_OPTIONS[0]}
+                            </p>
+                          )}
+                          {isToastItem(item) && (selection?.halfToast || toastNeedsEggStyle(item, selection)) && (
+                            <p className="mt-1 text-xs leading-relaxed text-[#6C6257]">
+                              {selection?.halfToast ? `Half & Half: ${item.name} + ${selection.halfToast}` : "Full toast"}
+                              {toastNeedsEggStyle(item, selection)
+                                ? ` | Eggs: ${selection?.eggStyle ?? EGG_STYLE_OPTIONS[0]}`
+                                : ""}
+                            </p>
+                          )}
                         </div>
-                        <p className="text-sm text-[#5B544D]">{formatUGX(item.price)}</p>
+                        <p className="text-sm text-[#5B544D]">{formatUGX(selection?.wrapCombo ? WRAP_COMBO_PRICE : item.price)}</p>
                         <p className="text-sm text-[#5B544D]">
                           {addOnDetails.length > 0 ? addOnDetails.join(" | ") : "No add-ons"}
                         </p>
@@ -625,6 +876,14 @@ export default function MenuPage() {
               const selection = orderSelections[item._id] ?? getDefaultSelection(item);
               const customBowl = selection.customBowl ?? createDefaultCustomBowl();
               const extraToppingsCount = getExtraToppingsCount(selection);
+              const toastHalfChoices = menuItems.filter(
+                (candidate) => isToastItem(candidate) && candidate._id !== item._id,
+              );
+              const needsEggStyle = toastNeedsEggStyle(item, selection);
+              const juiceType = selection.juiceType ?? "Plain";
+              const juiceFlavors = selection.juiceFlavors?.length
+                ? selection.juiceFlavors
+                : [JUICE_FLAVOR_OPTIONS[0]];
               const lineTotal =
                 getItemUnitTotal(item, selection) *
                 (selection.selected ? selection.quantity : 1);
@@ -818,6 +1077,192 @@ export default function MenuPage() {
                             First {INCLUDED_TOPPINGS} toppings are included. Extra toppings: {extraToppingsCount} x {formatUGX(EXTRA_INGREDIENT_PRICE)}.
                           </p>
                         </div>
+                      </div>
+                    )}
+
+                    {isCustomJuiceItem(item) && (
+                      <div className="mb-5 rounded-3xl border border-[#E8E1D5] bg-[#F8F5EE] p-4">
+                        <div className="mb-4 flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#6E7A3C]">
+                              Custom juice
+                            </p>
+                            <p className="mt-1 text-xs leading-relaxed text-[#6C6257]">
+                              Choose a plain juice with one flavour, or build a cocktail from multiple flavours.
+                            </p>
+                          </div>
+                          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#6E7A3C] shadow-sm">
+                            Juice Builder
+                          </span>
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {(["Plain", "Cocktail"] as const).map((option) => (
+                            <button
+                              key={option}
+                              type="button"
+                              onClick={() => updateJuiceType(item._id, item, option)}
+                              className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition-all ${
+                                juiceType === option
+                                  ? "border-[#6E7A3C] bg-[#F2F6E3] text-[#2E2A26]"
+                                  : "border-[#DCD4C7] bg-white text-[#5B544D] hover:border-[#A3AD5F]"
+                              }`}
+                            >
+                              {option}
+                            </button>
+                          ))}
+                        </div>
+
+                        <div className="mt-4">
+                          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#8B7F74]">
+                            Choose flavours
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {JUICE_FLAVOR_OPTIONS.map((flavor) => {
+                              const isSelected = juiceFlavors.includes(flavor);
+
+                              return (
+                                <button
+                                  key={flavor}
+                                  type="button"
+                                  onClick={() => toggleJuiceFlavor(item._id, item, flavor)}
+                                  className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition-all ${
+                                    isSelected
+                                      ? "border-[#6E7A3C] bg-[#6E7A3C] text-white shadow-sm"
+                                      : "border-[#DCD4C7] bg-white text-[#5B544D] hover:border-[#A3AD5F] hover:text-[#2E2A26]"
+                                  }`}
+                                >
+                                  {isSelected && <Check className="h-3.5 w-3.5" />}
+                                  {flavor}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <p className="mt-3 text-xs leading-relaxed text-[#6C6257]">
+                            {juiceType === "Plain"
+                              ? "Plain juice uses one flavour. Selecting another flavour replaces the current one."
+                              : `Cocktail juice can combine up to ${MAX_COCKTAIL_JUICE_FLAVORS} flavours.`}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {isWrapItem(item) && (
+                      <div className="mb-5 rounded-3xl border border-[#E8E1D5] bg-[#F8F5EE] p-4">
+                        <div className="mb-4 flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#6E7A3C]">
+                              Wrap combo
+                            </p>
+                            <p className="mt-1 text-xs leading-relaxed text-[#6C6257]">
+                              Any wrap can be upgraded to a combo for {formatUGX(WRAP_COMBO_PRICE)} with your choice of side.
+                            </p>
+                          </div>
+                          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#6E7A3C] shadow-sm">
+                            Combo
+                          </span>
+                        </div>
+
+                        <label className={`flex cursor-pointer items-center justify-between rounded-2xl border px-4 py-3 transition-all ${
+                          selection.wrapCombo
+                            ? "border-[#6E7A3C] bg-[#F2F6E3]"
+                            : "border-[#DCD4C7] bg-white hover:border-[#A3AD5F]"
+                        }`}>
+                          <div className="pr-3">
+                            <p className="text-sm font-semibold text-[#2E2A26]">
+                              Make this a wrap combo
+                            </p>
+                            <p className="text-xs text-[#6C6257]">
+                              Served with sweet potato fries or air-fried plantain & avocado dip.
+                            </p>
+                          </div>
+                          <input
+                            type="checkbox"
+                            checked={selection.wrapCombo ?? false}
+                            onChange={() => toggleWrapCombo(item._id, item)}
+                            className="h-5 w-5 rounded border-[#B9B1A4] text-[#6E7A3C] focus:ring-[#A3AD5F]"
+                          />
+                        </label>
+
+                        {selection.wrapCombo && (
+                          <label className="mt-4 block text-sm text-[#5B544D]">
+                            <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-[#8B7F74]">
+                              Choose combo side
+                            </span>
+                            <select
+                              value={selection.wrapComboSide ?? WRAP_COMBO_SIDES[0]}
+                              onChange={(event) =>
+                                updateWrapComboSide(item._id, item, event.target.value)
+                              }
+                              className="w-full rounded-2xl border border-[#DCD4C7] bg-white px-4 py-3 text-sm text-[#2E2A26] outline-none transition-colors focus:border-[#A3AD5F]"
+                            >
+                              {WRAP_COMBO_SIDES.map((option) => (
+                                <option key={option} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                        )}
+                      </div>
+                    )}
+
+                    {isToastItem(item) && (
+                      <div className="mb-5 rounded-3xl border border-[#E8E1D5] bg-[#F8F5EE] p-4">
+                        <div className="mb-4 flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#6E7A3C]">
+                              Build your toast
+                            </p>
+                            <p className="mt-1 text-xs leading-relaxed text-[#6C6257]">
+                              Choose one different toast for the second half if you want a half-and-half toast. The same toast cannot be paired with itself.
+                            </p>
+                          </div>
+                          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#6E7A3C] shadow-sm">
+                            Toast Builder
+                          </span>
+                        </div>
+
+                        <label className="block text-sm text-[#5B544D]">
+                          <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-[#8B7F74]">
+                            Second half toast
+                          </span>
+                          <select
+                            value={selection.halfToast ?? ""}
+                            onChange={(event) =>
+                              updateToastHalfSelection(item._id, item, event.target.value)
+                            }
+                            className="w-full rounded-2xl border border-[#DCD4C7] bg-white px-4 py-3 text-sm text-[#2E2A26] outline-none transition-colors focus:border-[#A3AD5F]"
+                          >
+                            <option value="">Keep this as a full toast</option>
+                            {toastHalfChoices.map((option) => (
+                              <option key={option._id} value={option.name}>
+                                {option.name}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+
+                        {needsEggStyle && (
+                          <label className="mt-4 block text-sm text-[#5B544D]">
+                            <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-[#8B7F74]">
+                              Choose eggs
+                            </span>
+                            <select
+                              value={selection.eggStyle ?? EGG_STYLE_OPTIONS[0]}
+                              onChange={(event) =>
+                                updateEggStyle(item._id, item, event.target.value)
+                              }
+                              className="w-full rounded-2xl border border-[#DCD4C7] bg-white px-4 py-3 text-sm text-[#2E2A26] outline-none transition-colors focus:border-[#A3AD5F]"
+                            >
+                              {EGG_STYLE_OPTIONS.map((option) => (
+                                <option key={option} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                        )}
                       </div>
                     )}
 
