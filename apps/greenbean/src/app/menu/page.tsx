@@ -84,7 +84,7 @@ interface MenuItem {
   slug: { current: string };
   category: string;
   price: number;
-  description: string;
+  description?: string;
   tag?: string;
   image?: any;
   featured?: boolean;
@@ -112,6 +112,7 @@ interface OrderSelection {
   wrapComboSide?: string;
   juiceType?: "Plain" | "Cocktail";
   juiceFlavors?: string[];
+  linkedExtraIds?: string[];
 }
 
 function isCustomBowlItem(item: MenuItem) {
@@ -1091,7 +1092,7 @@ export default function MenuPage() {
                     </div>
 
                     <p className="mb-4 text-sm leading-relaxed text-[#5B544D]">
-                      {item.description}
+                      {item.description ?? ""}
                     </p>
                     {isCustomBowlItem(item) && (
                       <div className="mb-5 rounded-3xl border border-[#E8E1D5] bg-[#F8F5EE] p-4">
