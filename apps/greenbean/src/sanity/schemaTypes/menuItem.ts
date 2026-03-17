@@ -66,6 +66,15 @@ export const menuItem = defineType({
     }),
 
     defineField({
+      name: "allowExtraGrilledChicken",
+      title: "Allow Extra Grilled Chicken",
+      type: "boolean",
+      description:
+        "Enable this if customers can add grilled chicken to this item for an extra UGX 5,000.",
+      initialValue: false,
+    }),
+
+    defineField({
       name: "description",
       title: "Description",
       type: "text",

@@ -80,7 +80,7 @@ export default function Footer() {
 
           <ul className="space-y-3 text-sm">
             <li>
-              <Link href="/contact" className="hover:text-[#A3AD5F] transition">
+              <Link href="/contact-page" className="hover:text-[#A3AD5F] transition">
                 Contact Us
               </Link>
             </li>
