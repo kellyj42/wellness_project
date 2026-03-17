@@ -3,17 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Apple,
-  Beef,
   Check,
   ChevronRight,
-  Coffee,
-  Leaf,
-  LucideIcon,
   MessageCircle,
   Minus,
   Plus,
-  Sun,
   Trash2,
 } from "lucide-react";
 import Image from "next/image";
@@ -21,14 +15,47 @@ import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 
 const EXTRA_GRILLED_CHICKEN_PRICE = 5000;
+const EXTRA_INGREDIENT_PRICE = 3000;
+const INCLUDED_TOPPINGS = 4;
 const WHATSAPP_NUMBER = "256781719687";
+const CUSTOM_BOWL_SLUG = "make-your-own-bowl";
 
-const iconMap: Record<string, LucideIcon> = {
-  Beef,
-  Coffee,
-  Apple,
-  Sun,
-  Leaf,
+const CUSTOM_BOWL_OPTIONS = {
+  carbs: ["Brown rice", "Quinoa", "Cous-cous"],
+  proteins: [
+    "Eggs",
+    "Grilled chicken breast",
+    "Beans",
+    "Chickpeas",
+    "Lentils",
+    "Tofu",
+    "Falafel",
+    "Nuts",
+  ],
+  greens: ["Lettuce", "Kale", "Spinach"],
+  toppings: [
+    "Cucumber",
+    "Tomato",
+    "Avocado",
+    "Red bell pepper",
+    "Rocket",
+    "Sweet corn",
+    "Red cabbage",
+    "Olives",
+    "Feta cheese",
+    "Carrots",
+    "Raisins",
+    "Spring onions",
+    "Cilantro",
+    "Sun-dried tomatoes",
+  ],
+  dressings: [
+    "Honey mustard",
+    "Peanut butter honey",
+    "Tahini",
+    "Lemon vinaigrette (vegan)",
+    "Cashew dressing (vegan)",
+  ],
 };
 
 interface MenuItem {
@@ -39,22 +66,60 @@ interface MenuItem {
   price: number;
   description: string;
   tag?: string;
-  icon?: string;
   image?: any;
-  dietary?: string[];
   featured?: boolean;
   available?: boolean;
   allowExtraGrilledChicken?: boolean;
+  enableCustomBowlBuilder?: boolean;
+}
+
+interface CustomBowlSelection {
+  carb: string;
+  protein: string;
+  greens: string;
+  toppings: string[];
+  dressing: string;
 }
 
 interface OrderSelection {
   selected: boolean;
   extraChicken: boolean;
   quantity: number;
+  customBowl?: CustomBowlSelection;
+}
+
+function isCustomBowlItem(item: MenuItem) {
+  return (
+    item.category === "Salad Bowls" &&
+    (item.enableCustomBowlBuilder || item.slug?.current === CUSTOM_BOWL_SLUG)
+  );
 }
 
 function formatUGX(amount: number) {
   return `UGX ${amount.toLocaleString()}`;
+}
+
+function createDefaultCustomBowl(): CustomBowlSelection {
+  return {
+    carb: CUSTOM_BOWL_OPTIONS.carbs[0],
+    protein: CUSTOM_BOWL_OPTIONS.proteins[0],
+    greens: CUSTOM_BOWL_OPTIONS.greens[0],
+    toppings: [],
+    dressing: CUSTOM_BOWL_OPTIONS.dressings[0],
+  };
+}
+
+function getExtraToppingsCount(selection?: OrderSelection) {
+  return Math.max((selection?.customBowl?.toppings.length ?? 0) - INCLUDED_TOPPINGS, 0);
+}
+
+function getItemUnitTotal(item: MenuItem, selection?: OrderSelection) {
+  const extraChickenPrice = selection?.extraChicken ? EXTRA_GRILLED_CHICKEN_PRICE : 0;
+  const extraIngredientsPrice = isCustomBowlItem(item)
+    ? getExtraToppingsCount(selection) * EXTRA_INGREDIENT_PRICE
+    : 0;
+
+  return item.price + extraChickenPrice + extraIngredientsPrice;
 }
 
 function buildWhatsAppMessage(
@@ -64,20 +129,39 @@ function buildWhatsAppMessage(
   const lines = selectedItems.flatMap((item, index) => {
     const selection = selections[item._id];
     const quantity = selection?.quantity ?? 1;
-    const addOnPrice = selection?.extraChicken
-      ? EXTRA_GRILLED_CHICKEN_PRICE
-      : 0;
-    const unitTotal = item.price + addOnPrice;
-    const addOnLabel = selection?.extraChicken
-      ? `   Extra grilled chicken: ${formatUGX(EXTRA_GRILLED_CHICKEN_PRICE)} each`
-      : " ";
+    const unitTotal = getItemUnitTotal(item, selection);
+
+    if (isCustomBowlItem(item) && selection?.customBowl) {
+      const bowl = selection.customBowl;
+      const extraToppingsCount = getExtraToppingsCount(selection);
+      const extraToppingsLabel =
+        extraToppingsCount > 0
+          ? `   Extra ingredients: ${extraToppingsCount} x ${formatUGX(EXTRA_INGREDIENT_PRICE)}`
+          : "   Extra ingredients: None";
+
+      return [
+        `${index + 1}. ${item.name}`,
+        `   Category: ${item.category}`,
+        `   Quantity: ${quantity}`,
+        `   Base bowl: ${formatUGX(item.price)} each`,
+        `   Carb: ${bowl.carb}`,
+        `   Protein: ${bowl.protein}`,
+        `   Greens: ${bowl.greens}`,
+        `   Toppings (${bowl.toppings.length}): ${bowl.toppings.length > 0 ? bowl.toppings.join(", ") : "None"}`,
+        `   Dressing: ${bowl.dressing}`,
+        extraToppingsLabel,
+        `   Add grilled chicken breast: ${selection.extraChicken ? formatUGX(EXTRA_GRILLED_CHICKEN_PRICE) + " each" : "No"}`,
+        `   Line total: ${formatUGX(unitTotal * quantity)}`,
+        "",
+      ];
+    }
 
     return [
       `${index + 1}. ${item.name}`,
       `   Category: ${item.category}`,
       `   Quantity: ${quantity}`,
       `   Base meal: ${formatUGX(item.price)} each`,
-      addOnLabel,
+      `   Extra grilled chicken: ${selection?.extraChicken ? formatUGX(EXTRA_GRILLED_CHICKEN_PRICE) + " each" : "No"}`,
       `   Line total: ${formatUGX(unitTotal * quantity)}`,
       "",
     ];
@@ -86,12 +170,7 @@ function buildWhatsAppMessage(
   const grandTotal = selectedItems.reduce((total, item) => {
     const selection = selections[item._id];
     const quantity = selection?.quantity ?? 1;
-    return (
-      total +
-      (item.price +
-        (selection?.extraChicken ? EXTRA_GRILLED_CHICKEN_PRICE : 0)) *
-        quantity
-    );
+    return total + getItemUnitTotal(item, selection) * quantity;
   }, 0);
 
   return [
@@ -130,12 +209,11 @@ export default function MenuPage() {
           price,
           description,
           tag,
-          icon,
           image,
-          dietary,
           featured,
           available,
-          allowExtraGrilledChicken
+          allowExtraGrilledChicken,
+          enableCustomBowlBuilder
         }`;
 
         const data = await client.fetch<MenuItem[]>(query);
@@ -192,12 +270,7 @@ export default function MenuPage() {
       selectedItems.reduce((total, item) => {
         const selection = orderSelections[item._id];
         const quantity = selection?.quantity ?? 1;
-        return (
-          total +
-          (item.price +
-            (selection?.extraChicken ? EXTRA_GRILLED_CHICKEN_PRICE : 0)) *
-            quantity
-        );
+        return total + getItemUnitTotal(item, selection) * quantity;
       }, 0),
     [orderSelections, selectedItems],
   );
@@ -207,37 +280,46 @@ export default function MenuPage() {
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   }, [orderSelections, selectedItems]);
 
+  function getDefaultSelection(item: MenuItem): OrderSelection {
+    return {
+      selected: false,
+      extraChicken: false,
+      quantity: 1,
+      customBowl: isCustomBowlItem(item) ? createDefaultCustomBowl() : undefined,
+    };
+  }
+
   function toggleItemSelection(item: MenuItem) {
     setOrderSelections((prev) => {
-      const current = prev[item._id] ?? {
-        selected: false,
-        extraChicken: false,
-        quantity: 1,
-      };
+      const current = prev[item._id] ?? getDefaultSelection(item);
       const nextSelected = !current.selected;
 
       return {
         ...prev,
         [item._id]: {
+          ...current,
           selected: nextSelected,
           extraChicken: nextSelected ? current.extraChicken : false,
           quantity: nextSelected ? Math.max(current.quantity, 1) : 1,
+          customBowl:
+            isCustomBowlItem(item) && current.customBowl
+              ? current.customBowl
+              : isCustomBowlItem(item)
+                ? createDefaultCustomBowl()
+                : undefined,
         },
       };
     });
   }
 
-  function toggleExtraChicken(itemId: string) {
+  function toggleExtraChicken(itemId: string, item: MenuItem) {
     setOrderSelections((prev) => {
-      const current = prev[itemId] ?? {
-        selected: false,
-        extraChicken: false,
-        quantity: 1,
-      };
+      const current = prev[itemId] ?? getDefaultSelection(item);
 
       return {
         ...prev,
         [itemId]: {
+          ...current,
           selected: true,
           extraChicken: !current.extraChicken,
           quantity: Math.max(current.quantity, 1),
@@ -280,15 +362,58 @@ export default function MenuPage() {
     });
   }
 
-  function removeSelectedItem(itemId: string) {
+  function removeSelectedItem(itemId: string, item: MenuItem) {
     setOrderSelections((prev) => ({
       ...prev,
-      [itemId]: {
-        selected: false,
-        extraChicken: false,
-        quantity: 1,
-      },
+      [itemId]: getDefaultSelection(item),
     }));
+  }
+
+  function updateCustomBowlSelection(
+    itemId: string,
+    item: MenuItem,
+    updates: Partial<CustomBowlSelection>,
+  ) {
+    setOrderSelections((prev) => {
+      const current = prev[itemId] ?? getDefaultSelection(item);
+      const currentBowl = current.customBowl ?? createDefaultCustomBowl();
+
+      return {
+        ...prev,
+        [itemId]: {
+          ...current,
+          selected: true,
+          quantity: Math.max(current.quantity, 1),
+          customBowl: {
+            ...currentBowl,
+            ...updates,
+          },
+        },
+      };
+    });
+  }
+
+  function toggleCustomBowlTopping(itemId: string, item: MenuItem, topping: string) {
+    setOrderSelections((prev) => {
+      const current = prev[itemId] ?? getDefaultSelection(item);
+      const currentBowl = current.customBowl ?? createDefaultCustomBowl();
+      const toppings = currentBowl.toppings.includes(topping)
+        ? currentBowl.toppings.filter((entry) => entry !== topping)
+        : [...currentBowl.toppings, topping];
+
+      return {
+        ...prev,
+        [itemId]: {
+          ...current,
+          selected: true,
+          quantity: Math.max(current.quantity, 1),
+          customBowl: {
+            ...currentBowl,
+            toppings,
+          },
+        },
+      };
+    });
   }
 
   function scrollToReviewSummary() {
@@ -329,7 +454,9 @@ export default function MenuPage() {
             </p>
             <p className="mt-4 text-sm md:text-base text-[#6E7A3C] font-medium">
               Selected items can include extra grilled chicken where enabled for
-              an additional {formatUGX(EXTRA_GRILLED_CHICKEN_PRICE)}.
+              an additional {formatUGX(EXTRA_GRILLED_CHICKEN_PRICE)}. Custom bowl
+              extra ingredients are {formatUGX(EXTRA_INGREDIENT_PRICE)} each after
+              the first {INCLUDED_TOPPINGS} toppings.
             </p>
           </motion.div>
         </div>
@@ -386,10 +513,10 @@ export default function MenuPage() {
               </div>
 
               <div className="p-6">
-                <div className="hidden grid-cols-[minmax(0,2fr)_140px_160px_150px_140px_110px] gap-4 border-b border-[#E7E1D7] pb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#8B7F74] md:grid">
+                <div className="hidden grid-cols-[minmax(0,2fr)_140px_180px_150px_140px_110px] gap-4 border-b border-[#E7E1D7] pb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#8B7F74] md:grid">
                   <span>Meal</span>
                   <span>Base price</span>
-                  <span>Add-on</span>
+                  <span>Add-ons</span>
                   <span>Quantity</span>
                   <span>Total</span>
                   <span className="text-right">Action</span>
@@ -399,31 +526,32 @@ export default function MenuPage() {
                   {selectedItems.map((item) => {
                     const selection = orderSelections[item._id];
                     const quantity = selection?.quantity ?? 1;
-                    const addOnPrice = selection?.extraChicken
-                      ? EXTRA_GRILLED_CHICKEN_PRICE
-                      : 0;
-                    const lineTotal = (item.price + addOnPrice) * quantity;
+                    const extraToppingsCount = getExtraToppingsCount(selection);
+                    const addOnDetails = [
+                      selection?.extraChicken ? `Chicken + ${formatUGX(EXTRA_GRILLED_CHICKEN_PRICE)}` : null,
+                      extraToppingsCount > 0
+                        ? `${extraToppingsCount} extra ingredient(s) + ${formatUGX(extraToppingsCount * EXTRA_INGREDIENT_PRICE)}`
+                        : null,
+                    ].filter(Boolean);
+                    const lineTotal = getItemUnitTotal(item, selection) * quantity;
 
                     return (
                       <div
                         key={`summary-${item._id}`}
-                        className="grid gap-4 py-4 md:grid-cols-[minmax(0,2fr)_140px_160px_150px_140px_110px] md:items-center"
+                        className="grid gap-4 py-4 md:grid-cols-[minmax(0,2fr)_140px_180px_150px_140px_110px] md:items-center"
                       >
                         <div>
-                          <p className="font-semibold text-[#2E2A26]">
-                            {item.name}
-                          </p>
-                          <p className="text-sm text-[#8B7F74]">
-                            {item.category}
-                          </p>
+                          <p className="font-semibold text-[#2E2A26]">{item.name}</p>
+                          <p className="text-sm text-[#8B7F74]">{item.category}</p>
+                          {isCustomBowlItem(item) && selection?.customBowl && (
+                            <p className="mt-1 text-xs leading-relaxed text-[#6C6257]">
+                              {selection.customBowl.carb}, {selection.customBowl.protein}, {selection.customBowl.greens}, {selection.customBowl.dressing}
+                            </p>
+                          )}
                         </div>
+                        <p className="text-sm text-[#5B544D]">{formatUGX(item.price)}</p>
                         <p className="text-sm text-[#5B544D]">
-                          {formatUGX(item.price)}
-                        </p>
-                        <p className="text-sm text-[#5B544D]">
-                          {selection?.extraChicken
-                            ? `Extra chicken + ${formatUGX(EXTRA_GRILLED_CHICKEN_PRICE)}`
-                            : "No add-on"}
+                          {addOnDetails.length > 0 ? addOnDetails.join(" | ") : "No add-ons"}
                         </p>
                         <div className="flex items-center gap-2">
                           <button
@@ -446,16 +574,15 @@ export default function MenuPage() {
                             <Plus className="h-4 w-4" />
                           </button>
                         </div>
-                        <p className="text-sm font-semibold text-[#6E7A3C]">
-                          {formatUGX(lineTotal)}
-                        </p>
+                        <p className="text-sm font-semibold text-[#6E7A3C]">{formatUGX(lineTotal)}</p>
                         <div className="flex justify-end">
                           <button
                             type="button"
-                            onClick={() => removeSelectedItem(item._id)}
+                            onClick={() => removeSelectedItem(item._id, item)}
                             className="inline-flex items-center gap-1 rounded-full border border-[#E2DDD2] px-3 py-1 text-xs font-medium text-[#8B7F74] transition-colors hover:border-[#D06A4E] hover:text-[#D06A4E]"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
+                            Cancel
                           </button>
                         </div>
                       </div>
@@ -473,8 +600,8 @@ export default function MenuPage() {
                     </p>
                   </div>
                   <p className="max-w-xl text-sm leading-relaxed text-[#5B544D]">
-                    Use the quantity controls to adjust how many of each meal
-                    you want, or cancel any item before sending the order.
+                    Use the quantity controls to adjust how many of each meal you
+                    want, or cancel any item before sending the order.
                   </p>
                 </div>
               </div>
@@ -492,18 +619,14 @@ export default function MenuPage() {
             className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
           >
             {filteredItems.map((item, index) => {
-              const Icon = item.icon ? iconMap[item.icon] || Coffee : Coffee;
               const imageUrl = item.image
                 ? urlFor(item.image).width(400).height(300).url()
                 : null;
-              const selection = orderSelections[item._id] ?? {
-                selected: false,
-                extraChicken: false,
-                quantity: 1,
-              };
+              const selection = orderSelections[item._id] ?? getDefaultSelection(item);
+              const customBowl = selection.customBowl ?? createDefaultCustomBowl();
+              const extraToppingsCount = getExtraToppingsCount(selection);
               const lineTotal =
-                (item.price +
-                  (selection.extraChicken ? EXTRA_GRILLED_CHICKEN_PRICE : 0)) *
+                getItemUnitTotal(item, selection) *
                 (selection.selected ? selection.quantity : 1);
 
               return (
@@ -518,9 +641,7 @@ export default function MenuPage() {
                   <div className="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-[#E8ECCF] to-[#D9D4CB]">
                     {imageUrl ? (
                       <button
-                        onClick={() =>
-                          setMenuPreview({ src: imageUrl, alt: item.name })
-                        }
+                        onClick={() => setMenuPreview({ src: imageUrl, alt: item.name })}
                         className="relative h-full w-full cursor-pointer transition-opacity hover:opacity-90"
                         aria-label={`Expand image for ${item.name}`}
                       >
@@ -532,10 +653,9 @@ export default function MenuPage() {
                         />
                       </button>
                     ) : (
-                      <>
-                        <div className="absolute inset-0 bg-black/5 transition-colors duration-300 group-hover:bg-black/0" />
-                        <Icon className="h-20 w-20 text-[#6E7A3C] opacity-40 transition-all duration-300 group-hover:scale-110 group-hover:opacity-60" />
-                      </>
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#EEF2DE] to-[#E4DED3] px-6 text-center text-lg font-medium text-[#6E7A3C]">
+                        {item.name}
+                      </div>
                     )}
                     {item.featured && (
                       <span className="absolute top-4 left-4 rounded-full bg-[#6E7A3C] px-3 py-1 text-xs font-semibold text-white shadow-md">
@@ -562,117 +682,216 @@ export default function MenuPage() {
                     <p className="mb-4 text-sm leading-relaxed text-[#5B544D]">
                       {item.description}
                     </p>
-
-                    {item.dietary && item.dietary.length > 0 && (
-                      <div className="mb-4 flex flex-wrap gap-2">
-                        {item.dietary.map((diet) => (
-                          <span
-                            key={diet}
-                            className="rounded-full bg-[#E8ECCF] px-2 py-1 text-xs text-[#6E7A3C]"
-                          >
-                            {diet}
+                    {isCustomBowlItem(item) && (
+                      <div className="mb-5 rounded-3xl border border-[#E8E1D5] bg-[#F8F5EE] p-4">
+                        <div className="mb-4 flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#6E7A3C]">
+                              Make your own bowl
+                            </p>
+                            <p className="mt-1 text-xs leading-relaxed text-[#6C6257]">
+                              Pick your carb, protein, greens, dressing, and up to {INCLUDED_TOPPINGS} toppings included. Every extra topping is {formatUGX(EXTRA_INGREDIENT_PRICE)}.
+                            </p>
+                          </div>
+                          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#6E7A3C] shadow-sm">
+                            Salad Bowl
                           </span>
-                        ))}
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <label className="block text-sm text-[#5B544D]">
+                            <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-[#8B7F74]">
+                              Choose carbs
+                            </span>
+                            <select
+                              value={customBowl.carb}
+                              onChange={(event) =>
+                                updateCustomBowlSelection(item._id, item, {
+                                  carb: event.target.value,
+                                })
+                              }
+                              className="w-full rounded-2xl border border-[#DCD4C7] bg-white px-4 py-3 text-sm text-[#2E2A26] outline-none transition-colors focus:border-[#A3AD5F]"
+                            >
+                              {CUSTOM_BOWL_OPTIONS.carbs.map((option) => (
+                                <option key={option} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+
+                          <label className="block text-sm text-[#5B544D]">
+                            <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-[#8B7F74]">
+                              Choose protein
+                            </span>
+                            <select
+                              value={customBowl.protein}
+                              onChange={(event) =>
+                                updateCustomBowlSelection(item._id, item, {
+                                  protein: event.target.value,
+                                })
+                              }
+                              className="w-full rounded-2xl border border-[#DCD4C7] bg-white px-4 py-3 text-sm text-[#2E2A26] outline-none transition-colors focus:border-[#A3AD5F]"
+                            >
+                              {CUSTOM_BOWL_OPTIONS.proteins.map((option) => (
+                                <option key={option} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+
+                          <label className="block text-sm text-[#5B544D]">
+                            <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-[#8B7F74]">
+                              Choose greens
+                            </span>
+                            <select
+                              value={customBowl.greens}
+                              onChange={(event) =>
+                                updateCustomBowlSelection(item._id, item, {
+                                  greens: event.target.value,
+                                })
+                              }
+                              className="w-full rounded-2xl border border-[#DCD4C7] bg-white px-4 py-3 text-sm text-[#2E2A26] outline-none transition-colors focus:border-[#A3AD5F]"
+                            >
+                              {CUSTOM_BOWL_OPTIONS.greens.map((option) => (
+                                <option key={option} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+
+                          <label className="block text-sm text-[#5B544D]">
+                            <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-[#8B7F74]">
+                              Choose dressing
+                            </span>
+                            <select
+                              value={customBowl.dressing}
+                              onChange={(event) =>
+                                updateCustomBowlSelection(item._id, item, {
+                                  dressing: event.target.value,
+                                })
+                              }
+                              className="w-full rounded-2xl border border-[#DCD4C7] bg-white px-4 py-3 text-sm text-[#2E2A26] outline-none transition-colors focus:border-[#A3AD5F]"
+                            >
+                              {CUSTOM_BOWL_OPTIONS.dressings.map((option) => (
+                                <option key={option} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                        </div>
+
+                        <div className="mt-4">
+                          <div className="mb-2 flex items-center justify-between gap-3">
+                            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#8B7F74]">
+                              Choose toppings
+                            </p>
+                            <p className="text-xs text-[#6C6257]">
+                              {customBowl.toppings.length} selected | {Math.max(INCLUDED_TOPPINGS - customBowl.toppings.length, 0)} included left
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {CUSTOM_BOWL_OPTIONS.toppings.map((topping) => {
+                              const isSelected = customBowl.toppings.includes(topping);
+
+                              return (
+                                <button
+                                  key={topping}
+                                  type="button"
+                                  onClick={() => toggleCustomBowlTopping(item._id, item, topping)}
+                                  className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition-all ${
+                                    isSelected
+                                      ? "border-[#6E7A3C] bg-[#6E7A3C] text-white shadow-sm"
+                                      : "border-[#DCD4C7] bg-white text-[#5B544D] hover:border-[#A3AD5F] hover:text-[#2E2A26]"
+                                  }`}
+                                >
+                                  {isSelected && <Check className="h-3.5 w-3.5" />}
+                                  {topping}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <p className="mt-3 text-xs leading-relaxed text-[#6C6257]">
+                            First {INCLUDED_TOPPINGS} toppings are included. Extra toppings: {extraToppingsCount} x {formatUGX(EXTRA_INGREDIENT_PRICE)}.
+                          </p>
+                        </div>
                       </div>
                     )}
 
-                    <div className="mb-5 flex items-center justify-between gap-3 rounded-2xl bg-[#F7F3EC] px-4 py-3">
-                      <span className="rounded-full bg-[#F0EDE7] px-3 py-1 text-xs uppercase tracking-wider text-[#8B7F74]">
-                        {item.category}
-                      </span>
-                      <p className="text-right text-sm">
-                        <span className="block text-[#8B7F74]">
+                    <div className="mb-5 rounded-2xl bg-[#F3F0E8] px-4 py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-sm font-medium text-[#5B544D]">
                           Current total
                         </span>
-                        <span className="font-semibold text-[#2E2A26]">
+                        <span className="text-lg font-bold text-[#6E7A3C]">
                           {formatUGX(lineTotal)}
                         </span>
-                      </p>
-                    </div>
-
-                    <div className="space-y-3">
-                      <label className="flex cursor-pointer items-center justify-between rounded-2xl border border-[#DCD4C6] px-4 py-3 transition-colors hover:border-[#A3AD5F] hover:bg-[#FBF9F4]">
-                        <div>
-                          <p className="text-sm font-semibold text-[#2E2A26]">
-                            Add this meal to order
-                          </p>
-                          <p className="text-xs text-[#8B7F74]">
-                            Select this item for your WhatsApp order summary
-                          </p>
-                        </div>
-                        <span className="relative flex items-center">
-                          <input
-                            type="checkbox"
-                            checked={selection.selected}
-                            onChange={() => toggleItemSelection(item)}
-                            className="peer sr-only"
-                            aria-label={`Add ${item.name} to order`}
-                          />
-                          <span className="flex h-6 w-6 items-center justify-center rounded-md border border-[#A3AD5F] bg-white text-transparent transition-all peer-checked:bg-[#6E7A3C] peer-checked:text-white">
-                            <Check className="h-4 w-4" />
-                          </span>
-                        </span>
-                      </label>
-
-                      {item.allowExtraGrilledChicken && (
-                        <label
-                          className={`flex items-center justify-between rounded-2xl border px-4 py-3 transition-colors ${
-                            selection.selected
-                              ? "border-[#A3AD5F]/50 bg-[#F7FAEE]"
-                              : "border-[#E5DED1] bg-[#FAF8F3]"
-                          }`}
-                        >
-                          <div>
-                            <p className="text-sm font-semibold text-[#2E2A26]">
-                              Extra grilled chicken
-                            </p>
-                            <p className="text-xs text-[#8B7F74]">
-                              Add {formatUGX(EXTRA_GRILLED_CHICKEN_PRICE)} to
-                              this meal
-                            </p>
-                          </div>
-                          <span className="relative flex items-center">
-                            <input
-                              type="checkbox"
-                              checked={selection.extraChicken}
-                              onChange={() => toggleExtraChicken(item._id)}
-                              className="peer sr-only"
-                              aria-label={`Add extra grilled chicken to ${item.name}`}
-                            />
-                            <span className="inline-flex rounded-full border border-[#C8C0B4] bg-white p-1 transition-colors peer-checked:border-[#6E7A3C] peer-checked:bg-[#E8F0D0]">
-                              <span
-                                className={`flex h-6 w-12 items-center rounded-full px-1 transition-colors ${
-                                  selection.extraChicken
-                                    ? "justify-end bg-[#6E7A3C]"
-                                    : "justify-start bg-[#D7D1C7]"
-                                }`}
-                              >
-                                <span className="block h-4 w-4 rounded-full bg-white shadow-sm" />
-                              </span>
-                            </span>
-                          </span>
-                        </label>
+                      </div>
+                      {selection.selected && (
+                        <p className="mt-2 text-xs text-[#6C6257]">
+                          Quantity: {selection.quantity}. This total updates instantly as the order changes.
+                        </p>
                       )}
                     </div>
 
-                    <div className="mt-5 flex items-center justify-between text-sm">
-                      <span className="text-[#8B7F74]">
-                        {selection.selected
-                          ? `Included in your order summary${
-                              selection.quantity > 1
-                                ? ` • Qty ${selection.quantity}`
-                                : ""
-                            }`
-                          : "Select to include in order"}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={scrollToReviewSummary}
-                        className="inline-flex items-center gap-1 font-medium text-[#6E7A3C] transition-colors hover:text-[#4A5522]"
-                      >
-                        Review summary
-                        <ChevronRight className="h-4 w-4" />
-                      </button>
+                    <div className="space-y-3">
+                      <label className={`flex cursor-pointer items-center justify-between rounded-2xl border px-4 py-3 transition-all ${
+                        selection.selected
+                          ? "border-[#6E7A3C] bg-[#F2F6E3]"
+                          : "border-[#DCD4C7] bg-white hover:border-[#A3AD5F]"
+                      }`}>
+                        <div className="pr-3">
+                          <p className="text-sm font-semibold text-[#2E2A26]">
+                            Add to order
+                          </p>
+                          <p className="text-xs text-[#6C6257]">
+                            Include this meal in your WhatsApp order summary.
+                          </p>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={selection.selected}
+                          onChange={() => toggleItemSelection(item)}
+                          className="h-5 w-5 rounded border-[#B9B1A4] text-[#6E7A3C] focus:ring-[#A3AD5F]"
+                        />
+                      </label>
+
+                      {(item.allowExtraGrilledChicken || isCustomBowlItem(item)) && (
+                        <label className={`flex cursor-pointer items-center justify-between rounded-2xl border px-4 py-3 transition-all ${
+                          selection.extraChicken
+                            ? "border-[#6E7A3C] bg-[#F2F6E3]"
+                            : "border-[#DCD4C7] bg-white hover:border-[#A3AD5F]"
+                        }`}>
+                          <div className="pr-3">
+                            <p className="text-sm font-semibold text-[#2E2A26]">
+                              Add grilled chicken breast
+                            </p>
+                            <p className="text-xs text-[#6C6257]">
+                              Adds {formatUGX(EXTRA_GRILLED_CHICKEN_PRICE)} to this meal.
+                            </p>
+                          </div>
+                          <input
+                            type="checkbox"
+                            checked={selection.extraChicken}
+                            onChange={() => toggleExtraChicken(item._id, item)}
+                            className="h-5 w-5 rounded border-[#B9B1A4] text-[#6E7A3C] focus:ring-[#A3AD5F]"
+                          />
+                        </label>
+                      )}
+
+                      {selectedItems.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={scrollToReviewSummary}
+                          className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#D7D1C6] px-5 py-3 text-sm font-semibold text-[#2E2A26] transition-all hover:border-[#A3AD5F] hover:text-[#6E7A3C]"
+                        >
+                          Review summary
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -683,75 +902,72 @@ export default function MenuPage() {
       </div>
 
       {selectedItems.length > 0 && (
-        <div className="fixed inset-x-0 bottom-4 z-40 px-4 sm:hidden">
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-between rounded-2xl bg-[#2E2A26] px-5 py-4 text-[#F5F3EE] shadow-2xl"
-          >
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-[#A3AD5F]">
-                Selected meals
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#D7D1C6] bg-white/95 px-4 py-3 shadow-2xl backdrop-blur md:hidden">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={scrollToReviewSummary}
+              className="text-left"
+            >
+              <p className="text-xs uppercase tracking-[0.2em] text-[#8B7F74]">
+                Review summary
               </p>
-              <p className="text-sm font-semibold">
+              <p className="text-sm font-semibold text-[#2E2A26]">
                 {selectedItems.length} item(s) | {formatUGX(grandTotal)}
               </p>
-            </div>
-            <span className="inline-flex items-center gap-2 text-sm font-semibold">
-              <MessageCircle className="h-4 w-4" />
-              WhatsApp
-            </span>
-          </a>
-        </div>
-      )}
-
-      {menuPreview && (
-        <div
-          onClick={() => {
-            setMenuPreview(null);
-            document.body.style.overflow = "unset";
-          }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
-        >
-          <div className="relative max-h-[90vh] w-full max-w-4xl">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setMenuPreview(null);
-                document.body.style.overflow = "unset";
-              }}
-              className="absolute -top-12 right-0 z-50 text-white transition-colors hover:text-[#A3AD5F]"
-              aria-label="Close preview"
-            >
-              <svg
-                className="h-8 w-8"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
             </button>
-            <div
-              className="relative h-full min-h-[400px] w-full"
-              onClick={(e) => e.stopPropagation()}
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-[#6E7A3C] px-5 py-3 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-[1.02]"
             >
-              <Image
-                src={menuPreview.src}
-                alt={menuPreview.alt}
-                fill
-                className="object-contain"
-              />
-            </div>
+              <MessageCircle className="h-4 w-4" />
+              Order Now
+            </a>
           </div>
         </div>
       )}
+
+      <AnimatePresence>
+        {menuPreview && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+            onClick={() => setMenuPreview(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="relative max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="relative aspect-[4/3] w-full bg-[#F5F3EE]">
+                <Image
+                  src={menuPreview.src}
+                  alt={menuPreview.alt}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <div className="flex items-center justify-between border-t border-[#E7E1D7] px-5 py-4">
+                <p className="text-sm font-medium text-[#2E2A26]">{menuPreview.alt}</p>
+                <button
+                  type="button"
+                  onClick={() => setMenuPreview(null)}
+                  className="rounded-full border border-[#D7D1C6] px-4 py-2 text-sm font-medium text-[#5B544D] transition-colors hover:border-[#A3AD5F] hover:text-[#2E2A26]"
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

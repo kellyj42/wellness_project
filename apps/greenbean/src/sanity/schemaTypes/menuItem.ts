@@ -6,9 +6,6 @@ export const menuItem = defineType({
   type: "document",
 
   fields: [
-    // ===============================
-    // BASIC INFORMATION
-    // ===============================
     defineField({
       name: "name",
       title: "Name",
@@ -38,7 +35,7 @@ export const menuItem = defineType({
           { title: "Toast", value: "Toast" },
           { title: "Wraps", value: "Wraps" },
           { title: "Sandwiches", value: "Sandwiches" },
-          { title: "Pasta & Quinotto", value: "Pasta & Quinotto" },
+          { title: "Pastas", value: "Pastas" },
           { title: "Salad Bowls", value: "Salad Bowls" },
           { title: "Mexican Corner", value: "Mexican Corner" },
           { title: "Burgers", value: "Burgers" },
@@ -75,6 +72,15 @@ export const menuItem = defineType({
     }),
 
     defineField({
+      name: "enableCustomBowlBuilder",
+      title: "Enable Custom Bowl Builder",
+      type: "boolean",
+      description:
+        "Use this only on the standalone Salad Bowls dish named Make Your Own Bowl so customers can build their own salad. Do not enable it on the regular salad dishes.",
+      initialValue: false,
+    }),
+
+    defineField({
       name: "description",
       title: "Description",
       type: "text",
@@ -82,14 +88,11 @@ export const menuItem = defineType({
       validation: (Rule) => Rule.required().max(250),
     }),
 
-    // ===============================
-    // OPTIONAL DISPLAY FIELDS
-    // ===============================
     defineField({
       name: "tag",
       title: "Tag (Short Label)",
       type: "string",
-      description: "Example: High Protein, Vegan, Gluten Free",
+      description: "Example: Best Seller or Chef Pick",
     }),
 
     defineField({
@@ -99,44 +102,6 @@ export const menuItem = defineType({
       options: { hotspot: true },
     }),
 
-    defineField({
-      name: "icon",
-      title: "Icon (Lucide Mapping)",
-      type: "string",
-      options: {
-        list: [
-          { title: "Coffee", value: "Coffee" },
-          { title: "Beef", value: "Beef" },
-          { title: "Apple", value: "Apple" },
-          { title: "Sun", value: "Sun" },
-          { title: "Leaf", value: "Leaf" },
-        ],
-      },
-      description: "Used to map to Lucide icons in the frontend.",
-    }),
-
-    // ===============================
-    // DIETARY FLAGS
-    // ===============================
-    defineField({
-      name: "dietary",
-      title: "Dietary Labels",
-      type: "array",
-      of: [{ type: "string" }],
-      options: {
-        list: [
-          { title: "Vegetarian", value: "Vegetarian" },
-          { title: "Vegan", value: "Vegan" },
-          { title: "Gluten Free", value: "Gluten Free" },
-          { title: "Contains Nuts", value: "Contains Nuts" },
-          { title: "High Protein", value: "High Protein" },
-        ],
-      },
-    }),
-
-    // ===============================
-    // FEATURED / SPECIAL DISPLAY
-    // ===============================
     defineField({
       name: "featured",
       title: "Featured Item",
