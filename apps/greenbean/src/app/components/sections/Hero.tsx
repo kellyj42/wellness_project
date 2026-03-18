@@ -228,7 +228,7 @@ export default function Hero() {
             className="relative w-full h-[600px] rounded-3xl overflow-hidden shadow-2xl"
           >
             <Image
-              src="/images/hero-meal.jpg" // Replace with a more vibrant image if available
+              src="/images/meal.jpg"
               alt="Healthy meal prepared by Green Bean"
               fill
               className="object-cover"

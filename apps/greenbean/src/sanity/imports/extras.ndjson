@@ -1,0 +1,32 @@
+{"_id":"menuItem-extra-brown-rice","_type":"menuItem","name":"Brown rice","slug":{"current":"brown-rice"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-quinoa","_type":"menuItem","name":"Quinoa","slug":{"current":"quinoa"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-cous-cous","_type":"menuItem","name":"Cous-cous","slug":{"current":"cous-cous"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-eggs","_type":"menuItem","name":"Eggs","slug":{"current":"eggs"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-beans","_type":"menuItem","name":"Beans","slug":{"current":"beans"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-chickpeas","_type":"menuItem","name":"Chickpeas","slug":{"current":"chickpeas"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-lentils","_type":"menuItem","name":"Lentils","slug":{"current":"lentils"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-tofu","_type":"menuItem","name":"Tofu","slug":{"current":"tofu"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-falafel","_type":"menuItem","name":"Falafel","slug":{"current":"falafel"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-nuts","_type":"menuItem","name":"Nuts","slug":{"current":"nuts"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-lettuce","_type":"menuItem","name":"Lettuce","slug":{"current":"lettuce"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-kale","_type":"menuItem","name":"Kale","slug":{"current":"kale"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-spinach","_type":"menuItem","name":"Spinach","slug":{"current":"spinach"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-cucumber","_type":"menuItem","name":"Cucumber","slug":{"current":"cucumber"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-tomato","_type":"menuItem","name":"Tomato","slug":{"current":"tomato"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-avocado","_type":"menuItem","name":"Avocado","slug":{"current":"avocado"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-red-bell-pepper","_type":"menuItem","name":"Red bell pepper","slug":{"current":"red-bell-pepper"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-rocket","_type":"menuItem","name":"Rocket","slug":{"current":"rocket"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-sweet-corn","_type":"menuItem","name":"Sweet corn","slug":{"current":"sweet-corn"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-red-cabbage","_type":"menuItem","name":"Red cabbage","slug":{"current":"red-cabbage"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-olives","_type":"menuItem","name":"Olives","slug":{"current":"olives"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-feta-cheese","_type":"menuItem","name":"Feta cheese","slug":{"current":"feta-cheese"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-carrots","_type":"menuItem","name":"Carrots","slug":{"current":"carrots"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-raisins","_type":"menuItem","name":"Raisins","slug":{"current":"raisins"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-spring-onions","_type":"menuItem","name":"Spring onions","slug":{"current":"spring-onions"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-cilantro","_type":"menuItem","name":"Cilantro","slug":{"current":"cilantro"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-sun-dried-tomatoes","_type":"menuItem","name":"Sun-dried tomatoes","slug":{"current":"sun-dried-tomatoes"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-honey-mustard","_type":"menuItem","name":"Honey mustard","slug":{"current":"honey-mustard"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-peanut-butter-honey","_type":"menuItem","name":"Peanut butter honey","slug":{"current":"peanut-butter-honey"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-tahini","_type":"menuItem","name":"Tahini","slug":{"current":"tahini"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-lemon-vinaigrette-vegan","_type":"menuItem","name":"Lemon vinaigrette (vegan)","slug":{"current":"lemon-vinaigrette-vegan"},"category":"Extras","price":3000,"available":true}
+{"_id":"menuItem-extra-cashew-dressing-vegan","_type":"menuItem","name":"Cashew dressing (vegan)","slug":{"current":"cashew-dressing-vegan"},"category":"Extras","price":3000,"available":true}
