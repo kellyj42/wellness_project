@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Search } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import {
@@ -39,6 +40,7 @@ export default function MenuPage() {
   const [categories, setCategories] = useState<string[]>(["All"]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
   const [menuPreview, setMenuPreview] = useState<MenuPreviewState | null>(null);
   const [orderSelections, setOrderSelections] = useState<Record<string, OrderSelection>>({});
   const [expandedExtraPickers, setExpandedExtraPickers] = useState<Record<string, boolean>>({});
@@ -108,12 +110,30 @@ export default function MenuPage() {
   );
 
   const filteredItems = useMemo(() => {
-    if (activeCategory === "All") {
-      return displayItems;
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    const categoryItems =
+      activeCategory === "All"
+        ? displayItems
+        : displayItems.filter((item) => item.category === activeCategory);
+
+    if (!normalizedQuery) {
+      return categoryItems;
     }
 
-    return displayItems.filter((item) => item.category === activeCategory);
-  }, [activeCategory, displayItems]);
+    return categoryItems.filter((item) => {
+      const searchableText = [
+        item.name,
+        item.description ?? "",
+        item.category,
+        item.tag ?? "",
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      return searchableText.includes(normalizedQuery);
+    });
+  }, [activeCategory, displayItems, searchQuery]);
 
   const selectedItems = useMemo(
     () => displayItems.filter((item) => orderSelections[item._id]?.selected),
@@ -493,6 +513,31 @@ export default function MenuPage() {
           onSelectCategory={setActiveCategory}
         />
 
+        <div className="mb-8">
+          <label className="mx-auto block max-w-2xl">
+            <span className="sr-only">Search menu items</span>
+            <div className="flex items-center gap-3 rounded-[1.75rem] border border-[#DCD4C7] bg-white px-4 py-3 shadow-sm">
+              <Search className="h-5 w-5 text-[#8B7F74]" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search meals, drinks, or ingredients"
+                className="w-full bg-transparent text-sm text-[#2E2A26] outline-none placeholder:text-[#8B7F74]"
+              />
+              {searchQuery.trim() && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="rounded-full border border-[#DCD4C7] px-3 py-1 text-xs font-medium text-[#5B544D] transition-colors hover:border-[#A3AD5F] hover:text-[#2E2A26]"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </label>
+        </div>
+
         <OrderSummary
           selectedItems={selectedItems}
           orderSelections={orderSelections}
@@ -511,7 +556,7 @@ export default function MenuPage() {
 
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeCategory}
+            key={`${activeCategory}-${searchQuery}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -557,6 +602,17 @@ export default function MenuPage() {
             })}
           </motion.div>
         </AnimatePresence>
+
+        {filteredItems.length === 0 && (
+          <div className="rounded-[2rem] border border-[#E2DDD2] bg-white px-6 py-12 text-center shadow-sm">
+            <p className="text-lg font-semibold text-[#2E2A26]">
+              No menu items found
+            </p>
+            <p className="mt-2 text-sm text-[#6C6257]">
+              Try a different search term or switch categories.
+            </p>
+          </div>
+        )}
       </div>
 
       <MenuPreviewModal preview={menuPreview} onClose={() => setMenuPreview(null)} />
