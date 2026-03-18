@@ -25,6 +25,7 @@ export interface OrderSelection {
   selected: boolean;
   extraChicken: boolean;
   quantity: number;
+  glutenFree?: boolean;
   ingredientSwap?: {
     remove: string;
     replaceWith: string;

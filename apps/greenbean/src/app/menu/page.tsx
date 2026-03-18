@@ -30,6 +30,7 @@ import {
   formatUGX,
   getDefaultSelection,
   getItemUnitTotal,
+  isCrepeItem,
   isCustomBowlItem,
   isEggAvoToastName,
   isExtraItem,
@@ -190,6 +191,22 @@ export default function MenuPage() {
           selected: true,
           extraChicken: !current.extraChicken,
           quantity: Math.max(current.quantity, 1),
+        },
+      };
+    });
+  }
+
+  function toggleGlutenFree(itemId: string, item: MenuItem) {
+    setOrderSelections((prev) => {
+      const current = prev[itemId] ?? getDefaultSelection(item);
+
+      return {
+        ...prev,
+        [itemId]: {
+          ...current,
+          selected: true,
+          quantity: Math.max(current.quantity, 1),
+          glutenFree: isCrepeItem(item) ? !current.glutenFree : false,
         },
       };
     });
@@ -581,6 +598,7 @@ export default function MenuPage() {
                   onPreviewImage={setMenuPreview}
                   onToggleItemSelection={toggleItemSelection}
                   onToggleExtraChicken={toggleExtraChicken}
+                  onToggleGlutenFree={toggleGlutenFree}
                   onUpdateCustomBowlSelection={updateCustomBowlSelection}
                   onToggleCustomBowlTopping={toggleCustomBowlTopping}
                   onToggleWrapCombo={toggleWrapCombo}

@@ -33,6 +33,7 @@ export const menuItem = defineType({
           { title: "Breakfast", value: "Breakfast" },
           { title: "Breakfast Bowls", value: "Breakfast Bowls" },
           { title: "Toast", value: "Toast" },
+          { title: "Crepes", value: "Crepes" },
           { title: "Wraps", value: "Wraps" },
           { title: "Sandwiches", value: "Sandwiches" },
           { title: "Pastas", value: "Pastas" },

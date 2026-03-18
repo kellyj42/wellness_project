@@ -17,6 +17,7 @@ import {
   getItemUnitTotal,
   getLinkedExtrasTotal,
   isComboMealItem,
+  isCrepeItem,
   isCustomBowlItem,
   isCustomJuiceItem,
   isToastItem,
@@ -111,6 +112,7 @@ export function OrderSummary({
                   selection?.extraChicken
                     ? `Chicken + ${formatUGX(EXTRA_GRILLED_CHICKEN_PRICE)}`
                     : null,
+                  selection?.glutenFree && isCrepeItem(item) ? "Gluten-free" : null,
                   selection?.ingredientSwap?.remove?.trim() &&
                   selection?.ingredientSwap?.replaceWith?.trim()
                     ? `Swap ${selection.ingredientSwap.remove.trim()} -> ${selection.ingredientSwap.replaceWith.trim()}`
@@ -154,6 +156,11 @@ export function OrderSummary({
                       {linkedExtras.length > 0 && (
                         <p className="mt-1 text-xs leading-relaxed text-[#6C6257]">
                           Extras: {linkedExtras.map((extraItem) => extraItem.name).join(", ")}
+                        </p>
+                      )}
+                      {selection?.glutenFree && isCrepeItem(item) && (
+                        <p className="mt-1 text-xs leading-relaxed text-[#6C6257]">
+                          Gluten-free option selected
                         </p>
                       )}
                       {selection?.ingredientSwap?.remove?.trim() &&

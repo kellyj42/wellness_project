@@ -21,6 +21,7 @@ import {
   getExtraToppingsCount,
   getItemUnitTotal,
   isComboMealItem,
+  isCrepeItem,
   isCustomBowlItem,
   isCustomJuiceItem,
   isToastItem,
@@ -38,6 +39,7 @@ interface MenuCardProps {
   onPreviewImage: (preview: MenuPreviewState) => void;
   onToggleItemSelection: (item: MenuItem) => void;
   onToggleExtraChicken: (itemId: string, item: MenuItem) => void;
+  onToggleGlutenFree: (itemId: string, item: MenuItem) => void;
   onUpdateCustomBowlSelection: (
     itemId: string,
     item: MenuItem,
@@ -75,6 +77,7 @@ export function MenuCard({
   onPreviewImage,
   onToggleItemSelection,
   onToggleExtraChicken,
+  onToggleGlutenFree,
   onUpdateCustomBowlSelection,
   onToggleCustomBowlTopping,
   onToggleWrapCombo,
@@ -599,6 +602,29 @@ export function MenuCard({
                 type="checkbox"
                 checked={selection.extraChicken}
                 onChange={() => onToggleExtraChicken(item._id, item)}
+                className="h-5 w-5 rounded border-[#B9B1A4] text-[#6E7A3C] focus:ring-[#A3AD5F]"
+              />
+            </label>
+          )}
+
+          {isCrepeItem(item) && (
+            <label className={`flex cursor-pointer items-center justify-between rounded-2xl border px-4 py-3 transition-all ${
+              selection.glutenFree
+                ? "border-[#6E7A3C] bg-[#F2F6E3]"
+                : "border-[#DCD4C7] bg-white hover:border-[#A3AD5F]"
+            }`}>
+              <div className="pr-3">
+                <p className="text-sm font-semibold text-[#2E2A26]">
+                  Make this gluten-free
+                </p>
+                <p className="text-xs text-[#6C6257]">
+                  Optional for clients who prefer a gluten-free crepe.
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={selection.glutenFree ?? false}
+                onChange={() => onToggleGlutenFree(item._id, item)}
                 className="h-5 w-5 rounded border-[#B9B1A4] text-[#6E7A3C] focus:ring-[#A3AD5F]"
               />
             </label>

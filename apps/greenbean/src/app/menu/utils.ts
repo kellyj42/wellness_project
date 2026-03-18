@@ -53,6 +53,10 @@ export function isExtraItem(item: MenuItem) {
   return item.category === EXTRA_CATEGORY;
 }
 
+export function isCrepeItem(item: MenuItem) {
+  return item.name.toLowerCase().includes("crepe");
+}
+
 export function isEggAvoToastName(name?: string) {
   return name === EGG_AVO_TOAST_NAME;
 }
@@ -127,6 +131,7 @@ export function getDefaultSelection(item: MenuItem): OrderSelection {
     selected: false,
     extraChicken: false,
     quantity: 1,
+    glutenFree: false,
     ingredientSwap: {
       remove: "",
       replaceWith: "",
@@ -154,6 +159,9 @@ export function buildWhatsAppMessage(
     const hasIngredientSwap =
       Boolean(selection?.ingredientSwap?.remove?.trim()) &&
       Boolean(selection?.ingredientSwap?.replaceWith?.trim());
+    const glutenFreeLabel = isCrepeItem(item)
+      ? `   Gluten-free option: ${selection?.glutenFree ? "Yes" : "No"}`
+      : null;
     const ingredientSwapLabel = hasIngredientSwap
       ? `   Ingredient swap: Remove ${selection?.ingredientSwap?.remove?.trim()} | Replace with ${selection?.ingredientSwap?.replaceWith?.trim()}`
       : "   Ingredient swap: None";
@@ -178,6 +186,7 @@ export function buildWhatsAppMessage(
         `   Category: ${item.category}`,
         `   Quantity: ${quantity}`,
         `   Base bowl: ${formatUGX(item.price)} each`,
+        ...(glutenFreeLabel ? [glutenFreeLabel] : []),
         `   Carb: ${bowl.carb}`,
         `   Protein: ${bowl.protein}`,
         `   Greens: ${bowl.greens}`,
@@ -198,6 +207,7 @@ export function buildWhatsAppMessage(
         `   Category: ${item.category}`,
         `   Quantity: ${quantity}`,
         `   Base meal: ${formatUGX(item.price)} each`,
+        ...(glutenFreeLabel ? [glutenFreeLabel] : []),
         `   Toast style: ${selection?.halfToast ? "Half & Half" : "Full toast"}`,
         ...(selection?.halfToast ? [`   Toast pairing: ${item.name} + ${selection.halfToast}`] : []),
         ...(toastNeedsEggStyle(item, selection)
@@ -222,6 +232,7 @@ export function buildWhatsAppMessage(
         `   Quantity: ${quantity}`,
         `   Order type: ${selection?.wrapCombo ? `${isWrapItem(item) ? "Wrap" : "Sandwich"} Combo` : `${isWrapItem(item) ? "Wrap" : "Sandwich"} only`}`,
         `   Base price: ${formatUGX(selection?.wrapCombo ? WRAP_COMBO_PRICE : item.price)} each`,
+        ...(glutenFreeLabel ? [glutenFreeLabel] : []),
         ...(selection?.wrapCombo
           ? [`   Side choice: ${selection.wrapComboSide ?? WRAP_COMBO_SIDES[0]}`]
           : []),
@@ -247,6 +258,7 @@ export function buildWhatsAppMessage(
         `   Juice type: ${selection?.juiceType ?? "Plain"}`,
         `   Flavour choice: ${selection?.juiceFlavors?.length ? selection.juiceFlavors.join(", ") : JUICE_FLAVOR_OPTIONS[0]}`,
         `   Base price: ${formatUGX(item.price)} each`,
+        ...(glutenFreeLabel ? [glutenFreeLabel] : []),
         `   Extra flavours: ${extraJuiceFlavorsCount > 0 ? `${extraJuiceFlavorsCount} x ${formatUGX(EXTRA_INGREDIENT_PRICE)}` : "None"}`,
         ingredientSwapLabel,
         linkedExtrasLabel,
@@ -260,6 +272,7 @@ export function buildWhatsAppMessage(
       `   Category: ${item.category}`,
       `   Quantity: ${quantity}`,
       `   Base meal: ${formatUGX(item.price)} each`,
+      ...(glutenFreeLabel ? [glutenFreeLabel] : []),
       `   Extra grilled chicken: ${selection?.extraChicken ? formatUGX(EXTRA_GRILLED_CHICKEN_PRICE) + " each" : "No"}`,
       ingredientSwapLabel,
       linkedExtrasLabel,
