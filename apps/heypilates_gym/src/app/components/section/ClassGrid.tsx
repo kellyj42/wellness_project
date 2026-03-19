@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import {
   Users,
   Clock3,
@@ -77,17 +78,49 @@ const getPriceLabel = (price?: string) => {
 
 const toClassSlug = (name: string) => name.toLowerCase().replace(/\s+/g, "-");
 
+const getPricingDetails = (classItem: ClassType) => {
+  const normalizedName = classItem.name.trim().toLowerCase();
+
+  if (normalizedName === "reformer pilates") {
+    return {
+      singlePrice: "60,000 UGX",
+      packagePrice: "400,000 UGX",
+      packageLabel: "8-class pass",
+      packageValidity: "6 weeks",
+    };
+  }
+
+  return {
+    singlePrice: getPriceLabel(classItem.singlePrice),
+    packagePrice: getPriceLabel(classItem.packagePrice),
+    packageLabel: "Class pass",
+    packageValidity: classItem.packageValidity,
+  };
+};
+
 export default function ClassGrid({ classes }: ClassGridProps) {
+  const [expandedClassIds, setExpandedClassIds] = useState<string[]>([]);
+
+  const toggleDescription = (classId: string) => {
+    setExpandedClassIds((prev) =>
+      prev.includes(classId)
+        ? prev.filter((id) => id !== classId)
+        : [...prev, classId],
+    );
+  };
+
   return (
     <div className="space-y-8 px-2 sm:space-y-12 sm:px-0">
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
         {classes.map((classItem) => {
+          const isExpanded = expandedClassIds.includes(classItem._id);
           const category = getCategoryMeta(classItem.category);
           const benefits = classItem.benefits ?? [];
           const equipment = classItem.equipment ?? [];
           const displayedBenefits = benefits.slice(0, 2);
           const displayedEquipment = equipment.slice(0, 3);
           const accentColor = classItem.color || "#7C8F69";
+          const pricing = getPricingDetails(classItem);
 
           return (
             <article
@@ -164,14 +197,30 @@ export default function ClassGrid({ classes }: ClassGridProps) {
                       Price
                     </p>
                     <p className="mt-1 text-sm font-semibold text-brand-charcoal">
-                      {getPriceLabel(classItem.singlePrice)}
+                      {pricing.singlePrice}
                     </p>
                   </div>
                 </div>
 
-                <p className="mt-5 text-sm leading-7 text-brand-muted line-clamp-3 sm:text-base">
-                  {classItem.description || "A focused movement class designed to build strength, control, and confidence."}
-                </p>
+                <div className="mt-5">
+                  <p
+                    className={`text-sm leading-7 text-brand-muted sm:text-base ${
+                      isExpanded ? "" : "line-clamp-3"
+                    }`}
+                  >
+                    {classItem.description ||
+                      "A focused movement class designed to build strength, control, and confidence."}
+                  </p>
+                  {classItem.description && classItem.description.length > 160 && (
+                    <button
+                      type="button"
+                      onClick={() => toggleDescription(classItem._id)}
+                      className="mt-2 text-sm font-semibold text-brand-sageDark transition hover:text-brand-sage"
+                    >
+                      {isExpanded ? "Show less" : "Read more"}
+                    </button>
+                  )}
+                </div>
 
                 {displayedBenefits.length > 0 && (
                   <div className="mt-5">
@@ -216,7 +265,7 @@ export default function ClassGrid({ classes }: ClassGridProps) {
                   </div>
                 )}
 
-                {(classItem.packagePrice || classItem.packageValidity) && (
+                {(pricing.packagePrice !== "Contact us" || pricing.packageValidity) && (
                   <div
                     className="mt-6 rounded-2xl p-4 text-sm"
                     style={{ backgroundColor: `${accentColor}12` }}
@@ -224,11 +273,18 @@ export default function ClassGrid({ classes }: ClassGridProps) {
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <p className="font-semibold text-brand-charcoal">
-                          Package option
+                          Prices
                         </p>
+                        {pricing.singlePrice !== "Contact us" && (
+                          <p className="mt-1 text-brand-muted">
+                            Walk-in class: {pricing.singlePrice}
+                          </p>
+                        )}
                         <p className="mt-1 text-brand-muted">
-                          {getPriceLabel(classItem.packagePrice)}
-                          {classItem.packageValidity ? ` for ${classItem.packageValidity}` : ""}
+                          {pricing.packageLabel}: {pricing.packagePrice}
+                          {pricing.packageValidity
+                            ? ` for ${pricing.packageValidity}`
+                            : ""}
                         </p>
                       </div>
                       <BadgeCheck className="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-sageDark" />

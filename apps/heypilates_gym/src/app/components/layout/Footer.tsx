@@ -60,21 +60,14 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/pricing"
+                  href="/teachers"
                   className="text-brand-muted hover:text-brand-sageDark transition"
                 >
-                  Pricing & Packages
+                  Teachers
                 </Link>
               </li>
 
-              <li>
-                <Link
-                  href="/testimonials"
-                  className="text-brand-muted hover:text-brand-sageDark transition"
-                >
-                  Success Stories
-                </Link>
-              </li>
+              
             </ul>
           </div>
 
@@ -116,7 +109,7 @@ export default function Footer() {
                   Kampala, Uganda
                   <br />
                   <span className="text-sm">
-                   Plot 18 Bandali rise, bugolobi-kampala 
+                   Plot 18 Bandali rise, Bugolobi-Kampala 
                   </span>
                 </span>
               </li>

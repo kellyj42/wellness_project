@@ -11,7 +11,7 @@ export default function HeroDescription({ conceptText }: Props) {
     "
     >
       {conceptText ||
-        "Boutique movement training blending Pilates, Barre and TRX to build strength, balance, and body awareness."}
+        "Boutique movement training blending Pilates and TRX to build strength, balance, and body awareness."}
     </p>
   );
 }

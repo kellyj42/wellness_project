@@ -92,38 +92,7 @@ export default function PrivateTrainingCompact() {
 
           {/* Right Column */}
           <div className="bg-white rounded-2xl p-8 shadow-lg border border-brand-sageLight">
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              <div className="bg-brand-cream rounded-xl p-6 text-center">
-                <div className="text-3xl font-bold text-brand-sageDark mb-2">
-                  94%
-                </div>
-                <div className="text-sm text-brand-muted">
-                  Goal Achievement Rate
-                </div>
-              </div>
-              <div className="bg-brand-cream rounded-xl p-6 text-center">
-                <div className="text-3xl font-bold text-brand-sageDark mb-2">
-                  4.9
-                </div>
-                <div className="text-sm text-brand-muted">
-                  Client Satisfaction
-                </div>
-              </div>
-              <div className="bg-brand-cream rounded-xl p-6 text-center">
-                <div className="text-3xl font-bold text-brand-sageDark mb-2">
-                  1:1
-                </div>
-                <div className="text-sm text-brand-muted">
-                  Personal Attention
-                </div>
-              </div>
-              <div className="bg-brand-cream rounded-xl p-6 text-center">
-                <div className="text-3xl font-bold text-brand-sageDark mb-2">
-                  100%
-                </div>
-                <div className="text-sm text-brand-muted">Customized Plans</div>
-              </div>
-            </div>
+           
 
             <div className="space-y-4">
               <h4 className="font-bold text-brand-charcoal text-lg">

@@ -10,8 +10,8 @@ const pricingPlans = [
     color: "from-gray-100 to-gray-200",
     features: [
       "One fitness class",
-      "Mat Pilates, BARRE, TRX or BodyFit",
-      "Valid for 30 days",
+      "Mat Pilates, Sculpt pilates, TRX or BodyFit",
+      
       "Cancel up to 12 hours before",
     ],
     cta: "Book Single Class",
@@ -26,7 +26,7 @@ const pricingPlans = [
       "10 fitness classes",
       "Save 30% per class",
       "Valid for 4 weeks",
-      "All class types included",
+      "Mix of classes Mat pilates, Sculpt pilates, TRX or BodyFit",
       "Priority booking",
     
     ],
@@ -35,16 +35,29 @@ const pricingPlans = [
   },
   {
     name: "Reformer Package",
-    price: "360,000",
+    price: "400,000",
     description: "8 Reformer classes",
     color: "from-brand-sage to-brand-sageDark",
     features: [
       "8 Reformer classes",
-      "1-2 people per class",
+      "2 people per class",
       "Valid for 6 weeks",
       "Personalized attention",
       "Progress tracking",
       "Equipment provided",
+    ],
+    cta: "Buy Reformer Package.",
+    popular: false,
+  },
+   {
+    name: "Travel Pass ",
+    price: "90.000",
+  
+    color: "from-gray-100 to-gray-200",
+    features: [
+      "3 fitness classes (Choose between TRX, Mat Pilates, Sculpt pilates and BodyFit)",
+      "⁠Valid for 7 days from your first class",
+      "⁠Ideal for travelers or anyone wanting to experience the studio with short-term flexibility without committing to a full membership",
     ],
     cta: "Buy Reformer Package.",
     popular: false,
@@ -71,7 +84,7 @@ export default function PricingSection() {
         </div>
 
         {/* Pricing Cards - Stack on mobile */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-12">
           {pricingPlans.map((plan, idx) => (
             <div
               key={idx}
@@ -138,21 +151,8 @@ export default function PricingSection() {
           ))}
         </div>
 
-        {/* Guarantee */}
-        <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-brand-sageLight max-w-3xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-brand-sageLight flex items-center justify-center flex-shrink-0">
-              <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-brand-sageDark" />
-            </div>
-            <div className="flex-1 text-center sm:text-left">
-              <h3 className="text-lg sm:text-xl font-bold text-brand-charcoal mb-1 sm:mb-2">
-                Happiness Guarantee
-              </h3>
-              
-            </div>
-            
-          </div>
-        </div>
+        
+        
       </div>
     </section>
   );
