@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
+import fallbackExtras from "@/sanity/imports/extras.json";
 import {
   EGG_STYLE_OPTIONS,
   EXTRA_GRILLED_CHICKEN_PRICE,
@@ -50,12 +51,37 @@ export default function MenuPage() {
   useEffect(() => {
     async function fetchMenuItems() {
       try {
-        const data = await client.fetch<MenuItem[]>(menuItemsQuery);
-        setMenuItems(data || []);
+        const data = (await client.fetch<MenuItem[]>(menuItemsQuery)) || [];
+        const extrasFromSanity = new Set(
+          data
+            .filter((item) => isExtraItem(item))
+            .map((item) => item.name.trim().toLowerCase()),
+        );
+        const fallbackExtraItems: MenuItem[] = fallbackExtras
+          .filter((item) => !extrasFromSanity.has(item.name.trim().toLowerCase()))
+          .map((item) => ({
+            _id: `fallback-extra-${item.name
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/^-+|-+$/g, "")}`,
+            name: item.name,
+            slug: {
+              current: item.name
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, ""),
+            },
+            category: "Extras",
+            price: item.price,
+            available: true,
+          }));
+        const mergedItems = [...data, ...fallbackExtraItems];
+
+        setMenuItems(mergedItems);
 
         const uniqueCategories = Array.from(
           new Set(
-            (data || [])
+            mergedItems
               .filter((item) => !isExtraItem(item))
               .map((item) => item.category),
           ),

@@ -180,7 +180,7 @@ export function OrderSummary({
                               ? ` | Eggs: ${selection?.eggStyle ?? EGG_STYLE_OPTIONS[0]}`
                               : ""}
                           </p>
-                        )}
+                      )}
                       {extraItems.length > 0 && (
                         <div className="mt-3 rounded-2xl bg-[#F8F5EE] p-3">
                           <button
@@ -205,31 +205,36 @@ export function OrderSummary({
                             />
                           </button>
                           {expandedExtraPickers[item._id] && (
-                            <div className="mt-3 flex flex-wrap gap-2">
-                              {extraItems.map((extraItem) => {
-                                const isSelected = (selection?.linkedExtraIds ?? []).includes(
-                                  extraItem._id,
-                                );
+                            <div className="mt-3 w-full">
+                              <div className="flex w-full flex-wrap gap-2">
+                                {extraItems.map((extraItem) => {
+                                  const isSelected = (selection?.linkedExtraIds ?? []).includes(
+                                    extraItem._id,
+                                  );
 
-                                return (
-                                  <button
-                                    key={`${item._id}-${extraItem._id}`}
-                                    type="button"
-                                    onClick={() =>
-                                      onToggleLinkedExtra(item._id, item, extraItem._id)
-                                    }
-                                    className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs transition-all ${
-                                      isSelected
-                                        ? "border-[#6E7A3C] bg-[#6E7A3C] text-white shadow-sm"
-                                        : "border-[#DCD4C7] bg-white text-[#5B544D] hover:border-[#A3AD5F] hover:text-[#2E2A26]"
-                                    }`}
-                                  >
-                                    {isSelected && <Check className="h-3.5 w-3.5" />}
-                                    {extraItem.name} +{" "}
-                                    {formatUGX(extraItem.price || EXTRA_INGREDIENT_PRICE)}
-                                  </button>
-                                );
-                              })}
+                                  return (
+                                    <button
+                                      key={`${item._id}-${extraItem._id}`}
+                                      type="button"
+                                      onClick={() =>
+                                        onToggleLinkedExtra(item._id, item, extraItem._id)
+                                      }
+                                      className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs transition-all ${
+                                        isSelected
+                                          ? "border-[#6E7A3C] bg-[#6E7A3C] text-white shadow-sm"
+                                          : "border-[#DCD4C7] bg-white text-[#5B544D] hover:border-[#A3AD5F] hover:text-[#2E2A26]"
+                                      }`}
+                                    >
+                                      {isSelected && <Check className="h-3.5 w-3.5" />}
+                                      {extraItem.name} +{" "}
+                                      {formatUGX(extraItem.price || EXTRA_INGREDIENT_PRICE)}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="mt-2 text-[11px] text-[#8B7F74]">
+                                Tap an extra name to link or unlink it from this meal.
+                              </p>
                             </div>
                           )}
                         </div>
