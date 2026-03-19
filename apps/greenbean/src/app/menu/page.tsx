@@ -11,6 +11,7 @@ import {
   EXTRA_GRILLED_CHICKEN_PRICE,
   EXTRA_INGREDIENT_PRICE,
   JUICE_FLAVOR_OPTIONS,
+  MENU_CATEGORY_ORDER,
   WHATSAPP_NUMBER,
   WRAP_COMBO_SIDES,
 } from "./constants";
@@ -85,7 +86,28 @@ export default function MenuPage() {
               .filter((item) => !isExtraItem(item))
               .map((item) => item.category),
           ),
-        ).sort() as string[];
+        ).sort((a, b) => {
+          const indexA = MENU_CATEGORY_ORDER.indexOf(
+            a as (typeof MENU_CATEGORY_ORDER)[number],
+          );
+          const indexB = MENU_CATEGORY_ORDER.indexOf(
+            b as (typeof MENU_CATEGORY_ORDER)[number],
+          );
+
+          if (indexA === -1 && indexB === -1) {
+            return a.localeCompare(b);
+          }
+
+          if (indexA === -1) {
+            return 1;
+          }
+
+          if (indexB === -1) {
+            return -1;
+          }
+
+          return indexA - indexB;
+        }) as string[];
 
         setCategories(["All", ...uniqueCategories]);
       } catch (error) {

@@ -34,6 +34,30 @@ export const JUICE_FLAVOR_OPTIONS = [
 ];
 export const INCLUDED_COCKTAIL_JUICE_FLAVORS = 3;
 
+export const MENU_CATEGORY_ORDER = [
+  "Breakfast",
+  "Breakfast Bowls",
+  "Toast",
+  "Crepes",
+  "Wraps",
+  "Sandwiches",
+  "Pastas",
+  "Salad Bowls",
+  "Mexican Corner",
+  "Burgers",
+  "Fries",
+  "Desserts",
+  "Smoothies",
+  "Protein Shakes",
+  "Juices",
+  "Coffee",
+  "Tea",
+  "Milk Shakes",
+  "Soft Drinks",
+  "Specials",
+  "Extras",
+] as const;
+
 export const CUSTOM_BOWL_OPTIONS = {
   carbs: ["Brown rice", "Quinoa", "Cous-cous"],
   proteins: [
