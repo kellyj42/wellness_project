@@ -16,4 +16,4 @@ export const siteConfig = {
   ] as string[],
 } as const;
 
-export const defaultOgImage = `${siteConfig.domain}/18.png`;
+export const defaultOgImage = `${siteConfig.domain}/opengraph-image`;
