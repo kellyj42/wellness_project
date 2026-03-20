@@ -4,6 +4,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "./components/layouts/ConditionalLayout";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://green-beanug.com";
+const organizationName = "Green Bean";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -15,22 +18,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://greenbean.ug",
-  ),
+  metadataBase: new URL(siteUrl),
   icons: {
-    icon: "/gblogo.png",
-    shortcut: "/gblogo.png",
-    apple: "/gblogo.png",
+    icon: "/18.png",
+    shortcut: "/18.png",
+    apple: "/18.png",
   },
   title: {
     default: "Green Bean | Healthy Meal Plans & Nutrition Coaching Kampala",
-    template: "%s | Green Bean",
+    template: `%s | ${organizationName}`,
   },
   description:
     "Green Bean helps you eat well with healthy meal plans, nutrition coaching, and wellness programs in Kampala.",
   keywords: [
-    "Green Bean",
+    organizationName,
     "meal plans Kampala",
     "healthy meals Uganda",
     "nutrition coaching Kampala",
@@ -44,9 +45,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_UG",
-    url: "/",
-    siteName: "Green Bean",
-    title: "Green Bean | Healthy Meal Plans & Nutrition Coaching Kampala",
+    url: siteUrl,
+    siteName: organizationName,
+    title: `${organizationName} | Healthy Meal Plans & Nutrition Coaching Kampala`,
     description:
       "Healthy meal plans, nutrition coaching, and wellness programs tailored for your goals.",
     images: [
@@ -60,7 +61,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Green Bean | Healthy Meal Plans & Nutrition Coaching Kampala",
+    title: `${organizationName} | Healthy Meal Plans & Nutrition Coaching Kampala`,
     description:
       "Healthy meal plans, nutrition coaching, and wellness programs tailored for your goals.",
     images: ["/twitter-image"],
@@ -89,11 +90,23 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: organizationName,
+    alternateName: "Green Bean Uganda",
+    url: siteUrl,
+  };
+
   return (
     <html lang="en" className="scroll-smooth">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
         <ConditionalLayout>{children}</ConditionalLayout>
       </body>
     </html>
