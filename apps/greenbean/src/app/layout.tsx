@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "https://greenbean.ug",
   ),
+  icons: {
+    icon: "/gblogo.png",
+    shortcut: "/gblogo.png",
+    apple: "/gblogo.png",
+  },
   title: {
     default: "Green Bean | Healthy Meal Plans & Nutrition Coaching Kampala",
     template: "%s | Green Bean",
