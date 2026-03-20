@@ -2,13 +2,31 @@ import { CtaSection } from "./components/CtaSection";
 import { HeroSection } from "./components/HeroSection";
 import { IntroSection } from "./components/IntroSection";
 import { PhilosophySection } from "./components/PhilosophySection";
+import type { Metadata } from "next";
 
 import { TrainingSection } from "./components/TrainingSection";
 import type { PrivateTrainingData } from "./components/types";
 import { client } from "@/sanity/lib/client";
 import { privateTrainingQuery } from "@/sanity/lib/queries";
+import { defaultOgImage } from "../seo";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Private Pilates Training in Kampala",
+  description:
+    "Book private Pilates and personalized training at Hey Pilates Studio in Kampala. Explore one-on-one coaching, reformer sessions, and tailored movement plans.",
+  alternates: {
+    canonical: "/private-training",
+  },
+  openGraph: {
+    title: "Private Training | Hey Pilates Studio",
+    description:
+      "Explore personalized Pilates and private training sessions designed around your goals, schedule, and movement needs.",
+    url: "/private-training",
+    images: [defaultOgImage],
+  },
+};
 
 export default async function PrivateTrainingSection() {
   const data: PrivateTrainingData | undefined =

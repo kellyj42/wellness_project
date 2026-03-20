@@ -5,8 +5,26 @@ import ScheduleTable from "../components/section/ClassSchedule";
 import PricingSection from "../components/section/Pricing";
 import { client } from "@/sanity/lib/client";
 import { classTypesQuery, classScheduleQuery } from "@/sanity/lib/queries";
+import type { Metadata } from "next";
+import { defaultOgImage } from "../seo";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Pilates Classes in Kampala",
+  description:
+    "Browse Reformer Pilates, Mat Pilates, Barre, TRX, and Body Fit classes at Hey Pilates Studio in Kampala. View class details, schedules, and pricing.",
+  alternates: {
+    canonical: "/classes",
+  },
+  openGraph: {
+    title: "Hey Pilates Studio Classes | Pilates, Barre, TRX & Body Fit",
+    description:
+      "Browse classes, compare formats, and explore the weekly schedule at Hey Pilates Studio in Kampala.",
+    url: "/classes",
+    images: [defaultOgImage],
+  },
+};
 
 export default async function ClassesPage() {
   const classes = await client.fetch(classTypesQuery);

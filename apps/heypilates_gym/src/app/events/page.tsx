@@ -1,5 +1,23 @@
+import type { Metadata } from "next";
 import { CalendarDays } from "lucide-react";
 import { Button } from "../components/ui/Button";
+import { defaultOgImage } from "../seo";
+
+export const metadata: Metadata = {
+  title: "Pilates Events & Workshops",
+  description:
+    "Stay updated on upcoming Pilates events, workshops, and community sessions from Hey Pilates Studio in Kampala.",
+  alternates: {
+    canonical: "/events",
+  },
+  openGraph: {
+    title: "Events & Workshops | Hey Pilates Studio",
+    description:
+      "Check upcoming Pilates workshops, events, and wellness sessions at Hey Pilates Studio in Kampala.",
+    url: "/events",
+    images: [defaultOgImage],
+  },
+};
 
 export default function EventsPage() {
   return (

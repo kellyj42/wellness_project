@@ -5,6 +5,7 @@ import "./globals.css";
 import AppShell from "./components/layout/AppShell";
 import { client } from "@/sanity/lib/client";
 import { chatbotQuery } from "@/sanity/lib/queries";
+import { defaultOgImage, siteConfig } from "./seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,9 +18,63 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hey Pilates | Transform Your Body",
-  description:
-    "Premium Pilates studio offering group classes and private training",
+  metadataBase: new URL(siteConfig.domain),
+  applicationName: siteConfig.shortName,
+  title: {
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.shortName}`,
+  },
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  authors: [{ name: siteConfig.name }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  category: "health and fitness",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteConfig.domain,
+    siteName: siteConfig.name,
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [
+      {
+        url: defaultOgImage,
+        width: 512,
+        height: 512,
+        alt: `${siteConfig.shortName} logo`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [defaultOgImage],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/Hey PILATES logo (2).png", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon.png", type: "image/png" }],
+    shortcut: [{ url: "/icon.png", type: "image/png" }],
+  },
+  manifest: "/manifest.webmanifest",
 };
 
 export default async function RootLayout({
