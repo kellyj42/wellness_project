@@ -1,0 +1,20 @@
+{
+  "name": "Green Bean",
+  "short_name": "Green Bean",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F3EE",
+  "theme_color": "#2E2A26",
+  "icons": [
+    {
+      "src": "/18.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/gblogo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

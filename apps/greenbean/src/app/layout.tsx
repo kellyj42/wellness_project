@@ -3,9 +3,7 @@ import type { Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "./components/layouts/ConditionalLayout";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://green-beanug.com";
-const organizationName = "Green Bean";
+import { defaultOgImage, siteConfig } from "./seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,53 +16,50 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(siteConfig.domain),
+  applicationName: siteConfig.shortName,
   icons: {
-    icon: "/18.png",
-    shortcut: "/18.png",
-    apple: "/18.png",
+    icon: [
+      { url: "/18.png", type: "image/png" },
+      { url: "/gblogo.png", type: "image/png" },
+    ],
+    apple: [{ url: "/18.png", type: "image/png" }],
+    shortcut: [{ url: "/18.png", type: "image/png" }],
   },
   title: {
-    default: "Green Bean | Healthy Meal Plans & Nutrition Coaching Kampala",
-    template: `%s | ${organizationName}`,
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.shortName}`,
   },
-  description:
-    "Green Bean helps you eat well with healthy meal plans, nutrition coaching, and wellness programs in Kampala.",
-  keywords: [
-    organizationName,
-    "meal plans Kampala",
-    "healthy meals Uganda",
-    "nutrition coaching Kampala",
-    "weight loss meal plan",
-    "wellness programs",
-    "healthy food delivery Kampala",
-  ],
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  authors: [{ name: siteConfig.name }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  category: "health and fitness",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "en_UG",
-    url: siteUrl,
-    siteName: organizationName,
-    title: `${organizationName} | Healthy Meal Plans & Nutrition Coaching Kampala`,
-    description:
-      "Healthy meal plans, nutrition coaching, and wellness programs tailored for your goals.",
+    url: siteConfig.domain,
+    siteName: siteConfig.name,
+    title: siteConfig.title,
+    description: siteConfig.description,
     images: [
       {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "Green Bean healthy meal plans and nutrition coaching",
+        url: defaultOgImage,
+        width: 512,
+        height: 512,
+        alt: `${siteConfig.shortName} logo`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${organizationName} | Healthy Meal Plans & Nutrition Coaching Kampala`,
-    description:
-      "Healthy meal plans, nutrition coaching, and wellness programs tailored for your goals.",
-    images: ["/twitter-image"],
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [defaultOgImage],
   },
   robots: {
     index: true,
@@ -77,6 +72,7 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  manifest: "/manifest.webmanifest",
 };
 
 export const viewport: Viewport = {
@@ -93,9 +89,9 @@ export default function RootLayout({
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: organizationName,
+    name: siteConfig.name,
     alternateName: "Green Bean Uganda",
-    url: siteUrl,
+    url: siteConfig.domain,
   };
 
   return (

@@ -53,8 +53,8 @@ export default function OpenGraphImage() {
           color: "#CFCBC4",
         }}
       >
-        <div>Meal Plans • Programs • Coaching</div>
-        <div style={{ color: "#FFC244", fontWeight: 700 }}>greenbean.ug</div>
+        <div>Meal Plans | Programs | Coaching</div>
+        <div style={{ color: "#FFC244", fontWeight: 700 }}>green-beanug.com</div>
       </div>
     </div>,
     {

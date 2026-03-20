@@ -39,7 +39,7 @@ export default function TwitterImage() {
       </div>
 
       <div style={{ fontSize: 24, color: "#FFC244", fontWeight: 700 }}>
-        greenbean.ug
+        green-beanug.com
       </div>
     </div>,
     {
