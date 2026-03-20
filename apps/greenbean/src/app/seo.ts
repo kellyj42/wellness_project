@@ -13,7 +13,7 @@ export const siteConfig = {
     "weight loss meal plan",
     "wellness programs",
     "healthy food delivery Kampala",
-  ],
+  ] as string[],
 } as const;
 
 export const defaultOgImage = "/18.png";
