@@ -3,7 +3,7 @@ import type { Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "./components/layouts/ConditionalLayout";
-import { defaultOgImage, siteConfig } from "./seo";
+import { siteConfig } from "./seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,9 +48,9 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: [
       {
-        url: defaultOgImage,
-        width: 512,
-        height: 512,
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
         alt: `${siteConfig.shortName} logo`,
       },
     ],
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.title,
     description: siteConfig.description,
-    images: [defaultOgImage],
+    images: ["/twitter-image"],
   },
   robots: {
     index: true,
