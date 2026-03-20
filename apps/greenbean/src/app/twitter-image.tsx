@@ -13,60 +13,96 @@ const logoUrl = `${siteUrl}/18.png`;
 
 export default function TwitterImage() {
   return new ImageResponse(
-    <div
-      style={{
-        height: "100%",
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        background: "linear-gradient(135deg, #2E2A26 0%, #5B544D 100%)",
-        color: "#F5F3EE",
-        padding: "56px",
-        fontFamily: "Inter, Arial, sans-serif",
-      }}
-    >
+    (
       <div
         style={{
+          width: "100%",
+          height: "100%",
           display: "flex",
           alignItems: "center",
-          gap: "18px",
-          fontSize: 28,
-          color: "#A3AD5F",
-          fontWeight: 600,
+          justifyContent: "center",
+          background:
+            "radial-gradient(circle at top left, #6E7A3C 0%, #4A5522 28%, #2E2A26 72%, #221F1C 100%)",
+          padding: "56px",
+          fontFamily: "Arial, sans-serif",
         }}
       >
-        <img
-          src={logoUrl}
-          alt="Green Bean logo"
-          width="88"
-          height="88"
+        <div
           style={{
-            borderRadius: "9999px",
-            objectFit: "cover",
-            backgroundColor: "#F5F3EE",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            borderRadius: "40px",
+            background: "#F6F2E9",
+            boxShadow: "0 32px 80px rgba(0,0,0,0.22)",
+            overflow: "hidden",
           }}
-        />
-        GREEN BEAN
-      </div>
+        >
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background:
+                "linear-gradient(180deg, #FBF9F3 0%, #F3EEDF 100%)",
+            }}
+          >
+            <img
+              src={logoUrl}
+              alt="Green Bean logo"
+              width="300"
+              height="300"
+              style={{
+                objectFit: "contain",
+              }}
+            />
+          </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-        <div style={{ fontSize: 66, lineHeight: 1.05, fontWeight: 700 }}>
-          Eat Better.
-          <br />
-          Live Better.
-        </div>
-        <div style={{ fontSize: 30, color: "#CFCBC4" }}>
-          Healthy meals and coaching in Kampala
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "14px",
+              background: "#1F2326",
+              color: "#F5F3EE",
+              padding: "34px 40px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 42,
+                lineHeight: 1.18,
+                fontWeight: 700,
+              }}
+            >
+              Green Bean | Healthy Meal Plans & Nutrition Coaching in Kampala
+            </div>
+            <div
+              style={{
+                fontSize: 24,
+                lineHeight: 1.4,
+                color: "#CFC8BC",
+              }}
+            >
+              Healthy meals, nutrition support, and wellness programs tailored for
+              your goals.
+            </div>
+            <div
+              style={{
+                fontSize: 24,
+                color: "#A3AD5F",
+                fontWeight: 600,
+              }}
+            >
+              green-beanug.com
+            </div>
+          </div>
         </div>
       </div>
-
-      <div style={{ fontSize: 24, color: "#FFC244", fontWeight: 700 }}>
-        green-beanug.com
-      </div>
-    </div>,
-    {
-      ...size,
-    },
+    ),
+    { ...size },
   );
 }
