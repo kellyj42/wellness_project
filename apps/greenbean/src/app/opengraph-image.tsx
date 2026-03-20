@@ -22,39 +22,48 @@ export default function OpenGraphImage() {
           alignItems: "center",
           justifyContent: "center",
           background:
-            "radial-gradient(circle at top left, #6E7A3C 0%, #4A5522 28%, #2E2A26 72%, #221F1C 100%)",
-          padding: "56px",
+            "radial-gradient(circle at top left, #8C9651 0%, #6E7A3C 22%, #3B4322 58%, #25211D 100%)",
+          position: "relative",
+          overflow: "hidden",
           fontFamily: "Arial, sans-serif",
         }}
       >
         <div
           style={{
-            width: "100%",
-            height: "100%",
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 42%)",
+          }}
+        />
+
+        <div
+          style={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-between",
-            borderRadius: "40px",
-            background: "#F6F2E9",
-            boxShadow: "0 32px 80px rgba(0,0,0,0.22)",
-            overflow: "hidden",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "28px",
           }}
         >
           <div
             style={{
-              flex: 1,
+              width: "270px",
+              height: "270px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background:
-                "linear-gradient(180deg, #FBF9F3 0%, #F3EEDF 100%)",
+              borderRadius: "9999px",
+              background: "#F7F3EA",
+              boxShadow: "0 32px 60px rgba(0,0,0,0.24)",
             }}
           >
             <img
               src={logoUrl}
               alt="Green Bean logo"
-              width="300"
-              height="300"
+              width="190"
+              height="190"
               style={{
                 objectFit: "contain",
               }}
@@ -65,39 +74,27 @@ export default function OpenGraphImage() {
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "14px",
-              background: "#1F2326",
-              color: "#F5F3EE",
-              padding: "34px 40px",
+              alignItems: "center",
+              gap: "10px",
+              color: "#F7F3EA",
             }}
           >
             <div
               style={{
-                fontSize: 42,
-                lineHeight: 1.18,
+                fontSize: 56,
                 fontWeight: 700,
+                letterSpacing: "-0.03em",
               }}
             >
-              Green Bean | Healthy Meal Plans & Nutrition Coaching in Kampala
+              Green Bean
             </div>
             <div
               style={{
-                fontSize: 24,
-                lineHeight: 1.4,
-                color: "#CFC8BC",
+                fontSize: 28,
+                color: "#D8D2C6",
               }}
             >
-              Healthy meals, nutrition support, and wellness programs tailored for
-              your goals.
-            </div>
-            <div
-              style={{
-                fontSize: 24,
-                color: "#A3AD5F",
-                fontWeight: 600,
-              }}
-            >
-              green-beanug.com
+              Healthy meals, coaching, and wellness in Kampala
             </div>
           </div>
         </div>
