@@ -30,7 +30,7 @@ export default function AutoRefresh({
     <div className="inline-flex items-center gap-3 rounded-full border border-[#D8D2C6] bg-white px-4 py-2 text-xs text-[#5B544D] shadow-sm">
       <span className="h-2.5 w-2.5 rounded-full bg-[#6E7A3C]" />
       <span>Live updates every {Math.round(intervalMs / 1000)}s</span>
-      <span className="text-[#8B7F74]">
+      <span className="text-[#8B7F74] hidden">
         Last refresh:{" "}
         {lastUpdated
           ? lastUpdated.toLocaleTimeString("en-UG", {
