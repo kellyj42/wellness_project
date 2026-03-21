@@ -17,7 +17,12 @@ import {
   WRAP_COMBO_PRICE,
   WRAP_COMBO_SIDES,
 } from "./constants";
-import type { CustomBowlSelection, MenuItem, OrderSelection } from "./types";
+import type {
+  CustomBowlSelection,
+  MenuItem,
+  OrderSelection,
+  OrderSubmissionItem,
+} from "./types";
 
 export function isCustomBowlItem(item: MenuItem) {
   return (
@@ -297,4 +302,89 @@ export function buildWhatsAppMessage(
     "",
     "Please confirm availability, preparation time, and delivery options.",
   ].join("\n");
+}
+
+export function buildOrderItemNotes(
+  item: MenuItem,
+  selection: OrderSelection | undefined,
+  extraItemsById: Record<string, MenuItem>,
+) {
+  const notes: string[] = [];
+
+  if (selection?.glutenFree && isCrepeItem(item)) {
+    notes.push("Gluten-free option");
+  }
+
+  if (selection?.ingredientSwap?.remove?.trim() && selection?.ingredientSwap?.replaceWith?.trim()) {
+    notes.push(
+      `Swap ${selection.ingredientSwap.remove.trim()} -> ${selection.ingredientSwap.replaceWith.trim()}`,
+    );
+  }
+
+  if (isCustomBowlItem(item) && selection?.customBowl) {
+    notes.push(
+      `Bowl: ${selection.customBowl.carb}, ${selection.customBowl.protein}, ${selection.customBowl.greens}, ${selection.customBowl.dressing}`,
+    );
+
+    if (selection.customBowl.toppings.length > 0) {
+      notes.push(`Toppings: ${selection.customBowl.toppings.join(", ")}`);
+    }
+  }
+
+  if (isToastItem(item)) {
+    if (selection?.halfToast) {
+      notes.push(`Half & Half: ${item.name} + ${selection.halfToast}`);
+    }
+
+    if (toastNeedsEggStyle(item, selection)) {
+      notes.push(`Egg choice: ${selection?.eggStyle ?? EGG_STYLE_OPTIONS[0]}`);
+    }
+  }
+
+  if (isComboMealItem(item) && selection?.wrapCombo) {
+    notes.push(
+      `${isWrapItem(item) ? "Wrap" : "Sandwich"} combo | Side: ${selection.wrapComboSide ?? WRAP_COMBO_SIDES[0]}`,
+    );
+  }
+
+  if (isCustomJuiceItem(item) && selection?.juiceType) {
+    notes.push(
+      `${selection.juiceType} | ${selection.juiceFlavors?.join(", ") ?? JUICE_FLAVOR_OPTIONS[0]}`,
+    );
+  }
+
+  if (selection?.extraChicken) {
+    notes.push(`Extra grilled chicken (+${formatUGX(EXTRA_GRILLED_CHICKEN_PRICE)})`);
+  }
+
+  const linkedExtras = (selection?.linkedExtraIds ?? [])
+    .map((extraId) => extraItemsById[extraId]?.name)
+    .filter(Boolean);
+
+  if (linkedExtras.length > 0) {
+    notes.push(`Extras: ${linkedExtras.join(", ")}`);
+  }
+
+  return notes.join(" | ");
+}
+
+export function buildOrderSubmissionItems(
+  selectedItems: MenuItem[],
+  selections: Record<string, OrderSelection>,
+  extraItemsById: Record<string, MenuItem>,
+): OrderSubmissionItem[] {
+  return selectedItems.map((item) => {
+    const selection = selections[item._id];
+    const quantity = selection?.quantity ?? 1;
+    const unitPrice = getItemUnitTotal(item, selection, extraItemsById);
+
+    return {
+      mealName: item.name,
+      category: item.category,
+      quantity,
+      unitPrice,
+      lineTotal: unitPrice * quantity,
+      notes: buildOrderItemNotes(item, selection, extraItemsById),
+    };
+  });
 }

@@ -28,6 +28,7 @@ import type {
 } from "./types";
 import {
   buildWhatsAppMessage,
+  buildOrderSubmissionItems,
   createDefaultCustomBowl,
   formatUGX,
   getDefaultSelection,
@@ -37,6 +38,9 @@ import {
   isEggAvoToastName,
   isExtraItem,
 } from "./utils";
+
+const CUSTOMER_NAME_STORAGE_KEY = "greenbean_customer_name";
+const CUSTOMER_PHONE_STORAGE_KEY = "greenbean_customer_phone";
 
 export default function MenuPage() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -48,6 +52,10 @@ export default function MenuPage() {
   const [orderSelections, setOrderSelections] = useState<Record<string, OrderSelection>>({});
   const [expandedExtraPickers, setExpandedExtraPickers] = useState<Record<string, boolean>>({});
   const [expandedSwapEditors, setExpandedSwapEditors] = useState<Record<string, boolean>>({});
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [orderError, setOrderError] = useState<string | null>(null);
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
 
   useEffect(() => {
     async function fetchMenuItems() {
@@ -139,6 +147,47 @@ export default function MenuPage() {
     };
   }, [menuPreview]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const savedName = window.localStorage.getItem(CUSTOMER_NAME_STORAGE_KEY) || "";
+    const savedPhone = window.localStorage.getItem(CUSTOMER_PHONE_STORAGE_KEY) || "";
+
+    if (savedName) {
+      setCustomerName(savedName);
+    }
+
+    if (savedPhone) {
+      setCustomerPhone(savedPhone);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const trimmedName = customerName.trim();
+
+    if (trimmedName) {
+      window.localStorage.setItem(CUSTOMER_NAME_STORAGE_KEY, trimmedName);
+    }
+  }, [customerName]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const trimmedPhone = customerPhone.trim();
+
+    if (trimmedPhone) {
+      window.localStorage.setItem(CUSTOMER_PHONE_STORAGE_KEY, trimmedPhone);
+    }
+  }, [customerPhone]);
+
   const extraItems = useMemo(
     () => menuItems.filter((item) => isExtraItem(item)),
     [menuItems],
@@ -203,6 +252,11 @@ export default function MenuPage() {
     const message = buildWhatsAppMessage(selectedItems, orderSelections, extraItemsById);
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   }, [extraItemsById, orderSelections, selectedItems]);
+
+  const orderSubmissionItems = useMemo(
+    () => buildOrderSubmissionItems(selectedItems, orderSelections, extraItemsById),
+    [extraItemsById, orderSelections, selectedItems],
+  );
 
   function toggleItemSelection(item: MenuItem) {
     setOrderSelections((prev) => {
@@ -531,6 +585,60 @@ export default function MenuPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  async function submitOrder() {
+    const trimmedName = customerName.trim();
+    const trimmedPhone = customerPhone.trim();
+
+    if (!trimmedName || !trimmedPhone) {
+      setOrderError("Please enter the client name and phone number before ordering.");
+      return;
+    }
+
+    if (selectedItems.length === 0) {
+      setOrderError("Please add at least one item before ordering.");
+      return;
+    }
+
+    setOrderError(null);
+    setIsSubmittingOrder(true);
+
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customerName: trimmedName,
+          phone: trimmedPhone,
+          total: grandTotal,
+          whatsAppMessage: buildWhatsAppMessage(
+            selectedItems,
+            orderSelections,
+            extraItemsById,
+          ),
+          items: orderSubmissionItems,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to save order.");
+      }
+
+      window.open(whatsappHref, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      setOrderError(
+        error instanceof Error
+          ? error.message
+          : "Failed to save the order. Please try again.",
+      );
+    } finally {
+      setIsSubmittingOrder(false);
+    }
+  }
+
   if (isLoading) {
     return (
       <section className="min-h-screen bg-gradient-to-b from-[#F5F3EE] to-white pb-20 pt-24 text-[#2E2A26]">
@@ -609,8 +717,14 @@ export default function MenuPage() {
           extraItems={extraItems}
           extraItemsById={extraItemsById}
           grandTotal={grandTotal}
-          whatsappHref={whatsappHref}
+          customerName={customerName}
+          customerPhone={customerPhone}
+          orderError={orderError}
+          isSubmittingOrder={isSubmittingOrder}
           expandedExtraPickers={expandedExtraPickers}
+          onCustomerNameChange={setCustomerName}
+          onCustomerPhoneChange={setCustomerPhone}
+          onSubmitOrder={submitOrder}
           onToggleExtraPicker={toggleExtraPicker}
           onToggleLinkedExtra={toggleLinkedExtra}
           onIncreaseQuantity={increaseItemQuantity}

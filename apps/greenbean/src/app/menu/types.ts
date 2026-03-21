@@ -44,3 +44,12 @@ export interface MenuPreviewState {
   src: string;
   alt: string;
 }
+
+export interface OrderSubmissionItem {
+  mealName: string;
+  category?: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+  notes?: string;
+}

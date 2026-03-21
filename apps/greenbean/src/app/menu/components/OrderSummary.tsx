@@ -31,8 +31,14 @@ interface OrderSummaryProps {
   extraItems: MenuItem[];
   extraItemsById: Record<string, MenuItem>;
   grandTotal: number;
-  whatsappHref: string;
+  customerName: string;
+  customerPhone: string;
+  orderError: string | null;
+  isSubmittingOrder: boolean;
   expandedExtraPickers: Record<string, boolean>;
+  onCustomerNameChange: (value: string) => void;
+  onCustomerPhoneChange: (value: string) => void;
+  onSubmitOrder: () => void;
   onToggleExtraPicker: (itemId: string) => void;
   onToggleLinkedExtra: (itemId: string, item: MenuItem, extraId: string) => void;
   onIncreaseQuantity: (itemId: string) => void;
@@ -47,8 +53,14 @@ export function OrderSummary({
   extraItems,
   extraItemsById,
   grandTotal,
-  whatsappHref,
+  customerName,
+  customerPhone,
+  orderError,
+  isSubmittingOrder,
   expandedExtraPickers,
+  onCustomerNameChange,
+  onCustomerPhoneChange,
+  onSubmitOrder,
   onToggleExtraPicker,
   onToggleLinkedExtra,
   onIncreaseQuantity,
@@ -76,18 +88,57 @@ export function OrderSummary({
               </p>
               <h2 className="text-2xl font-light">Your selected meals</h2>
             </div>
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={onSubmitOrder}
+              disabled={isSubmittingOrder}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-[#A3AD5F] px-6 py-3 text-sm font-semibold text-[#2E2A26] transition-all hover:scale-[1.02] hover:bg-[#B5BF70]"
             >
               <MessageCircle className="h-4 w-4" />
-              Order Now
-            </a>
+              {isSubmittingOrder ? "Saving order..." : "Order Now"}
+            </button>
           </div>
 
           <div className="p-6">
+            <div className="mb-6 grid gap-4 rounded-2xl bg-[#F3F0E8] p-4 md:grid-cols-2">
+              <label className="block text-sm text-[#5B544D]">
+                <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-[#8B7F74]">
+                  Client name
+                </span>
+                <input
+                  type="text"
+                  value={customerName}
+                  onChange={(event) => onCustomerNameChange(event.target.value)}
+                  placeholder="Enter client name"
+                  autoComplete="name"
+                  className="w-full rounded-2xl border border-[#DCD4C7] bg-white px-4 py-3 text-sm text-[#2E2A26] outline-none transition-colors focus:border-[#A3AD5F]"
+                />
+              </label>
+
+              <label className="block text-sm text-[#5B544D]">
+                <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-[#8B7F74]">
+                  Client phone
+                </span>
+                <input
+                  type="tel"
+                  value={customerPhone}
+                  onChange={(event) => onCustomerPhoneChange(event.target.value)}
+                  placeholder="+256 7xx xxx xxx"
+                  autoComplete="tel"
+                  className="w-full rounded-2xl border border-[#DCD4C7] bg-white px-4 py-3 text-sm text-[#2E2A26] outline-none transition-colors focus:border-[#A3AD5F]"
+                />
+              </label>
+
+              <p className="md:col-span-2 text-xs leading-relaxed text-[#6C6257]">
+                We save the customer name and contact for purposes of proper communication between the client and the brand.
+              </p>
+              {orderError && (
+                <p className="md:col-span-2 text-sm font-medium text-[#D06A4E]">
+                  {orderError}
+                </p>
+              )}
+            </div>
+
             <div className="hidden grid-cols-[minmax(0,2fr)_140px_180px_150px_140px_110px] gap-4 border-b border-[#E7E1D7] pb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#8B7F74] md:grid">
               <span>Meal</span>
               <span>Base price</span>
@@ -315,15 +366,15 @@ export function OrderSummary({
               {selectedItems.length} item(s) | {formatUGX(grandTotal)}
             </p>
           </button>
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={onSubmitOrder}
+            disabled={isSubmittingOrder}
             className="inline-flex items-center gap-2 rounded-full bg-[#6E7A3C] px-5 py-3 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-[1.02]"
           >
             <MessageCircle className="h-4 w-4" />
-            Order Now
-          </a>
+            {isSubmittingOrder ? "Saving..." : "Order Now"}
+          </button>
         </div>
       </div>
     </>
