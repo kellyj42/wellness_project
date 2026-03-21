@@ -120,3 +120,34 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const adminToken = request.headers.get("x-admin-token")?.trim();
+    const expectedToken = process.env.ADMIN_DASHBOARD_TOKEN || "";
+
+    if (!expectedToken || adminToken !== expectedToken) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { orderId } = await request.json();
+
+    if (!orderId || typeof orderId !== "string") {
+      return NextResponse.json(
+        { error: "A valid order id is required." },
+        { status: 400 },
+      );
+    }
+
+    await writeClient.delete(orderId);
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting order submission:", error);
+
+    return NextResponse.json(
+      { error: "Failed to delete the order. Please try again." },
+      { status: 500 },
+    );
+  }
+}
