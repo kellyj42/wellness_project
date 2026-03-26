@@ -8,11 +8,13 @@ type Props = {
 export default function HeroCTA({ ctaText }: Props) {
   return (
     <div className="mt-12 flex flex-wrap gap-4 animate-slide-up delay-300">
-      
-      <Button href="https://studiobookingonline.com/heypilates" iconRight={<ArrowRight className="w-4 h-4" />}>
+      <Button
+        href="https://studiobookingonline.com/"
+        iconRight={<ArrowRight className="w-4 h-4" />}
+      >
         Book Your Class
       </Button>
-      <Button variant="secondary" href="/classes">
+      <Button variant="secondary" href="/classes#live-booking">
         View Schedule
       </Button>
     </div>

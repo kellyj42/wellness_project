@@ -49,7 +49,9 @@ export function CtaSection({ ctaText }: Props) {
 
           <div className="flex flex-col gap-4">
             <Button
-              href="/contact"
+              href={`https://wa.me/256749103139?text=${encodeURIComponent(
+                "Hi Hey Pilates Studio, I would like to book a consultation.",
+              )}`}
               className="bg-white text-brand-charcoal hover:bg-brand-cream hover:scale-105 transition-transform px-8 py-6 rounded-2xl text-lg font-bold"
               iconRight={<ArrowRight className="w-5 h-5" />}
             >

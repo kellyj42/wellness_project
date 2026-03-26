@@ -10,7 +10,7 @@ import Image from "next/image";
 
 const navigation = [
   { name: "Home", href: "/" },
-  { name: "Classes", href: "/classes" },
+  { name: "Classes", href: "/classes#live-booking" },
   { name: "Private Training", href: "/private-training" },
   { name: "Teachers", href: "/teachers" },
   { name: "Green Bean", href: "https://wellness-project-ibgi.vercel.app/" },
@@ -59,13 +59,15 @@ export default function Navbar() {
                 key={item.name}
                 href={item.href}
                 className={`relative font-medium transition-colors ${
+                  (item.name === "Classes" && pathname === "/classes") ||
                   pathname === item.href
                     ? "text-brand-sageDark"
                     : "text-brand-charcoal hover:text-brand-sageDark"
                 }`}
               >
                 {item.name}
-                {pathname === item.href && (
+                {((item.name === "Classes" && pathname === "/classes") ||
+                  pathname === item.href) && (
                   <span className="absolute -bottom-2 left-0 right-0 h-0.5 bg-brand-sageDark rounded-full" />
                 )}
               </Link>
@@ -75,14 +77,24 @@ export default function Navbar() {
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
             <Link
-              href={`https://wa.me/2567?text=${encodeURIComponent(
-                "Hi HeyPilates! I clicked 'Order via WhatsApp'  on the Programs page. I'm ready to start but need help selecting the best program for my meal plan goals and understanding pricing and next steps.",
+              href="https://studiobookingonline.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button className="text-brand-charcoal hover:bg-brand-sageLight">
+                Book Class
+              </Button>
+            </Link>
+            <Link
+            className="hidden"
+              href={`https://wa.me/256749103139?text=${encodeURIComponent(
+                "Hi Hey Pilates Studio, I would like to book a consultation.",
               )}`}
               target="_blank"
               rel="noopener noreferrer"
             >
               <Button className="text-brand-charcoal hover:bg-brand-sageLight">
-                Book  Class
+                Consultation
               </Button>
             </Link>
             <Button
@@ -113,6 +125,7 @@ export default function Navbar() {
                   href={item.href}
                   onClick={() => setIsOpen(false)}
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    (item.name === "Classes" && pathname === "/classes") ||
                     pathname === item.href
                       ? "bg-brand-sageLight text-brand-sageDark"
                       : "text-brand-charcoal hover:bg-brand-sageLight"
@@ -123,7 +136,7 @@ export default function Navbar() {
               ))}
               <div className="pt-4 border-t border-brand-sageLight space-y-3">
                 <Button
-                  href="/booking"
+                  href="https://studiobookingonline.com/"
                   className="w-full bg-brand-sageDark hover:bg-brand-sage text-white"
                   onClick={() => setIsOpen(false)}
                 >
