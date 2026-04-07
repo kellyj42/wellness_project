@@ -1,5 +1,9 @@
 import { client } from "@/sanity/lib/client";
-import { homeQuery, founderQuery } from "@/sanity/lib/queries";
+import {
+  homeQuery,
+  founderQuery,
+  featuredEventPromoQuery,
+} from "@/sanity/lib/queries";
 import type { Metadata } from "next";
 
 import HomeHero from "./components/section/HomeHero";
@@ -7,6 +11,7 @@ import UniqueSection from "./components/section/UniqueSection";
 import FounderSection from "./components/section/FounderSection";
 import PrivateTrainingPreview from "./components/section/PrivateTraining";
 import { defaultOgImage, siteConfig } from "./seo";
+import HomeEventHighlight from "./components/events/HomeEventHighlight";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +48,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const home = await client.fetch(homeQuery);
   const founder = await client.fetch(founderQuery);
+  const featuredEvent = await client.fetch(featuredEventPromoQuery);
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -90,6 +96,8 @@ export default async function HomePage() {
         vision={founder?.vision}
         imageUrl={founder?.image?.asset?.url}
       />
+
+      {featuredEvent ? <HomeEventHighlight event={featuredEvent} /> : null}
 
       <PrivateTrainingPreview />
     </>

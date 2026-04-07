@@ -50,7 +50,7 @@ export default function ClassHero() {
           {/* Buttons - Stack on mobile */}
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
-              href="https://studiobookingonline.com/"
+              href="https://studiobookingonline.com/heypilatesstudiokla/classes.html"
               className="px-6 py-3 sm:px-8 sm:py-4 bg-white text-brand-sageDark font-bold rounded-lg sm:rounded-xl hover:bg-brand-cream transition-colors text-sm sm:text-base text-center"
             >
               View Schedule & Book

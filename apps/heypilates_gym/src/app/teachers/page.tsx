@@ -151,7 +151,7 @@ export default function TeachersPage() {
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-brand-sageLight">
                 <Image
-                  src="/trs.jpg"
+                  src="/teacher.jpeg"
                   alt="Pilates instructors in studio"
                   width={800}
                   height={600}
@@ -366,8 +366,6 @@ export default function TeachersPage() {
           </motion.div>
         </div>
       </section>
-
-     
     </div>
   );
 }

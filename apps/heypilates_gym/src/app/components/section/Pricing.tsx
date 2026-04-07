@@ -137,7 +137,7 @@ export default function PricingSection() {
                 </ul>
 
                 <Button
-                  href="https://studiobookingonline.com/"
+                  href="https://studiobookingonline.com/heypilatesstudiokla/classes.html"
                   className={`w-full py-3 sm:py-4 text-sm sm:text-base font-bold rounded-lg sm:rounded-xl ${
                     plan.popular
                       ? 'bg-brand-sageDark hover:bg-brand-sage text-white'

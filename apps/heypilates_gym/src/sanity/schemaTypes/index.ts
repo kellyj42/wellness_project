@@ -8,6 +8,7 @@ import pricingType from './pricingType'
 import { contactType } from './contactType'
 import teacherType from './teacherType'
 import contactMessageType from './contactMessageType'
+import eventType from './eventType'
 
 export const schema = {
   types: [
@@ -21,5 +22,6 @@ export const schema = {
     contactType,
     teacherType,
     contactMessageType,
+    eventType,
   ],
 }

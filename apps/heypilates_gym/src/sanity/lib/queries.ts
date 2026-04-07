@@ -193,3 +193,43 @@ export const teachersQuery = `
   }
 }
 `;
+
+export const eventsQuery = `
+*[_type == "event" && isPublished == true] | order(startDate asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  summary,
+  description,
+  startDate,
+  endDate,
+  location,
+  instructor,
+  price,
+  capacity,
+  tags,
+  bookingUrl,
+  featured,
+  image {
+    asset->{url}
+  }
+}
+`;
+
+export const featuredEventPromoQuery = `
+*[
+  _type == "event" &&
+  isPublished == true &&
+  dateTime(coalesce(endDate, startDate)) >= dateTime(now())
+] | order(featured desc, startDate asc)[0] {
+  _id,
+  title,
+  summary,
+  startDate,
+  endDate,
+  location,
+  price,
+  bookingUrl,
+  featured
+}
+`;

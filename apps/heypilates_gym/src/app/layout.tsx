@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppShell from "./components/layout/AppShell";
 import { client } from "@/sanity/lib/client";
-import { chatbotQuery } from "@/sanity/lib/queries";
+import { chatbotQuery, featuredEventPromoQuery } from "@/sanity/lib/queries";
 import { defaultOgImage, siteConfig } from "./seo";
 
 const geistSans = Geist({
@@ -84,11 +84,17 @@ export default async function RootLayout({
 }>) {
   // Fetch chatbot data
   let chatbotData;
+  let eventPromo;
   try {
     chatbotData = await client.fetch(chatbotQuery);
-    console.log("Chatbot data fetched:", chatbotData); // Debug log
   } catch (error) {
     console.error("Error fetching chatbot data:", error);
+  }
+
+  try {
+    eventPromo = await client.fetch(featuredEventPromoQuery);
+  } catch (error) {
+    console.error("Error fetching event promo:", error);
   }
 
   return (
@@ -96,7 +102,9 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AppShell chatbotData={chatbotData}>{children}</AppShell>
+        <AppShell chatbotData={chatbotData} eventPromo={eventPromo}>
+          {children}
+        </AppShell>
       </body>
     </html>
   );

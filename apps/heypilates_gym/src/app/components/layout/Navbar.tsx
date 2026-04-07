@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Sparkles, User } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "../ui/Button";
 import Image from "next/image";
 
@@ -17,7 +17,11 @@ const navigation = [
   { name: "Contact", href: "/contact" },
 ];
 
-export default function Navbar() {
+export default function Navbar({
+  hasAnnouncement = false,
+}: {
+  hasAnnouncement?: boolean;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -36,7 +40,7 @@ export default function Navbar() {
         scrolled
           ? "bg-white/75 backdrop-blur-md shadow-medium py-3"
           : "bg-transparent py-5"
-      }`}
+      } ${hasAnnouncement ? "top-[49px]" : ""}`}
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between">
@@ -77,7 +81,7 @@ export default function Navbar() {
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
             <Link
-              href="https://studiobookingonline.com/"
+              href="https://studiobookingonline.com/heypilatesstudiokla/classes.html"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -136,7 +140,7 @@ export default function Navbar() {
               ))}
               <div className="pt-4 border-t border-brand-sageLight space-y-3">
                 <Button
-                  href="https://studiobookingonline.com/"
+                  href="https://studiobookingonline.com/heypilatesstudiokla/classes.html"
                   className="w-full bg-brand-sageDark hover:bg-brand-sage text-white"
                   onClick={() => setIsOpen(false)}
                 >
