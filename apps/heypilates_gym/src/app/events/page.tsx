@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Pilates Events & Workshops",
   description:
-    "Stay updated on upcoming Pilates events, workshops, and community sessions from Hey Pilates Studio in Kampala.",
+    "Stay updated on upcoming Pilates events, workshops, and community sessions from Hey Pilates Studio in Kampala",
   alternates: {
     canonical: "/events",
   },
