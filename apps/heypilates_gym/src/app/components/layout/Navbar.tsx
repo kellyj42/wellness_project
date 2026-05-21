@@ -13,7 +13,7 @@ const navigation = [
   { name: "Classes", href: "/classes#live-booking" },
   { name: "Private Training", href: "/private-training" },
   { name: "Teachers", href: "/teachers" },
-  { name: "Green Bean", href: "https://wellness-project-ibgi.vercel.app/" },
+  { name: "Green Bean", href: "https://green-beanug.com/" },
   { name: "Contact", href: "/contact" },
 ];
 
@@ -81,7 +81,7 @@ export default function Navbar({
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
             <Link
-              href="https://studiobookingonline.com/heypilatesstudiokla/classes.html"
+              href="https://studiobookingonline.com/heypilatesstudiokla/classcalendar"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -90,7 +90,7 @@ export default function Navbar({
               </Button>
             </Link>
             <Link
-            className="hidden"
+              className="hidden"
               href={`https://wa.me/256749103139?text=${encodeURIComponent(
                 "Hi Hey Pilates Studio, I would like to book a consultation.",
               )}`}
@@ -140,7 +140,7 @@ export default function Navbar({
               ))}
               <div className="pt-4 border-t border-brand-sageLight space-y-3">
                 <Button
-                  href="https://studiobookingonline.com/heypilatesstudiokla/classes.html"
+                  href="https://studiobookingonline.com/heypilatesstudiokla/classcalendar"
                   className="w-full bg-brand-sageDark hover:bg-brand-sage text-white"
                   onClick={() => setIsOpen(false)}
                 >
