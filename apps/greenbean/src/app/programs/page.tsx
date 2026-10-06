@@ -59,7 +59,7 @@ export default function ProgramsPage() {
       image: "/programmes/6.jpeg",
       features: [
         "Plant-based protein sources",
-        "30 protein per meal",
+        "30g protein per meal",
         "No meat, eggs included",
         "Nutritionally balanced",
       ],
