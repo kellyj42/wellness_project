@@ -47,7 +47,7 @@ export default function ProgramsPage() {
       price: "115K / week",
       image: "/programmes/5.jpeg",
       features: [
-        "35-40g protein per meal",
+        "30g protein per meal",
         "Supports muscle recovery",
         "Keeps you full longer",
         "Perfect for active lifestyles",
