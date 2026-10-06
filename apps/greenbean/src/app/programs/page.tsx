@@ -59,7 +59,7 @@ export default function ProgramsPage() {
       image: "/programmes/6.jpeg",
       features: [
         "Plant-based protein sources",
-        "30-35g protein per meal",
+        "30 protein per meal",
         "No meat, eggs included",
         "Nutritionally balanced",
       ],
@@ -84,7 +84,7 @@ export default function ProgramsPage() {
       price: "135K / week",
       image: "/programmes/4.jpeg",
       features: [
-        "40-45g protein per meal",
+        "30g protein per meal",
         "Balanced macros for performance",
         "Supports muscle building",
         "Satisfying portions",
@@ -96,7 +96,7 @@ export default function ProgramsPage() {
       image: "/programmes/2.jpeg",
       features: [
         "Plant-based protein",
-        "35-40g protein per meal",
+        "30 protein per meal",
         "No meat, eggs included",
         "Delicious vegetarian options",
       ],
