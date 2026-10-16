@@ -202,9 +202,9 @@ export default function ContactPage() {
                   Location
                 </h3>
                 <p className="text-gray-600">
-                  CrossFit KLA, Old Port Bell Road,
+                  Corporation road Ntinda
                   <br />
-                  Plot 7A, Kampala
+                  Near minister's village
                 </p>
               </div>
             </div>
@@ -219,8 +219,8 @@ export default function ContactPage() {
                   in the hour below
                 </p>
                 <ul className="ml-4 text-gray-600">
-                  <li> Monday to Friday 8 am - 5 pm </li>
-                  <li> Saturday 7 am - 2 pm</li>
+                  <li> Monday to Saturday 8 am - 5 pm </li>
+                  
                   <li> Sunday - closed</li>
                 </ul>
               </div>
@@ -241,11 +241,10 @@ export default function ContactPage() {
                   Opening Hours
                 </h3>
                 <p className="text-gray-600">
-                  Monday – Friday: 7:00 AM – 6:00 PM
+                  Monday – Saturday: 8:00 AM – 5:00 PM
                   <br />
-                  Saturday: 7:00 AM – 2:00 PM
-                  <br />
-                  Sunday: 8:00 AM – 12:00 PM
+                  
+                  Sunday: Closed
                 </p>
               </div>
             </div>
@@ -381,7 +380,15 @@ export default function ContactPage() {
         <div className="mt-16">
           <div className="rounded-3xl overflow-hidden border border-gray-100 shadow-sm bg-white">
             <div className="aspect-[16/9] w-full">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.742188266919!2d32.620411399999995!3d0.3539529999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x177dbb9c42d990ef%3A0x153942260a616f91!2sGreen%20Bean%20Cafe!5e0!3m2!1sen!2sug!4v1792126055361!5m2!1sen!2sug" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+              <iframe
+   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.742188266919!2d32.620411399999995!3d0.3539529999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x177dbb9c42d990ef%3A0x153942260a616f91!2sGreen%20Bean%20Cafe!5e0!3m2!1sen!2sug!4v1792126055361!5m2!1sen!2sug"
+  width="600"
+  height="450"
+  style={{ border: 0 }}
+  allowFullScreen
+  loading="lazy"
+  referrerPolicy="strict-origin-when-cross-origin"
+/>
             </div>
           </div>
         </div>
