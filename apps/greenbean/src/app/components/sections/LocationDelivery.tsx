@@ -216,7 +216,15 @@ Reach out to us via What’s App to place an order
               id="map"
               className="relative min-h-[400px] lg:min-h-full bg-[#5B544D]/20"
             >
-             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.742188266919!2d32.620411399999995!3d0.3539529999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x177dbb9c42d990ef%3A0x153942260a616f91!2sGreen%20Bean%20Cafe!5e0!3m2!1sen!2sug!4v1792126055361!5m2!1sen!2sug" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            <iframe
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.742188266919!2d32.620411399999995!3d0.3539529999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x177dbb9c42d990ef%3A0x153942260a616f91!2sGreen%20Bean%20Cafe!5e0!3m2!1sen!2sug!4v1792126055361!5m2!1sen!2sug"
+  width="600"
+  height="450"
+  style={{ border: 0 }}
+  allowFullScreen
+  loading="lazy"
+  referrerPolicy="strict-origin-when-cross-origin"
+/>
               {/* You can replace this with an actual Google Maps iframe */}
             </div>
           </div>
